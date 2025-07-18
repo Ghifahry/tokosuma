@@ -3,7 +3,7 @@
     <!-- Baris Atas: Logo, Search, Ikon -->
     <div class="top-bar">
       <!-- Logo -->
-      <router-link to="/" class="logo">
+      <router-link :to="{ name: 'home' }" class="logo">
         <img src="https://tokosuma.co.id/assets/images/layout-5/logo/logo_tokosuma_coid.png" alt="Logo Toko Suma" />
       </router-link>
       <div class="search">
@@ -32,7 +32,7 @@
         <div class="dropdown" @click="toggleAccount">
           <i class="fas fa-user"></i>
           <div v-if="showAccount" class="dropdown-box account-dropdown">
-            <router-link to="/login"
+            <router-link to="/account/akun"
               >Login <br />
               <br
             /></router-link>

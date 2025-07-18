@@ -4,10 +4,10 @@ import path from "path";
 
 export default defineConfig({
   plugins: [vue()],
+  base: "/tokosuma/", // ⬅️ letakkan di luar resolve!
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"), // ⬅️ ini penting!
-      base: "/navbar-footer-submenuaccount-vue.jsn/",
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 });

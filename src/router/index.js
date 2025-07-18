@@ -7,7 +7,14 @@ import Akun from "@/views/account/Akun.vue";
 import Alamat from "@/views/account/Alamat.vue";
 import Ulasan from "@/views/account/Ulasan.vue";
 
+import Home from "@/views/Home.vue";
+
 const routes = [
+  {
+    path: "/",
+    name: "home",
+    component: Home,
+  },
   {
     path: "/account",
     component: AccountLayout,
@@ -27,14 +34,10 @@ const routes = [
       template: "<div><h2>Product Detail Page (Placeholder)</h2><p>This page is not implemented yet.</p></div>",
     },
   },
-  {
-    path: "/",
-    redirect: "/account/transaksi",
-  },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory("/tokosuma/"),
   routes,
 });
 
@@ -46,7 +49,7 @@ function isAuthenticated() {
 
 // Global navigation guard
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!isAuthenticated()) {
       // User is not authenticated, redirect to home or login page
       next({ path: "/" });
