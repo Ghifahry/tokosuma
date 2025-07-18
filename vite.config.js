@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"), // ⬅️ ini penting!
+      base: "/navbar-footer-submenuaccount-vue.jsn/",
     },
   },
 });
