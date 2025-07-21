@@ -25,8 +25,9 @@
           <img :src="item.image" alt="Foto Produk" class="card-image" />
         </router-link>
         <div class="card-body">
-          <h3>{{ item.nama }}</h3>
-          <p class="harga">Rp {{ formatRupiah(item.harga) }}</p>
+          <p class="product-official">Toko Suma Official</p>
+          <p class="product-name">{{ item.nama }}</p>
+          <p class="product-price">Rp {{ formatRupiah(item.harga) }}</p>
           <small>Ditambahkan: {{ formatTanggal(item.tanggal) }}</small>
         </div>
       </div>
@@ -171,7 +172,8 @@ function formatTanggal(tanggal) {
 }
 
 .card {
-  width: 160px;
+  width: 130px;
+  height: 250px;
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
@@ -200,15 +202,70 @@ function formatTanggal(tanggal) {
   box-sizing: border-box;
 }
 
-.card-body h3 {
-  font-size: 14px;
-  margin: 0 0 6px;
+.product-official {
+  font-size: 0.75rem;
+  color: #333;
+  opacity: 0.7;
+  margin: 0.3rem 0 0.4rem 0;
+  display: block;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
-.harga {
+.product-name-price {
+  /* Removed flex layout to stack vertically */
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+}
+
+.product-name {
+  font-size: 1rem;
+  color: #222;
+  font-weight: 700;
+  margin: 0.2rem 0 0.4rem 0;
+  display: block;
+  line-height: 1.2;
+}
+
+.product-price {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #e85423;
+  margin: 0 0 0.6rem 0;
+  display: block;
+}
+
+.card-body small {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  color: #666;
+  font-style: italic;
+}
+
+.product-name-price {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.product-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  margin: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.product-price {
   font-weight: bold;
   font-size: 13px;
-  margin: 0 0 4px;
+  color: #e85423;
+  margin: 0;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .hapus-button {

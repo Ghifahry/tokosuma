@@ -11,38 +11,41 @@
   </section>
 
   <section class="special-products">
-    <h2 class="section-title">Special Products</h2>
+    <div class="section-header">
+      <h2 class="section-title">Special Products</h2>
+      <button class="see-more-button top-right" @click="$router.push('/produk')">Lihat Semua Produk <i class="fas fa-chevron-right"></i></button>
+    </div>
 
-    <!-- ✅ Desktop: Grid -->
+    <!-- ✅ Desktop: Swiper -->
     <div v-if="!isMobile">
-      <div class="product-grid">
-        <router-link v-for="product in products" :key="product.id" :to="`/produk/${product.id}`" class="product-card">
-          <img :src="product.image" :alt="product.name" class="product-img" />
-          <p class="product-name">{{ product.name }}</p>
-          <p class="product-price">{{ product.price }}</p>
-        </router-link>
-
-        <!-- Tombol lihat semua -->
-        <router-link to="/produk" class="product-card see-more-card">
-          <div class="see-more-button">Lihat Semua Produk <i class="fas fa-chevron-right"></i></div>
-        </router-link>
-      </div>
+      <swiper :modules="[Pagination]" :slides-per-view="6.2" :space-between="5" class="desktop-product-swiper" :pagination="false">
+        <swiper-slide v-for="product in products" :key="product.id">
+          <router-link :to="`/produk/${product.id}`" class="product-card">
+            <img :src="product.image" :alt="product.name" class="product-img" />
+            <div class="product-info">
+              <p class="product-official">Toko Suma Official</p>
+              <div class="product-name-price">
+                <p class="product-name">{{ product.name }}</p>
+                <p class="product-price">{{ product.price }}</p>
+              </div>
+            </div>
+          </router-link>
+        </swiper-slide>
+      </swiper>
     </div>
 
     <swiper v-else :slides-per-view="2.2" :space-between="12" :modules="[Pagination]" pagination class="mobile-product-swiper">
       <swiper-slide v-for="product in products" :key="product.id">
         <router-link :to="`/produk/${product.id}`" class="product-card">
           <img :src="product.image" :alt="product.name" class="product-img" />
-          <p class="product-name">{{ product.name }}</p>
-          <p class="product-price">{{ product.price }}</p>
+          <div class="product-info">
+            <p class="product-official">Toko Suma Official</p>
+            <div class="product-name-price">
+              <p class="product-name">{{ product.name }}</p>
+              <p class="product-price">{{ product.price }}</p>
+            </div>
+          </div>
         </router-link>
-      </swiper-slide>
-
-      <!-- ✅ Slide terakhir: Tombol -->
-      <swiper-slide>
-        <div class="see-more-slide">
-          <button class="see-more-button" @click="$router.push('/produk')">Lihat Semua Produk <i class="fas fa-chevron-right"></i></button>
-        </div>
       </swiper-slide>
     </swiper>
   </section>
@@ -87,6 +90,9 @@ const products = [
   { id: 3, name: "Gelas Gambar K‑pop Bisa Di Custom", price: "Rp 40.000", image: "https://tokosuma.co.id/../toko-suma/storage/app/public/thumbnail/09092021084017-31752.jpeg" },
   { id: 4, name: "New Normal", price: "Rp 50.000", image: "https://tokosuma.co.id/../toko-suma/storage/app/public/thumbnail/02092021160002-80908.jpeg" },
   { id: 5, name: "Buku Tulis Campus", price: "Rp 15.000", image: "https://tokosuma.co.id/../toko-suma/storage/app/public/thumbnail/29062022094902-28336.jpeg" },
+  { id: 6, name: "Seni Mengolah Emosi", price: "Rp 75.000", image: "https://image.gramedia.net/rs:fit:256:0/plain/https://cdn.gramedia.com/uploads/items/9786230300271_KETIKA_SARAH_MARAH.jpg" },
+  { id: 7, name: "Seprosi Mie Ayam Sebelum Mati", price: "Rp 120.000", image: "https://image.gramedia.net/rs:fit:256:0/plain/https://cdn.gramedia.com/uploads/products/95ob5m98ur.jpg" },
+  { id: 8, name: "Sisi Tergelap Surga", price: "Rp 200.000", image: "https://image.gramedia.net/rs:fit:256:0/plain/https://cdn.gramedia.com/uploads/picture_meta/2023/10/30/debsfyx6tcwnvbwdteeakv.jpg" },
 ];
 
 /* ------ export variabel yang dipakai di template ------ */
@@ -138,6 +144,31 @@ defineExpose({ isMobile, promos, products });
   max-width: 1000px; /* ❗ Sama seperti .promo-slider */
   margin: 0 auto;
   text-align: left;
+  position: relative;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.see-more-button.top-right {
+  margin: 0;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  min-height: auto;
+  border-radius: 4px;
+  border: 1.5px solid #e85423;
+  background-color: transparent;
+  color: #e85423;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.see-more-button.top-right:hover {
+  background-color: #e85423;
+  color: #fff;
 }
 
 .section-title {
@@ -150,9 +181,10 @@ defineExpose({ isMobile, promos, products });
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Increased min width from 160px to 200px */
-  gap: 0.4rem;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Reduced min width from 150px to 130px */
+  gap: 0rem;
   justify-content: center;
+  align-items: center;
 }
 
 .product-card {
@@ -160,7 +192,7 @@ defineExpose({ isMobile, promos, products });
   border-radius: 10px;
   overflow: hidden;
   width: 100%;
-  max-width: 200px; /* Increased max-width from 140px to 200px */
+  max-width: 350px; /* Updated max-width to 350px as requested */
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease;
   cursor: pointer;
@@ -169,7 +201,16 @@ defineExpose({ isMobile, promos, products });
   outline-offset: -2px;
   display: block;
   text-decoration: none;
-  color: inherit;
+}
+.product-card.see-more-card.see-more-card {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  max-width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .product-card router-link {
@@ -184,48 +225,65 @@ defineExpose({ isMobile, promos, products });
 
 .product-img {
   width: 100%;
-  height: 160px; /* ⬆️ Dulu 140px, sekarang sedikit lebih tinggi */
+  max-width: 100%;
+  height: auto;
+  max-height: 160px;
   object-fit: cover;
   display: block;
 }
 
 .product-name {
-  padding: 0.8rem; /* ⬆️ Dulu 0.6rem */
+  padding: 0rem 0.8rem 0.2rem 0.8rem; /* Reduced top padding to bring closer to product-official */
   font-size: 0.85rem;
   color: #333;
   font-weight: 500;
   min-height: 50px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.product-official {
+  font-size: 0.7rem;
+  color: #000;
+  opacity: 0.5;
+  margin: 0.5rem 0 0.2rem 0.8rem;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .product-price {
   font-size: 0.9rem;
   color: #e85423;
   font-weight: 600;
-  margin-top: -0.3rem;
+  margin-top: 0;
   padding-bottom: 0.6rem;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.5rem;
 }
 
 .see-more-button {
-  margin: 0rem auto 0;
+  margin: 1rem auto 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 8rem 2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  background-color: #e85423;
-  border: none;
-  border-radius: 8px;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e85423;
+  background-color: transparent;
+  border: 1.5px solid #e85423;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background 0.3s ease;
-  width: 100%;
-  max-width: 320px; /* Biar tetap proporsional */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  width: auto;
+  max-width: none;
 }
 
 .see-more-button:hover {
-  background-color: #c5481e;
+  background-color: #e85423;
+  color: #fff;
 }
 
 .see-more-button i {
@@ -244,20 +302,27 @@ defineExpose({ isMobile, promos, products });
     justify-content: center;
     align-items: center;
     height: 100%;
-    padding: 5rem 2rem;
+    padding: 2rem 1rem;
   }
 
   .see-more-button {
-    width: 100%;
-    max-width: 140px; /* Match product card max-width */
-    margin: -48px;
-    font-size: 0.85rem; /* optional, to match */
-    padding: 0.8rem 1rem; /* Adjust padding to better match card height */
-    min-height: 220px; /* Match product card min-height */
+    width: auto;
+    max-width: none;
+    margin: 0;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    min-height: auto;
   }
 
   /* Hide swiper pagination dots on mobile */
   :deep(.swiper-pagination) {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  /* Hide swiper pagination dots on desktop */
+  :deep(.desktop-product-swiper) :deep(.swiper-pagination) {
     display: none;
   }
 }

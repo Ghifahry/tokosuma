@@ -13,30 +13,21 @@
       <!-- Ikon -->
       <div class="icons">
         <!-- Cart -->
-        <div class="dropdown" @click="toggleCart">
+        <router-link to="/cart" class="icon-link">
           <i class="fas fa-shopping-cart"></i>
-          <div v-if="showCart" class="dropdown-box">
-            <router-link to="/cart">Lihat Keranjang</router-link>
-          </div>
-        </div>
+        </router-link>
 
         <!-- Wishlist -->
-        <div class="dropdown" @click="toggleWishlist">
+        <router-link to="/account/wishlist" class="icon-link">
           <i class="fas fa-heart"></i>
-          <div v-if="showWishlist" class="dropdown-box">
-            <router-link to="/wishlist">Wishlist Saya</router-link>
-          </div>
-        </div>
+        </router-link>
 
         <!-- Account -->
         <div class="dropdown" @click="toggleAccount">
           <i class="fas fa-user"></i>
           <div v-if="showAccount" class="dropdown-box account-dropdown">
-            <router-link to="/account/akun"
-              >Login <br />
-              <br
-            /></router-link>
-            <router-link to="/register">Register</router-link>
+            <button @click="navigateTo('/account/akun')" class="account-btn">Login</button>
+            <button @click="navigateTo('/register')" class="account-btn">Register</button>
           </div>
         </div>
       </div>
@@ -123,20 +114,12 @@ export default {
         this.showKategori = true;
       }
     },
-    toggleCart() {
-      this.closeAll();
-      this.showCart = !this.showCart;
-    },
     toggleAccount() {
       this.closeAll();
       this.showAccount = !this.showAccount;
     },
     toggleMobileMenu() {
       this.showMobileMenu = !this.showMobileMenu;
-    },
-    toggleWishlist() {
-      this.closeAll();
-      this.showWishlist = !this.showWishlist;
     },
 
     /** Tutup semua dropdown */
@@ -603,5 +586,22 @@ export default {
     width: 100%;
     font-size: 0.85rem;
   }
+}
+.account-btn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0.4rem 0;
+  text-align: left;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: inherit;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.account-btn:hover {
+  background-color: #fff1ec;
+  color: #e85423;
 }
 </style>

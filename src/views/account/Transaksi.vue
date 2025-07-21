@@ -51,6 +51,7 @@ const menus = [
   { label: "Di Proses", value: "diproses" },
   { label: "Di Antar", value: "dikirim" },
   { label: "Sudah Tiba", value: "sudahtiba" },
+  { label: "Cancel", value: "cancel" },
 ];
 
 const daftarTransaksi = ref([
@@ -104,6 +105,7 @@ const filteredTransaksi = computed(() => {
     if (status === "diproses") return s.includes("kemas") || s.includes("proses");
     if (status === "dikirim") return s.includes("kirim");
     if (status === "sudahtiba") return s.includes("sampai") || s.includes("tiba");
+    if (status === "cancel") return s.includes("cancel");
     return true;
   });
 });

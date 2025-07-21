@@ -135,6 +135,22 @@ function simpanPerubahan() {
     padding: 8px;
     overflow-y: auto;
   }
+
+  input,
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .akun-form {
+    width: 95%;
+    padding: 0 8px;
+  }
+
+  .form-group {
+    width: 95%;
+  }
 }
 
 .row {
@@ -239,23 +255,22 @@ select:focus {
   cursor: pointer;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-  margin-top: 30px;
-}
-
 .title-info {
   display: flex;
   flex-direction: column;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+
 .title-info h2 {
   font-size: 20px;
-  margin: 0;
+  margin: 10px 10px 10px 30px;
   color: #333;
 }
 
