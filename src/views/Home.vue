@@ -18,8 +18,8 @@
 
     <!-- ✅ Desktop: Swiper -->
     <div v-if="!isMobile">
-      <swiper :modules="[Pagination]" :slides-per-view="6.2" :space-between="5" class="desktop-product-swiper" :pagination="false">
-        <swiper-slide v-for="product in products" :key="product.id">
+      <swiper :modules="[Pagination]" :slides-per-view="6.2" :space-between="5" class="desktop-product-swiper" :pagination="false" @slideChange="handleSlideChange">
+        <swiper-slide v-for="(product, index) in products" :key="product.id" class="product-slide">
           <router-link :to="`/produk/${product.id}`" class="product-card">
             <img :src="product.image" :alt="product.name" class="product-img" />
             <div class="product-info">
@@ -32,9 +32,27 @@
           </router-link>
         </swiper-slide>
       </swiper>
+      <div
+        class="suma-background"
+        :class="{ 'slide-out': activeIndex > 0, 'slide-in': activeIndex === 0 }"
+        :style="{
+          position: 'absolute',
+          left: '0',
+          top: '40px' /* moved down further */,
+          width: '240px',
+          height: '100%',
+          backgroundImage: `url(${bgSuma})`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          transition: 'transform 0.5s ease, opacity 0.5s ease',
+          transform: activeIndex > 0 ? 'translateX(-220px)' : 'translateX(0)',
+          opacity: activeIndex > 0 ? 0 : 1,
+        }"
+      ></div>
     </div>
 
-    <swiper v-else :slides-per-view="2.2" :space-between="12" :modules="[Pagination]" pagination class="mobile-product-swiper">
+    <swiper v-else :slides-per-view="2.2" :space-between="12" :modules="[Pagination]" pagination class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
       <swiper-slide v-for="product in products" :key="product.id">
         <router-link :to="`/produk/${product.id}`" class="product-card">
           <img :src="product.image" :alt="product.name" class="product-img" />
@@ -49,6 +67,38 @@
       </swiper-slide>
     </swiper>
   </section>
+
+  <section class="blog-section">
+    <div class="section-header">
+      <h2 class="section-title">Blogs</h2>
+    </div>
+
+    <!-- ⬅️ Tanda panah di luar swiper -->
+    <div class="blog-button-prev"><i class="fas fa-chevron-left"></i></div>
+    <div class="blog-button-next"><i class="fas fa-chevron-right"></i></div>
+
+    <swiper
+      ref="blogSwiper"
+      :modules="[Navigation]"
+      :slides-per-view="isMobile ? 1.2 : 3"
+      :space-between="16"
+      :navigation="{
+        nextEl: '.blog-button-next',
+        prevEl: '.blog-button-prev',
+      }"
+      class="blog-swiper"
+    >
+      <swiper-slide v-for="blog in blogs" :key="blog.id" class="blog-slide">
+        <router-link :to="`/blog/${blog.id}`" class="blog-card">
+          <img :src="blog.image" :alt="blog.title" class="blog-img" />
+          <div class="blog-content">
+            <h3 class="blog-title">{{ blog.title }}</h3>
+            <p class="blog-snippet">{{ blog.snippet }}</p>
+          </div>
+        </router-link>
+      </swiper-slide>
+    </swiper>
+  </section>
 </template>
 
 <script setup>
@@ -57,9 +107,32 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import bgSuma from "@/assets/suma.png";
+
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const swiperInstance = ref(null);
+const activeIndex = ref(0);
+
+function handleSwiper(swiper) {
+  swiperInstance.value = swiper;
+  activeIndex.value = swiper.activeIndex;
+}
+
+function handleSlideChange(swiper) {
+  activeIndex.value = swiper.activeIndex;
+}
+
+const activeIndexMobile = ref(0);
+
+function handleSlideChangeMobile(swiper) {
+  activeIndexMobile.value = swiper.activeIndex;
+}
 
 /* ----------------- reaktif: deteksi layar mobile ----------------- */
-import { ref, onMounted, onUnmounted } from "vue";
 
 const isMobile = ref(false);
 
@@ -96,13 +169,49 @@ const products = [
 ];
 
 /* ------ export variabel yang dipakai di template ------ */
-defineExpose({ isMobile, promos, products });
+defineExpose({ isMobile, promos, products, router });
+
+import { Navigation } from "swiper/modules";
+import "swiper/css/navigation";
+
+const blogs = [
+  {
+    id: 1,
+    title: "Cara Membuat Kerajinan Dari Kertas",
+    snippet: "Pelajari teknik dasar membuat kerajinan tangan dari bahan sederhana.",
+    image: "https://i.pinimg.com/736x/b6/03/f4/b603f46c6ac1fef4302e1c845980250a.jpg",
+  },
+  {
+    id: 2,
+    title: "5 Tips Menulis Buku Pertama",
+    snippet: "Langkah-langkah mudah untuk mulai menulis buku pertamamu.",
+    image: "https://i.pinimg.com/736x/90/03/56/900356e7d4b2e96f22eb94afcd014e76.jpg",
+  },
+  {
+    id: 3,
+    title: "Inspirasi Desain Kalender Dinding",
+    snippet: "Tren desain kalender yang bisa kamu buat sendiri di rumah.",
+    image: "https://i.pinimg.com/736x/cf/8e/0e/cf8e0eee48b8279dc940c211b70239ed.jpg",
+  },
+  {
+    id: 4,
+    title: "Film Sore Istri Dari Masa Depan Meluap?",
+    snippet: "Tren desain kalender yang bisa kamu buat sendiri di rumah.",
+    image: "https://i.pinimg.com/736x/4b/8b/98/4b8b9824d8d28cf0b35775a7e27ac202.jpg",
+  },
+  {
+    id: 5,
+    title: "Codingan Emang Seribet Itu?",
+    snippet: "Tren desain kalender yang bisa kamu buat sendiri di rumah.",
+    image: "https://i.pinimg.com/736x/56/67/93/5667936906181a6fbe0501b471e2b5bd.jpg",
+  },
+];
 </script>
 
 <style scoped>
 .promo-slider {
   width: 100%;
-  max-width: 1000px; /* tetap besar di desktop */
+  max-width: 1150px; /* tetap besar di desktop */
   margin: 2rem auto;
   padding: 6rem 1rem 0 1rem; /* added top padding to avoid navbar overlap */
   box-sizing: border-box;
@@ -140,11 +249,12 @@ defineExpose({ isMobile, promos, products });
 }
 
 .special-products {
-  padding: 2rem 1rem 4rem;
-  max-width: 1000px; /* ❗ Sama seperti .promo-slider */
+  padding: 4rem 0.5rem 4rem; /* increased top padding to shift product cards down */
+  max-width: 1110px; /* ❗ Sama seperti .promo-slider */
   margin: 0 auto;
   text-align: left;
   position: relative;
+  z-index: 1;
 }
 
 .section-header {
@@ -177,6 +287,7 @@ defineExpose({ isMobile, promos, products });
   font-weight: 600;
   color: #000000;
   margin-bottom: 2rem;
+  margin-left: -0.2rem;
 }
 
 .product-grid {
@@ -196,7 +307,7 @@ defineExpose({ isMobile, promos, products });
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease;
   cursor: pointer;
-  min-height: 220px;
+  height: 300px; /* fixed height for all cards */
   outline: 2px solid transparent;
   outline-offset: -2px;
   display: block;
@@ -221,6 +332,35 @@ defineExpose({ isMobile, promos, products });
 
 .product-card:hover {
   transform: translateY(-5px);
+}
+
+.product-slide {
+  position: relative;
+}
+
+.product-slide-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  border-radius: 12px;
+  opacity: 1;
+  pointer-events: none;
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+.slide-out {
+  transform: translateX(-220px); /* hilang ke kiri */
+  opacity: 0;
+}
+
+.slide-in {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .product-img {
@@ -325,6 +465,10 @@ defineExpose({ isMobile, promos, products });
   :deep(.desktop-product-swiper) :deep(.swiper-pagination) {
     display: none;
   }
+
+  :deep(.desktop-product-swiper) {
+    padding-left: 180px; /* shift all product cards to the right */
+  }
 }
 
 @media (min-width: 769px) {
@@ -332,6 +476,118 @@ defineExpose({ isMobile, promos, products });
     display: flex;
     justify-content: center;
     margin-top: 2rem;
+  }
+}
+
+.mobile-product-swiper {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (max-width: 768px) {
+  .suma-background.mobile {
+    position: absolute;
+    left: 0;
+    top: 60px;
+    width: 120px;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .special-products {
+    padding: 0 1rem 4rem; /* kasih kiri kanan padding biar sejajar dengan promo-slider */
+  }
+
+  .section-header {
+    padding: 0 0.5rem; /* opsional, buat tombol dan judul tidak terlalu nempel di pinggir */
+  }
+}
+
+.blog-section {
+  max-width: 1110px;
+  margin: 1rem auto 0;
+  padding: 0 1rem;
+  position: relative;
+  overflow: visible;
+}
+
+.blog-swiper {
+  position: relative;
+}
+
+.blog-slide {
+  display: flex;
+}
+
+.blog-card {
+  display: block;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+}
+
+.blog-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.blog-content {
+  padding: 1rem;
+}
+
+.blog-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: #333;
+}
+
+.blog-snippet {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.blog-button-prev,
+.blog-button-next {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #e85423;
+}
+
+.blog-button-prev {
+  left: -30px;
+  top: 50%;
+}
+.blog-button-next {
+  right: -30px;
+  top: 50%;
+}
+
+@media (max-width: 768px) {
+  .blog-button-prev,
+  .blog-button-next {
+    display: none;
   }
 }
 </style>
