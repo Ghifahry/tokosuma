@@ -8,7 +8,6 @@ import Alamat from "@/views/account/Alamat.vue";
 import Ulasan from "@/views/account/Ulasan.vue";
 
 import Home from "@/views/Home.vue";
-
 const routes = [
   {
     path: "/",

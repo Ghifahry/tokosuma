@@ -32,13 +32,14 @@
         </div>
       </div>
       <!-- Tambahkan setelah div.icons -->
-      <div class="hamburger" @click="toggleMobileMenu">
+      <!-- Hamburger menu removed as per user request -->
+      <!-- <div class="hamburger" @click="toggleMobileMenu">
         <i class="fas fa-bars"></i>
-      </div>
+      </div> -->
     </div>
 
     <!-- Baris Bawah: Menu Navigasi -->
-    <nav class="menu" :class="{ open: showMobileMenu }">
+    <nav class="menu" :class="{ open: showMobileMenu }" v-show="!isMobile">
       <div class="dropdown" @click="toggleKategori">
         <router-link to="" class="dropdown-toggle"> Kategori <i class="fas fa-chevron-down"></i> </router-link>
 
@@ -99,6 +100,7 @@ export default {
       sortBy: "termurah",
       showMobileMenu: false,
       showWishlist: false,
+      isMobile: window.innerWidth <= 768,
     };
   },
   methods: {
@@ -140,16 +142,22 @@ export default {
   },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
+    window.addEventListener("resize", () => {
+      this.isMobile = window.innerWidth <= 768;
+    });
   },
   beforeUnmount() {
     document.removeEventListener("click", this.handleClickOutside);
+    window.removeEventListener("resize", () => {
+      this.isMobile = window.innerWidth <= 768;
+    });
   },
 };
 </script>
 
 <style scoped>
 .navbar {
-  font-family: "Inter", sans-serif;
+  font-family: "Roboto", sans-serif;
   position: fixed;
   top: 0;
   left: 0;
@@ -460,6 +468,31 @@ export default {
   display: none;
 }
 
+/* 📱 Ukuran layar sangat kecil (e.g. Fold) */
+@media (max-width: 480px) {
+  .top-bar {
+    padding: 0rem 0.75rem;
+  }
+
+  .search input {
+    font-size: 0.75rem;
+    padding-left: 1.8rem;
+  }
+
+  .search-icon {
+    font-size: 0.75rem;
+  }
+
+  .icons {
+    gap: 0.8rem;
+    padding-right: 0.5rem;
+  }
+
+  .hamburger {
+    margin-left: 0.5rem;
+  }
+}
+
 /* 🌐 Ukuran layar kecil (HP) */
 @media (max-width: 768px) {
   .top-bar {
@@ -529,6 +562,9 @@ export default {
   }
 }
 @media (max-width: 768px) {
+  .logo {
+    display: none;
+  }
   .logo img {
     width: 90px;
     padding: 0.5rem 1rem; /* Lebih kecil di HP */
@@ -603,5 +639,11 @@ export default {
 .account-btn:hover {
   background-color: #fff1ec;
   color: #e85423;
+}
+
+@media (max-width: 768px) {
+  .icons {
+    padding-left: 0 !important;
+  }
 }
 </style>

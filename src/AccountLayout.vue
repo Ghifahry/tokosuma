@@ -13,7 +13,7 @@
 
 <script setup>
 import Sidebar from "@/components/Sidebar.vue";
-import BottomBar from "@/components/BottomBar.vue";
+import BottomBar from "@/components/BottomBarAccount.vue";
 import Footer from "@/components/Footer.vue";
 </script>
 
@@ -22,13 +22,20 @@ import Footer from "@/components/Footer.vue";
   display: grid;
   grid-template-rows: 1fr auto;
   min-height: 100vh;
-  padding-top: 100px; /* offset for fixed navbar height */
+  padding-top: 90px; /* adjusted offset for fixed navbar height */
+}
+
+@media (max-width: 768px) {
+  .account-layout {
+    padding-top: 60px; /* adjusted offset for fixed navbar height on mobile */
+  }
 }
 
 .main-content {
   display: flex;
   height: 100%;
-  min-height: 0; /* allow flex children to shrink */
+  flex-grow: 1;
+  /* allow flex children to shrink */
 }
 
 .account-content {
@@ -37,6 +44,7 @@ import Footer from "@/components/Footer.vue";
   background-color: #fff;
   overflow-x: hidden;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .Sidebar {
