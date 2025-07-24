@@ -8,6 +8,8 @@ import Alamat from "@/views/account/Alamat.vue";
 import Ulasan from "@/views/account/Ulasan.vue";
 
 import Home from "@/views/Home.vue";
+import ProductDetail from "@/views/ProductDetail.vue";
+
 const routes = [
   {
     path: "/",
@@ -29,9 +31,7 @@ const routes = [
   {
     path: "/product/:id",
     name: "product-detail",
-    component: {
-      template: "<div><h2>Product Detail Page (Placeholder)</h2><p>This page is not implemented yet.</p></div>",
-    },
+    component: ProductDetail,
   },
 ];
 

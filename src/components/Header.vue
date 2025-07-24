@@ -1,92 +1,88 @@
 <template>
   <header class="navbar">
-    <!-- Baris Atas: Logo, Search, Ikon -->
-    <div class="top-bar">
-      <!-- Logo -->
-      <router-link :to="{ name: 'home' }" class="logo">
-        <img src="https://tokosuma.co.id/assets/images/layout-5/logo/logo_tokosuma_coid.png" alt="Logo Toko Suma" />
-      </router-link>
-      <div class="search">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" placeholder="Cari Produk atau Judul Buku...." />
-      </div>
-      <!-- Ikon -->
-      <div class="icons">
-        <!-- Cart -->
-        <router-link to="/cart" class="icon-link">
-          <i class="fas fa-shopping-cart"></i>
+    <div class="navbar-content-wrapper">
+      <!-- Baris Atas: Logo, Search, Ikon -->
+      <div class="top-bar">
+        <!-- Logo -->
+        <router-link :to="{ name: 'home' }" class="logo">
+          <img src="https://tokosuma.co.id/assets/images/layout-5/logo/logo_tokosuma_coid.png" alt="Logo Toko Suma" />
         </router-link>
+        <div class="search">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" placeholder="Cari Produk atau Judul Buku...." />
+        </div>
+        <!-- Ikon -->
+        <div class="icons">
+          <!-- Cart -->
+          <router-link to="/cart" class="icon-link">
+            <i class="fas fa-shopping-cart"></i>
+          </router-link>
 
-        <!-- Wishlist -->
-        <router-link to="/account/wishlist" class="icon-link">
-          <i class="fas fa-heart"></i>
-        </router-link>
+          <!-- Wishlist -->
+          <router-link to="/account/wishlist" class="icon-link">
+            <i class="fas fa-heart"></i>
+          </router-link>
 
-        <!-- Account -->
-        <div class="dropdown" @click="toggleAccount">
-          <i class="fas fa-user"></i>
-          <div v-if="showAccount" class="dropdown-box account-dropdown">
-            <button @click="navigateTo('/account/akun')" class="account-btn">Login</button>
-            <button @click="navigateTo('/register')" class="account-btn">Register</button>
+          <!-- Account -->
+          <div class="dropdown" @click="toggleAccount">
+            <i class="fas fa-user"></i>
+            <div v-if="showAccount" class="dropdown-box account-dropdown">
+              <button @click="navigateTo('/account/akun')" class="account-btn">Login</button>
+              <button @click="navigateTo('/register')" class="account-btn">Register</button>
+            </div>
           </div>
         </div>
+        <!-- Tambahkan setelah div.icons -->
       </div>
-      <!-- Tambahkan setelah div.icons -->
-      <!-- Hamburger menu removed as per user request -->
-      <!-- <div class="hamburger" @click="toggleMobileMenu">
-        <i class="fas fa-bars"></i>
-      </div> -->
+
+      <!-- Baris Bawah: Menu Navigasi -->
+      <nav class="menu" :class="{ open: showMobileMenu }">
+        <div class="dropdown" @click="toggleKategori">
+          <router-link to="" class="dropdown-toggle"> Kategori <i class="fas fa-chevron-down"></i> </router-link>
+
+          <!-- ⬇️ animasi scale/fade -->
+          <transition name="zoom-fade">
+            <div v-if="showKategori" class="dropdown-content kategori-dropdown" @click.stop>
+              <!-- ==== KIRI: Filter & Sort ==== -->
+              <aside class="filter-sort">
+                <h4>Filter</h4>
+                <label><input type="checkbox" v-model="filter.terbaru" /> Terbaru</label>
+                <label><input type="checkbox" v-model="filter.diskon" /> Diskon</label>
+
+                <h4 class="mt-3">Sort</h4>
+                <select v-model="sortBy">
+                  <option value="termurah">Termurah</option>
+                  <option value="termahal">Termahal</option>
+                  <option value="terlaris">Terlaris</option>
+                </select>
+              </aside>
+
+              <!-- ==== KANAN: Daftar Kategori ==== -->
+              <ul class="kategori-list">
+                <!-- Contoh kategori utama -->
+                <li><button @click="navigateTo('/kategori/kaos')">Kaos Custom</button></li>
+                <li><button @click="navigateTo('/kategori/hoodie')">Hoodie & Sweater</button></li>
+                <li><button @click="navigateTo('/kategori/totebag')">Tote Bag</button></li>
+                <li><button @click="navigateTo('/kategori/mug')">Mug & Tumbler</button></li>
+                <li><button @click="navigateTo('/kategori/sticker')">Sticker</button></li>
+                <li><button @click="navigateTo('/kategori/phonecase')">Phone Case</button></li>
+                <li><button @click="navigateTo('/kategori/notebook')">Notebook</button></li>
+                <li><button @click="navigateTo('/kategori/plakat')">Plakat & Award</button></li>
+                <li><button @click="navigateTo('/kategori/merch')">Merch Corporate</button></li>
+                <li><button @click="navigateTo('/kategori/others')">Lain‑lain…</button></li>
+              </ul>
+
+              <button class="btn-continue" :disabled="!hasSelection" @click="applyKategori">Continue</button>
+            </div>
+          </transition>
+        </div>
+
+        <!-- link lain -->
+        <router-link to="/design-online">Design Online</router-link>
+        <router-link to="/pricelist">Pricelist Digital</router-link>
+        <router-link to="/blog">Blog</router-link>
+      </nav>
     </div>
-
-    <!-- Baris Bawah: Menu Navigasi -->
-    <nav class="menu" :class="{ open: showMobileMenu }" v-show="!isMobile">
-      <div class="dropdown" @click="toggleKategori">
-        <router-link to="" class="dropdown-toggle"> Kategori <i class="fas fa-chevron-down"></i> </router-link>
-
-        <!-- ⬇️ animasi scale/fade -->
-        <transition name="zoom-fade">
-          <div v-if="showKategori" class="dropdown-content kategori-dropdown" @click.stop>
-            <!-- ==== KIRI: Filter & Sort ==== -->
-            <aside class="filter-sort">
-              <h4>Filter</h4>
-              <label><input type="checkbox" v-model="filter.terbaru" /> Terbaru</label>
-              <label><input type="checkbox" v-model="filter.diskon" /> Diskon</label>
-
-              <h4 class="mt-3">Sort</h4>
-              <select v-model="sortBy">
-                <option value="termurah">Termurah</option>
-                <option value="termahal">Termahal</option>
-                <option value="terlaris">Terlaris</option>
-              </select>
-            </aside>
-
-            <!-- ==== KANAN: Daftar Kategori ==== -->
-            <ul class="kategori-list">
-              <!-- Contoh kategori utama -->
-              <li><button @click="navigateTo('/kategori/kaos')">Kaos Custom</button></li>
-              <li><button @click="navigateTo('/kategori/hoodie')">Hoodie & Sweater</button></li>
-              <li><button @click="navigateTo('/kategori/totebag')">Tote Bag</button></li>
-              <li><button @click="navigateTo('/kategori/mug')">Mug & Tumbler</button></li>
-              <li><button @click="navigateTo('/kategori/sticker')">Sticker</button></li>
-              <li><button @click="navigateTo('/kategori/phonecase')">Phone Case</button></li>
-              <li><button @click="navigateTo('/kategori/notebook')">Notebook</button></li>
-              <li><button @click="navigateTo('/kategori/plakat')">Plakat & Award</button></li>
-              <li><button @click="navigateTo('/kategori/merch')">Merch Corporate</button></li>
-              <li><button @click="navigateTo('/kategori/others')">Lain‑lain…</button></li>
-            </ul>
-
-            <button class="btn-continue" :disabled="!hasSelection" @click="applyKategori">Continue</button>
-          </div>
-        </transition>
-      </div>
-
-      <!-- link lain -->
-      <router-link to="/design-online">Design Online</router-link>
-      <router-link to="/pricelist">Pricelist Digital</router-link>
-      <router-link to="/blog">Blog</router-link>
-    </nav>
-
-    <!-- Search -->
   </header>
 </template>
 <script>
@@ -171,19 +167,25 @@ export default {
   align-items: center; /* ini penting untuk center isi anak (menu) */
 }
 
+.navbar-content-wrapper {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 /* Baris atas */
 .top-bar {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 1rem;
 }
 
 .logo img {
-  width: 110px;
+  width: 150px;
   justify-self: start;
-  padding: 0.5rem 5rem;
+  padding: 0.5rem 1rem;
 }
 
 .search {
@@ -484,8 +486,8 @@ export default {
   }
 
   .icons {
-    gap: 0.8rem;
-    padding-right: 0.5rem;
+    gap: 2rem;
+    padding-right: 3.5rem;
   }
 
   .hamburger {
@@ -500,127 +502,52 @@ export default {
     padding: 0.5rem 1rem;
   }
 
-  .search input {
-    width: 100%;
-    max-width: 200px;
-  }
-
-  .icons {
-    gap: 1rem;
-  }
-
-  /* Hamburger menu muncul */
-  .hamburger {
-    display: block;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0.5rem;
-    color: #e85423;
-    margin-left: 0.72rem;
-  }
-
-  /* Default: menu disembunyikan */
-  .menu {
-    display: none;
-    flex-direction: column;
-    align-items: flex-start;
-    background: white;
-    width: 100%;
-    padding: 1rem;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
-
-  /* Saat dibuka */
-  .menu.open {
-    display: flex;
-  }
-
-  .menu .dropdown,
-  .menu router-link {
-    margin: 0.5rem 0;
-  }
-
-  /* Dropdown kategori di HP full width */
-  .kategori-dropdown {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 768px) {
-  .kategori-dropdown {
-    position: static;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1rem;
-  }
-}
-@media (max-width: 768px) {
   .logo {
-    display: none;
+    display: none !important;
   }
   .logo img {
     width: 90px;
-    padding: 0.5rem 1rem; /* Lebih kecil di HP */
-  }
-
-  .search {
-    width: 100%;
-    margin: 0 0.5rem;
+    padding: 0.5rem 1rem;
   }
 
   .search input {
     width: 100%;
-    max-width: 100%;
+    max-width: 100%; /* Remove max-width constraint */
     padding: 0.4rem 2rem 0.4rem 2rem;
     font-size: 0.8rem;
   }
 
-  .search-icon {
-    font-size: 0.8rem;
-    left: 10px;
-  }
-
   .icons {
-    padding: 0.5rem 1rem;
     gap: 1rem;
   }
 
-  .icons i {
-    font-size: 1rem;
+  .hamburger {
+    display: none; /* Hide hamburger menu */
   }
 
-  .dropdown-box,
-  .account-dropdown {
-    right: 0;
-    left: auto;
-    min-width: 140px;
-    font-size: 0.8rem;
-    padding: 0.6rem;
+  .menu {
+    display: none; /* Hide menu on mobile */
   }
 
-  .kategori-list {
-    columns: 1; /* Jadikan 1 kolom agar mudah di-scroll */
+  .menu .dropdown,
+  .menu router-link {
+    margin: 0.2rem 0.5rem; /* Adjust margins for horizontal layout */
   }
 
   .kategori-dropdown {
+    position: absolute;
+    width: auto;
+    max-width: none;
+    left: 0;
+    right: auto;
+    display: grid;
+    grid-template-columns: 1fr;
     padding: 1rem;
     gap: 1rem;
   }
 
-  .filter-sort {
-    margin-bottom: 1rem;
-  }
-
-  .btn-continue {
-    width: 100%;
-    font-size: 0.85rem;
+  .kategori-list {
+    columns: 1;
   }
 }
 .account-btn {
@@ -639,11 +566,5 @@ export default {
 .account-btn:hover {
   background-color: #fff1ec;
   color: #e85423;
-}
-
-@media (max-width: 768px) {
-  .icons {
-    padding-left: 0 !important;
-  }
 }
 </style>

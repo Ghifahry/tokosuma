@@ -1,13 +1,12 @@
 <template>
   <section class="special-products">
     <div class="section-header">
-      <h2 class="section-title">Special Products</h2>
+      <h2 class="section-title">Back To School</h2>
       <button class="see-more-button top-right" @click="$router.push('/produk')">Lihat Semua Produk <i class="fas fa-chevron-right"></i></button>
     </div>
 
     <!-- suma.png is now outside the swiper-container -->
     <div v-if="!isMobile" class="suma-background" :class="{ 'slide-out': activeIndex > 0, 'slide-in': activeIndex === 0 }"></div>
-
     <div v-if="!isMobile" class="swiper-container">
       <swiper
         :modules="[Pagination, Navigation]"
@@ -66,7 +65,7 @@ import { Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import bgSuma from "@/assets/suma.png";
+import backtoschool from "@/assets/backtoschool.png";
 import { ref } from "vue";
 
 const products = [
@@ -228,7 +227,7 @@ function handleSlideChangeMobile(swiper) {
   top: 150px;
   width: 230px;
   height: 350px;
-  background-image: url("@/assets/suma.png");
+  background-image: url("@/assets/backtoschool.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top;

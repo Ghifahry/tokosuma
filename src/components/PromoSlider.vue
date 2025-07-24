@@ -1,7 +1,7 @@
 <template>
   <section class="promo-container">
     <section class="promo-slider">
-      <swiper :modules="[Pagination, Autoplay]" :slides-per-view="1" :loop="true" :autoplay="{ delay: 3000 }" pagination class="promo-swiper">
+      <swiper :modules="[Pagination, Autoplay]" :slides-per-view="1" :loop="true" :autoplay="{ delay: 3000 }" :pagination="!isMobile" class="promo-swiper">
         <swiper-slide v-for="promo in promos" :key="promo.id">
           <a :href="promo.link">
             <img :src="promo.image" :alt="'Promo ' + promo.id" class="promo-img" />
@@ -30,7 +30,7 @@ import "swiper/css/pagination";
 const promos = [
   { id: 1, image: "https://tokosuma.co.id/../toko-suma/storage/app/public/banner/24042025085051-70568.jpg", link: "/promo/diskon-50" },
   { id: 2, image: "https://tokosuma.co.id/../toko-suma/storage/app/public/banner/03082023193040-29660.webp", link: "/promo/beli-2-gratis-1" },
-  { id: 3, image: "https://tokosuma.co.id/assets/images/layout-5/logo/logo_tokosuma_coid.png", link: "/promo/free-ongkir" },
+  { id: 3, image: "https://tokosuma.co.id/../toko-suma/storage/app/public/banner/01092021110229-94965.png", link: "/promo/free-ongkir" },
 ];
 
 const isMobile = ref(false);
@@ -54,7 +54,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  max-width: 1100px;
+  max-width: 1220px;
   margin: 5rem auto 2rem;
 }
 .promo-slider {
@@ -73,7 +73,7 @@ onUnmounted(() => {
 .promo-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
   border-radius: 12px;
 }
@@ -96,7 +96,7 @@ onUnmounted(() => {
 .promo-board-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
   border-radius: 12px;
   background-color: #fff;
@@ -106,7 +106,7 @@ onUnmounted(() => {
   .promo-container {
     /* Go full-width, remove padding and horizontal margin */
     padding: 0;
-    margin: 5rem 0 2rem 0;
+    margin: 0rem 0 2rem 0;
     width: 100%;
   }
   .promo-slider {
@@ -122,6 +122,10 @@ onUnmounted(() => {
   }
   .promo-boards {
     display: none;
+  }
+  /* Hide pagination dots on mobile */
+  .swiper-pagination {
+    display: none !important;
   }
 }
 </style>

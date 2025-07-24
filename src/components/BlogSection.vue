@@ -10,7 +10,7 @@
     <swiper
       ref="blogSwiper"
       :modules="[Navigation]"
-      :slides-per-view="isMobile ? 1.2 : 3"
+      :slides-per-view="isMobile ? 1.2 : 3.1"
       :space-between="16"
       :navigation="{
         nextEl: '.blog-button-next',
@@ -38,24 +38,54 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 const props = defineProps({
-  blogs: {
-    type: Array,
-    required: true,
-  },
   isMobile: {
     type: Boolean,
     required: true,
   },
 });
+
+const blogs = [
+  {
+    id: 1,
+    title: "Cara Membuat Kerajinan Dari Kertas",
+    snippet: "Pelajari teknik dasar membuat kerajinan tangan dari bahan sederhana.",
+    image: "https://i.pinimg.com/736x/b6/03/f4/b603f46c6ac1fef4302e1c845980250a.jpg",
+  },
+  {
+    id: 2,
+    title: "5 Tips Menulis Buku Pertama",
+    snippet: "Langkah-langkah mudah untuk mulai menulis buku pertamamu.",
+    image: "https://i.pinimg.com/736x/90/03/56/900356e7d4b2e96f22eb94afcd014e76.jpg",
+  },
+  {
+    id: 3,
+    title: "Inspirasi Desain Kalender Dinding",
+    snippet: "Tren desain kalender yang bisa kamu buat sendiri di rumah.",
+    image: "https://i.pinimg.com/736x/cf/8e/0e/cf8e0eee48b8279dc940c211b70239ed.jpg",
+  },
+  {
+    id: 4,
+    title: "Film Sore Istri Dari Masa Depan Meluap?",
+    snippet: "Tren desain kalender yang bisa kamu buat sendiri di rumah.",
+    image: "https://i.pinimg.com/736x/4b/8b/98/4b8b9824d8d28cf0b35775a7e27ac202.jpg",
+  },
+  {
+    id: 5,
+    title: "Codingan Emang Seribet Itu?",
+    snippet: "Tren desain kalender yang bisa kamu buat sendiri di rumah.",
+    image: "https://i.pinimg.com/736x/56/67/93/5667936906181a6fbe0501b471e2b5bd.jpg",
+  },
+];
 </script>
 
 <style scoped>
 .blog-section {
-  max-width: 1110px;
-  margin: 1rem auto 0;
-  padding: 0 1rem;
+  padding: 4rem 0.5rem 4rem;
+  max-width: 1220px;
+  margin: 0 auto;
+  text-align: left;
   position: relative;
-  overflow: visible;
+  z-index: 1;
 }
 
 .blog-swiper {
@@ -64,10 +94,13 @@ const props = defineProps({
 
 .blog-slide {
   display: flex;
+  height: 100%;
 }
 
 .blog-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
@@ -90,16 +123,29 @@ const props = defineProps({
 
 .blog-content {
   padding: 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.blog-title {
-  font-size: 1rem;
+.section-title {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.2rem;
   font-weight: 600;
   margin: 0 0 0.5rem;
   color: #333;
 }
 
+.section-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
 .blog-snippet {
+  font-family: "Roboto", sans-serif;
   font-size: 0.85rem;
   color: #555;
 }
@@ -123,11 +169,11 @@ const props = defineProps({
 }
 
 .blog-button-prev {
-  left: -30px;
+  left: 1px;
   top: 50%;
 }
 .blog-button-next {
-  right: -30px;
+  right: 1px;
   top: 50%;
 }
 
@@ -148,7 +194,8 @@ const props = defineProps({
 
 @media (max-width: 768px) {
   .section-title {
-    font-size: 1.3rem;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.2rem;
   }
 }
 </style>
