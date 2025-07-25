@@ -8,7 +8,6 @@
     <OfficialStore :stores="stores" :isMobile="isMobile" />
     <Banner :imageSrc="bannerImage" link="https://example.com" />
     <SpecialProducts :isMobile="isMobile" />
-    <ProductsTambahan :isMobile="isMobile" />
     <Banner :imageSrc="bannerImage" link="https://example.com" />
     <BlogSection :isMobile="isMobile" />
     <BottomBarHome v-if="isMobile" />
@@ -17,16 +16,15 @@
 </template>
 
 <script setup>
-import PromoSlider from "@/components/PromoSlider.vue";
-import SpecialProducts from "@/components/SpecialProducts.vue";
-import BlogSection from "@/components/BlogSection.vue";
-import BottomBarHome from "@/components/BottomBarHome.vue";
-import OfficialStore from "@/components/OfficialStore.vue";
-import Banner from "@/components/Banner.vue";
+import PromoSlider from "@/components/home/PromoSlider.vue";
+import SpecialProducts from "@/components/home/SpecialProducts.vue";
+import BlogSection from "@/components/home/BlogSection.vue";
+import BottomBarHome from "@/components/home/BottomBarHome.vue";
+import OfficialStore from "@/components/home/OfficialStore.vue";
+import Banner from "@/components/home/Banner.vue";
 import Footer from "@/components/Footer.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 import bannerImage from "@/assets/banner.png";
-import ProductsTambahan from "@/components/ProductsTambahan.vue";
 
 const stores = [
   { id: 1, name: "Toko Suma", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_aLKez05Nt-EtV13BqEfvNDQ0BSnJA7pNZQ&s" },

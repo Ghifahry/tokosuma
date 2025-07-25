@@ -186,6 +186,7 @@ export default {
   width: 150px;
   justify-self: start;
   padding: 0.5rem 1rem;
+  margin-top: 10px;
 }
 
 .search {
@@ -204,9 +205,9 @@ export default {
 .search input {
   padding: 0.25rem 1rem 0.25rem 2rem; /* padding kiri lebih besar */
   border: 1px solid #ccc;
-  border-radius: 20px;
+  border-radius: 30px;
   width: 400px;
-  height: 30px;
+  height: 40px;
   font-size: 0.85rem;
 }
 
@@ -215,6 +216,7 @@ export default {
   display: flex;
   gap: 2rem;
   padding: 1rem 5rem;
+  margin-top: 15px;
 }
 
 .icons i {
@@ -511,18 +513,15 @@ export default {
   }
 
   .search input {
-    width: 100%;
-    max-width: 100%; /* Remove max-width constraint */
+    width: 200px;
+    max-width: 180px; /* Remove max-width constraint */
     padding: 0.4rem 2rem 0.4rem 2rem;
     font-size: 0.8rem;
   }
 
   .icons {
+    padding: 0.5rem 2rem 0.9rem 2rem;
     gap: 1rem;
-  }
-
-  .hamburger {
-    display: none; /* Hide hamburger menu */
   }
 
   .menu {

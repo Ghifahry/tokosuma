@@ -21,7 +21,7 @@
     <div v-if="filteredWishlist.length" class="card-grid">
       <div v-for="item in filteredWishlist" :key="item.id" class="card">
         <button class="hapus-button" @click="showConfirm(item.id)">×</button>
-        <router-link :to="{ name: 'product-detail', params: { id: item.id } }">
+        <router-link :to="{ name: 'product-detail', params: { name: slugify(item.nama) } }">
           <img :src="item.image" alt="Foto Produk" class="card-image" />
         </router-link>
         <div class="card-body">
@@ -52,39 +52,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-
-const wishlist = ref([]);
-const sortBy = ref("terbaru");
-
-onMounted(() => {
-  wishlist.value = [
-    {
-      id: 1,
-      nama: "Tas Mclaren",
-      harga: 700000,
-      tanggal: "2025-06-10",
-      image: "https://image.gramedia.net/rs:fit:256:0/plain/https://cdn.gramedia.com/uploads/items/208090415-3.png",
-    },
-    {
-      id: 2,
-      nama: "Tas Jansport",
-      harga: 200000,
-      tanggal: "2025-07-01",
-      image: "https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/208090417-3.png",
-    },
-    {
-      id: 3,
-      nama: "Tas Mechanical",
-      harga: 450000,
-      tanggal: "2025-07-14",
-      image: "https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/HAPPY_RED_BLACK_2HYbVws.png",
-    },
-  ];
-});
+import { ref, computed } from "vue";
+import { wishlist } from "../../data/wishlist";
 
 const modalConfirm = ref(false);
 const confirmId = ref(null);
+const sortBy = ref("terbaru");
 
 function showConfirm(id) {
   confirmId.value = id;
@@ -123,6 +96,17 @@ function formatTanggal(tanggal) {
     month: "short",
     year: "numeric",
   });
+}
+
+function slugify(text) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 }
 </script>
 

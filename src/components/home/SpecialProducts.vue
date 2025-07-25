@@ -22,7 +22,7 @@
         @slideChange="handleSlideChange"
       >
         <swiper-slide v-for="(product, index) in products" :key="product.id" class="product-slide">
-          <router-link :to="`/product/${product.id}`" class="product-card">
+          <router-link :to="`/product/${slugify(product.name)}`" class="product-card">
             <img :src="product.image" :alt="product.name" class="product-img" />
             <div class="product-info">
               <p class="product-official">Toko Suma Official</p>
@@ -45,7 +45,7 @@
 
     <swiper v-else :slides-per-view="2.2" :space-between="5" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
       <swiper-slide v-for="product in products" :key="product.id">
-        <router-link :to="`/product/${product.id}`" class="product-card">
+        <router-link :to="`/product/${slugify(product.name)}`" class="product-card">
           <img :src="product.image" :alt="product.name" class="product-img" />
           <div class="product-info">
             <p class="product-official">Toko Suma Official</p>
@@ -96,6 +96,17 @@ function handleSlideChange(swiper) {
 
 function handleSlideChangeMobile(swiper) {
   activeIndexMobile.value = swiper.activeIndex;
+}
+
+function slugify(text) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 }
 </script>
 

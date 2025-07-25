@@ -3,17 +3,17 @@
     <div class="main-content">
       <Sidebar class="mobile-hidden" />
       <div class="account-content">
-        <router-view />
-        <BottomBar class="desktop-hidden" />
+        <router-view :key="$route.fullPath" />
       </div>
     </div>
+    <BottomBarAccount class="desktop-hidden" />
     <Footer />
   </section>
 </template>
 
 <script setup>
-import Sidebar from "@/components/Sidebar.vue";
-import BottomBar from "@/components/BottomBarAccount.vue";
+import Sidebar from "@/components/account/Sidebar.vue";
+import BottomBarAccount from "@/components/account/BottomBarAccount.vue";
 import Footer from "@/components/Footer.vue";
 </script>
 

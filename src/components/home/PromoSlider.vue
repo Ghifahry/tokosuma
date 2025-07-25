@@ -55,7 +55,7 @@ onUnmounted(() => {
   justify-content: center;
   gap: 1rem;
   max-width: 1220px;
-  margin: 5rem auto 2rem;
+  margin: 6rem auto 2rem;
 }
 .promo-slider {
   flex: -1;

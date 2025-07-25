@@ -52,6 +52,7 @@
               <p class="product-name">{{ product.name }}</p>
               <p class="product-price">{{ product.price }}</p>
             </div>
+            <p class="product-description-truncated">{{ truncateDescription(product.description) }}</p>
           </div>
         </router-link>
       </swiper-slide>
@@ -67,6 +68,25 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import backtoschool from "@/assets/backtoschool.png";
 import { ref } from "vue";
+
+function slugify(text) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
+}
+
+function truncateDescription(description) {
+  const maxLength = 70; // Adjust as needed
+  if (description.length > maxLength) {
+    return description.substring(0, maxLength) + "...";
+  }
+  return description;
+}
 
 const products = [
   { id: 1, name: "Buku Premium Tahan Air Dan Api", price: "Rp 25.000", image: "https://tokosuma.co.id/../toko-suma/storage/app/public/thumbnail/24042025082812-50660.png" },
@@ -156,6 +176,18 @@ function handleSlideChangeMobile(swiper) {
   outline-offset: -2px;
   display: block;
   text-decoration: none;
+}
+
+.product-description-truncated {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0.5rem 0.8rem 0;
+  height: 2.4em; /* Approx 2 lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .product-card:hover {

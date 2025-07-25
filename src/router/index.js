@@ -1,14 +1,14 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from "vue-router";
-import AccountLayout from "@/AccountLayout.vue";
-import Transaksi from "@/views/account/Transaksi.vue";
-import Wishlist from "@/views/account/Wishlist.vue";
-import Akun from "@/views/account/Akun.vue";
-import Alamat from "@/views/account/Alamat.vue";
-import Ulasan from "@/views/account/Ulasan.vue";
+import AccountLayout from "@/views/AccountLayout.vue";
+import Transaksi from "@/components/account/Transaksi.vue";
+import Wishlist from "@/components/account/Wishlist.vue";
+import Akun from "@/components/account/Akun.vue";
+import Alamat from "@/components/account/Alamat.vue";
+import Ulasan from "@/components/account/Ulasan.vue";
 
 import Home from "@/views/Home.vue";
-import ProductDetail from "@/views/ProductDetail.vue";
+import ProductDetail from "@/components/ProductDetail.vue";
 
 const routes = [
   {
@@ -29,7 +29,7 @@ const routes = [
     meta: { requiresAuth: true }, // Protect all /account routes
   },
   {
-    path: "/product/:id",
+    path: "/product/:name",
     name: "product-detail",
     component: ProductDetail,
   },
