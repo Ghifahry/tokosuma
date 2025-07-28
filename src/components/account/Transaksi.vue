@@ -43,49 +43,49 @@
 <script setup>
 import { ref, computed } from "vue";
 
-const sortBy = ref("terbaru");
-const selectedMenu = ref("semua");
-
 const menus = [
   { label: "Semua", value: "semua" },
-  { label: "Di Proses", value: "diproses" },
-  { label: "Di Antar", value: "dikirim" },
-  { label: "Sudah Tiba", value: "sudahtiba" },
-  { label: "Cancel", value: "cancel" },
+  { label: "Diproses", value: "diproses" },
+  { label: "Dikirim", value: "dikirim" },
+  { label: "Tiba di Tujuan", value: "sudahtiba" },
+  { label: "Dibatalkan", value: "cancel" },
 ];
+
+const selectedMenu = ref("semua");
+const sortBy = ref("terbaru");
 
 const daftarTransaksi = ref([
   {
     id: 1,
-    namaBarang: "Buku SIDU",
-    harga: 75000,
-    status: "Sedang Dikirim",
-    tanggal: "2025-07-12",
-    alamatPengiriman: "Jalan Melati No. 123, Jakarta Selatan",
+    namaBarang: "Kaos Custom Desain Sendiri",
+    harga: 125000,
+    status: "Diproses",
+    tanggal: "2024-07-20",
+    alamatPengiriman: "Jl. Merdeka No. 10, Jakarta Pusat",
   },
   {
     id: 2,
-    namaBarang: "Buku Campus",
-    harga: 125000,
-    status: "Dikemas",
-    tanggal: "2025-07-10",
-    alamatPengiriman: "Jl. Jendral Sudirman Kav. 45, Jakarta Pusat",
+    namaBarang: "Mug Custom Foto Keluarga",
+    harga: 85000,
+    status: "Dikirim",
+    tanggal: "2024-07-18",
+    alamatPengiriman: "Jl. Pahlawan No. 5, Bandung",
   },
   {
     id: 3,
-    namaBarang: "New Normal",
-    harga: 299000,
-    status: "Sampai",
-    tanggal: "2025-07-08",
-    alamatPengiriman: "Desa Sukamaju RT 01/02, Kabupaten Bandung",
+    namaBarang: "Hoodie Custom Logo Komunitas",
+    harga: 250000,
+    status: "Tiba di Tujuan",
+    tanggal: "2024-07-15",
+    alamatPengiriman: "Jl. Sudirman No. 20, Surabaya",
   },
   {
     id: 4,
-    namaBarang: "Ladang Sawah",
-    harga: 29229000,
-    status: "Sampai",
-    tanggal: "2025-07-08",
-    alamatPengiriman: "Desa Sukamaju RT 01/02, Kabupaten Bandung",
+    namaBarang: "Tote Bag Custom Ilustrasi",
+    harga: 75000,
+    status: "Dibatalkan",
+    tanggal: "2024-07-12",
+    alamatPengiriman: "Jl. Gajah Mada No. 3, Semarang",
   },
 ]);
 
@@ -105,7 +105,7 @@ const filteredTransaksi = computed(() => {
     if (status === "diproses") return s.includes("kemas") || s.includes("proses");
     if (status === "dikirim") return s.includes("kirim");
     if (status === "sudahtiba") return s.includes("sampai") || s.includes("tiba");
-    if (status === "cancel") return s.includes("cancel");
+    if (status === "cancel") return s.includes("cancel") || s.includes("dibatalkan");
     return true;
   });
 });
@@ -126,7 +126,7 @@ function formatTanggal(tgl) {
 
 <style scoped>
 .transaksi-container {
-  padding: 0px 20px 20px 20px;
+  padding: 40px 20px 20px 20px;
   background: #fff;
   border-radius: 8px;
 }

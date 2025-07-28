@@ -82,6 +82,12 @@
   color: #c6481d;
 }
 
+@media (max-width: 768px) {
+  .footer {
+    display: none;
+  }
+}
+
 /* Responsive for mobile */
 @media (max-width: 480px) {
   .footer-content {

@@ -9,6 +9,10 @@ import Ulasan from "@/components/account/Ulasan.vue";
 
 import Home from "@/views/Home.vue";
 import ProductDetail from "@/components/ProductDetail.vue";
+import Register from "@/views/Register.vue";
+import AllBlogs from "@/views/AllBlogs.vue";
+
+import PricelistDigital from "@/components/pricelist-digital/table.vue";
 
 const routes = [
   {
@@ -32,6 +36,22 @@ const routes = [
     path: "/product/:name",
     name: "product-detail",
     component: ProductDetail,
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: Register,
+  },
+  {
+    path: "/pricelist-digital",
+    name: "pricelist-digital",
+    component: PricelistDigital,
+  },
+  {
+    path: "/blogs",
+    name: "all-blogs",
+    component: AllBlogs,
+    meta: { hideHeader: true },
   },
 ];
 

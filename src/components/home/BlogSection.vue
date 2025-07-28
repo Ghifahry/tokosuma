@@ -2,6 +2,7 @@
   <section class="blog-section">
     <div class="section-header">
       <h2 class="section-title">Blogs</h2>
+      <button class="see-more-button top-right" @click="$router.push('/blogs')">Lihat Semua Blogs <i class="fas fa-chevron-right"></i></button>
     </div>
 
     <div class="blog-button-prev"><i class="fas fa-chevron-left"></i></div>
@@ -139,9 +140,27 @@ const blogs = [
 
 .section-header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+}
+
+.see-more-button.top-right {
+  margin-bottom: 13px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  min-height: auto;
+  border-radius: 4px;
+  border: 1.5px solid #e85423;
+  background-color: transparent;
+  color: #e85423;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.see-more-button.top-right:hover {
+  background-color: #e85423;
+  color: #fff;
 }
 
 .blog-snippet {
@@ -177,6 +196,24 @@ const blogs = [
   top: 50%;
 }
 
+.see-more-button.top-right {
+  margin-bottom: 13px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  min-height: auto;
+  border-radius: 4px;
+  border: 1.5px solid #e85423;
+  background-color: transparent;
+  color: #e85423;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.see-more-button.top-right:hover {
+  background-color: #e85423;
+  color: #fff;
+}
+
 @media (max-width: 768px) {
   .blog-button-prev,
   .blog-button-next {
@@ -196,6 +233,13 @@ const blogs = [
   .section-title {
     font-family: "Roboto", sans-serif;
     font-size: 1.2rem;
+  }
+
+  .see-more-button.top-right {
+    white-space: nowrap; /* Prevent button text from wrapping */
+    font-size: 0.75rem; /* Slightly reduce font size */
+    padding: 0.25rem 0.5rem; /* Adjust padding */
+    margin-bottom: 1px;
   }
 }
 </style>

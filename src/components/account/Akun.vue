@@ -122,7 +122,7 @@ function simpanPerubahan() {
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  padding: 0px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -270,7 +270,7 @@ select:focus {
 
 .title-info h2 {
   font-size: 20px;
-  margin: 10px 10px 10px 30px;
+  margin: 35px 10px 10px 30px;
   color: #333;
 }
 

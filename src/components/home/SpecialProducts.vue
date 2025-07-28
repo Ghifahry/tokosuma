@@ -170,8 +170,10 @@ function slugify(text) {
   text-decoration: none;
 }
 
+
+
 .product-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-10px);
 }
 
 .product-slide {
@@ -183,7 +185,7 @@ function slugify(text) {
   height: 180px;
   object-fit: contain;
   display: block;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
 }
 
 .product-name-price {
@@ -267,6 +269,7 @@ function slugify(text) {
 
 .swiper-container {
   position: relative;
+  overflow: visible;
 }
 
 .swiper-button-prev-special-products,

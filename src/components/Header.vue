@@ -14,22 +14,28 @@
         <!-- Ikon -->
         <div class="icons">
           <!-- Cart -->
-          <router-link to="/cart" class="icon-link">
-            <i class="fas fa-shopping-cart"></i>
-          </router-link>
-
-          <!-- Wishlist -->
-          <router-link to="/account/wishlist" class="icon-link">
-            <i class="fas fa-heart"></i>
-          </router-link>
 
           <!-- Account -->
-          <div class="dropdown" @click="toggleAccount">
-            <i class="fas fa-user"></i>
-            <div v-if="showAccount" class="dropdown-box account-dropdown">
-              <button @click="navigateTo('/account/akun')" class="account-btn">Login</button>
-              <button @click="navigateTo('/register')" class="account-btn">Register</button>
-            </div>
+          <div v-if="isLoggedIn" class="dropdown profile-dropdown" @click="toggleAccount" ref="profileDropdownRef">
+            <img :src="profileImageUrl" alt="User Profile" class="profile-pic" />
+            <span class="username">{{ username }}</span>
+            <i v-if="!showAccount" class="fas fa-chevron-down"></i>
+            <transition name="zoom-fade">
+              <div v-if="showAccount" class="dropdown-box account-dropdown" ref="accountDropdownRef">
+                <div class="user-info">
+                  <span class="user-full-name">{{ userFullName }}</span>
+                  <span class="user-email">{{ userEmail }}</span>
+                </div>
+                <button @click="navigateTo('/account/akun')" class="account-btn">Akun</button>
+                <button @click="navigateTo('/cart')" class="account-btn">Cart</button>
+                <button @click="navigateTo('/account/wishlist')" class="account-btn wishlist-separator">Wishlist</button>
+                <button @click="logout" class="account-btn">Logout</button>
+              </div>
+            </transition>
+          </div>
+          <div v-else class="auth-buttons">
+            <button @click="handleLoginClick" class="account-btn">Login</button>
+            <button @click="handleRegisterClick" class="account-btn register-btn">Daftar</button>
           </div>
         </div>
         <!-- Tambahkan setelah div.icons -->
@@ -37,12 +43,12 @@
 
       <!-- Baris Bawah: Menu Navigasi -->
       <nav class="menu" :class="{ open: showMobileMenu }">
-        <div class="dropdown" @click="toggleKategori">
+        <div class="dropdown" @click="toggleKategori" ref="kategoriDropdownTriggerRef">
           <router-link to="" class="dropdown-toggle"> Kategori <i class="fas fa-chevron-down"></i> </router-link>
 
           <!-- ⬇️ animasi scale/fade -->
           <transition name="zoom-fade">
-            <div v-if="showKategori" class="dropdown-content kategori-dropdown" @click.stop>
+            <div v-if="showKategori" class="dropdown-content kategori-dropdown" @click.stop ref="kategoriDropdownContentRef">
               <!-- ==== KIRI: Filter & Sort ==== -->
               <aside class="filter-sort">
                 <h4>Filter</h4>
@@ -79,8 +85,8 @@
 
         <!-- link lain -->
         <router-link to="/design-online">Design Online</router-link>
-        <router-link to="/pricelist">Pricelist Digital</router-link>
-        <router-link to="/blog">Blog</router-link>
+        <router-link to="/pricelist-digital">Pricelist Digital</router-link>
+        <router-link to="/blogs">Blog</router-link>
       </nav>
     </div>
   </header>
@@ -97,6 +103,12 @@ export default {
       showMobileMenu: false,
       showWishlist: false,
       isMobile: window.innerWidth <= 768,
+      isLoggedIn: false, // Tambahkan isLoggedIn
+      profileImageUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png", // Default profile image
+      username: "el", // Default username
+      userFullName: "mhmdgabrielle ", // Placeholder for user's full name
+      userEmail: "mhmdgabrielle@example.com", // Placeholder for user's email
+      showLogoutConfirm: false, // Control popup visibility
     };
   },
   methods: {
@@ -113,11 +125,31 @@ export default {
       }
     },
     toggleAccount() {
-      this.closeAll();
-      this.showAccount = !this.showAccount;
+      if (this.showAccount) {
+        this.showAccount = false;
+      } else {
+        this.closeAll();
+        this.showAccount = true;
+      }
     },
     toggleMobileMenu() {
       this.showMobileMenu = !this.showMobileMenu;
+    },
+    logout() {
+      if (confirm("Apakah Anda yakin ingin keluar akun?")) {
+        this.isLoggedIn = false;
+        localStorage.removeItem("isLoggedIn"); // Hapus isLoggedIn dari local storage
+        this.closeAll();
+        // Opsional: Arahkan ke halaman home setelah logout
+        this.$router.push({ name: "home" });
+      }
+    },
+    handleLoginClick() {
+      localStorage.setItem("isLoggedIn", "true");
+      window.location.reload();
+    },
+    handleRegisterClick() {
+      this.$router.push("/register");
     },
 
     /** Tutup semua dropdown */
@@ -130,10 +162,9 @@ export default {
 
     /** Handler global untuk klik‑di‑luar */
     handleClickOutside(event) {
-      // kalau klik terjadi di dalam header.navbar, biarkan
-      if (this.$el.contains(event.target)) return;
-      // selain itu tutup semua
-      this.closeAll();
+      if (this.$refs.profileDropdownRef && this.$refs.accountDropdownRef && !this.$refs.profileDropdownRef.contains(event.target) && !this.$refs.accountDropdownRef.contains(event.target)) {
+        this.closeAll();
+      }
     },
   },
   mounted() {
@@ -141,6 +172,8 @@ export default {
     window.addEventListener("resize", () => {
       this.isMobile = window.innerWidth <= 768;
     });
+    // Cek status login saat komponen dimuat
+    this.isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   },
   beforeUnmount() {
     document.removeEventListener("click", this.handleClickOutside);
@@ -153,7 +186,7 @@ export default {
 
 <style scoped>
 .navbar {
-  font-family: "Roboto", sans-serif;
+  font-family: "Poppins", sans-serif;
   position: fixed;
   top: 0;
   left: 0;
@@ -235,12 +268,53 @@ export default {
   position: relative; /* <— kunci agar .dropdown-box diposisikan relatif */
 }
 
+.profile-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: gap 0.2s ease; /* Add transition for smooth gap changes */
+}
+
+.profile-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e68463;
+}
+
+.username {
+  color: #000000;
+  font-weight: 500;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.user-info .user-full-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 8px; /* Increased spacing */
+}
+
+.user-info .user-email {
+  font-size: 0.85rem;
+  color: #777;
+}
+
 /* Baris bawah: menu navigasi */
 .menu {
   display: flex;
   justify-content: center;
   gap: 1.2rem;
-  padding: 0.6rem 0.8rem;
+  padding: 0.1rem 0.4rem 0.9rem;
   font-size: 0.85rem;
   width: 100%;
 }
@@ -315,9 +389,13 @@ export default {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   z-index: 999;
   font-size: 0.85rem;
-  min-width: 150px;
-  border-radius: 8px;
+  min-width: 200px;
+  border-radius: 12px;
+  font-size: 0.95rem;
   transition: box-shadow 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Increased gap between dropdown items */
 }
 
 .account-dropdown:hover {
@@ -500,7 +578,7 @@ export default {
 /* 🌐 Ukuran layar kecil (HP) */
 @media (max-width: 768px) {
   .top-bar {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto auto; /* Search, Logo (hidden), Icons */
     padding: 0.5rem 1rem;
   }
 
@@ -512,16 +590,44 @@ export default {
     padding: 0.5rem 1rem;
   }
 
+  .search {
+    justify-self: start; /* Align search to the start of its grid column */
+  }
+
+  .search {
+    justify-self: start;
+    width: 100%;
+  }
+
   .search input {
-    width: 200px;
-    max-width: 180px; /* Remove max-width constraint */
-    padding: 0.4rem 2rem 0.4rem 2rem;
-    font-size: 0.8rem;
+    width: 100%; /* Make input take full width of its parent (.search) */
+
+    padding: 0.4rem 1.5rem 0.4rem 1.8rem; /* Adjust padding */
+    font-size: 0.75rem;
   }
 
   .icons {
-    padding: 0.5rem 2rem 0.9rem 2rem;
-    gap: 1rem;
+    padding: 0.5rem 2rem 1.5rem 1rem; /* Adjusted padding for mobile */
+    gap: 0.5rem; /* Adjusted gap for mobile */
+  }
+
+  .profile-pic {
+    width: 25px;
+    height: 25px;
+  }
+
+  .username {
+    font-size: 0.75rem;
+  }
+
+  .auth-buttons {
+    flex-direction: row; /* Keep them in a row */
+    gap: 5px; /* Adjust gap for mobile */
+  }
+
+  .auth-buttons .account-btn {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.75rem;
   }
 
   .menu {
@@ -562,8 +668,40 @@ export default {
   transition: background 0.2s, color 0.2s;
 }
 
-.account-btn:hover {
-  background-color: #fff1ec;
+.account-btn.wishlist-separator {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px; /* Add some space below the line */
+}
+
+.auth-buttons .account-btn {
+  border: 1px solid #e85423;
   color: #e85423;
+  background: transparent;
+  padding: 0.4rem 1rem; /* Add padding to make it look like a button */
+  width: auto; /* Override width: 100% from .account-btn */
+  text-align: center; /* Center text */
+}
+
+.auth-buttons .account-btn:hover {
+  background-color: #e85423;
+  color: white;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px; /* Adjust gap as needed */
+}
+
+.register-btn {
+  background-color: #e85423;
+  color: rgb(0, 0, 0);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.register-btn:hover {
+  background-color: #c6481d;
 }
 </style>

@@ -10,7 +10,6 @@
     <SpecialProducts :isMobile="isMobile" />
     <Banner :imageSrc="bannerImage" link="https://example.com" />
     <BlogSection :isMobile="isMobile" />
-    <BottomBarHome v-if="isMobile" />
     <Footer />
   </div>
 </template>
@@ -19,7 +18,7 @@
 import PromoSlider from "@/components/home/PromoSlider.vue";
 import SpecialProducts from "@/components/home/SpecialProducts.vue";
 import BlogSection from "@/components/home/BlogSection.vue";
-import BottomBarHome from "@/components/home/BottomBarHome.vue";
+
 import OfficialStore from "@/components/home/OfficialStore.vue";
 import Banner from "@/components/home/Banner.vue";
 import Footer from "@/components/Footer.vue";

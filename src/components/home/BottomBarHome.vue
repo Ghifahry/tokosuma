@@ -12,13 +12,9 @@
       <i class="fas fa-pencil-ruler"></i>
       <span>Design Online</span>
     </router-link>
-    <router-link to="/pricelist" class="bottom-link" active-class="active-link">
+    <router-link to="/pricelist-digital" class="bottom-link" active-class="active-link">
       <i class="fas fa-list-alt"></i>
       <span>Pricelist Digital</span>
-    </router-link>
-    <router-link v-if="!isHomePage" to="/blog" class="bottom-link" active-class="active-link">
-      <i class="fas fa-blog"></i>
-      <span>Blog</span>
     </router-link>
   </nav>
 </template>
@@ -58,11 +54,13 @@ const isHomePage = route.path === "/";
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     color: #444;
     text-decoration: none;
     font-size: 12px;
     position: relative;
-    padding-bottom: 4px;
+    padding: 0.5rem 0;
   }
 
   .bottom-link i {

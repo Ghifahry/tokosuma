@@ -112,7 +112,7 @@ function slugify(text) {
 
 <style scoped>
 .wishlist-container {
-  padding: 0px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
   background: #fff;
   border-radius: 8px;
 }
