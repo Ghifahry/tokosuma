@@ -7,9 +7,55 @@
         <router-link :to="{ name: 'home' }" class="logo">
           <img src="https://tokosuma.co.id/assets/images/layout-5/logo/logo_tokosuma_coid.png" alt="Logo Toko Suma" />
         </router-link>
-        <div class="search">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" placeholder="Cari Produk atau Judul Buku...." />
+        <div class="search-section">
+          <!-- Kategori button untuk desktop -->
+          <div v-if="!isMobile" class="kategori-button-desktop">
+            <div class="dropdown" @click="toggleKategori" ref="kategoriDropdownTriggerRef">
+              <button class="kategori-btn">
+                Kategori
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <!-- Dropdown content untuk desktop -->
+              <transition name="zoom-fade">
+                <div v-if="showKategori" class="dropdown-content kategori-dropdown" @click.stop ref="kategoriDropdownContentRef">
+                  <!-- ==== KIRI: Filter & Sort ==== -->
+                  <aside class="filter-sort">
+                    <h4>Filter</h4>
+                    <label><input type="checkbox" v-model="filter.terbaru" /> Terbaru</label>
+                    <label><input type="checkbox" v-model="filter.diskon" /> Diskon</label>
+
+                    <h4 class="mt-3">Sort</h4>
+                    <select v-model="sortBy">
+                      <option value="termurah">Termurah</option>
+                      <option value="termahal">Termahal</option>
+                      <option value="terlaris">Terlaris</option>
+                    </select>
+                  </aside>
+
+                  <!-- ==== KANAN: Daftar Kategori ==== -->
+                  <ul class="kategori-list">
+                    <!-- Contoh kategori utama -->
+                    <li><button @click="navigateTo('/kategori/kaos')">Kaos Custom</button></li>
+                    <li><button @click="navigateTo('/kategori/hoodie')">Hoodie & Sweater</button></li>
+                    <li><button @click="navigateTo('/kategori/totebag')">Tote Bag</button></li>
+                    <li><button @click="navigateTo('/kategori/mug')">Mug & Tumbler</button></li>
+                    <li><button @click="navigateTo('/kategori/sticker')">Sticker</button></li>
+                    <li><button @click="navigateTo('/kategori/phonecase')">Phone Case</button></li>
+                    <li><button @click="navigateTo('/kategori/notebook')">Notebook</button></li>
+                    <li><button @click="navigateTo('/kategori/plakat')">Plakat & Award</button></li>
+                    <li><button @click="navigateTo('/kategori/merch')">Merch Corporate</button></li>
+                    <li><button @click="navigateTo('/kategori/others')">Lain‑lain…</button></li>
+                  </ul>
+
+                  <button class="btn-continue" :disabled="!hasSelection" @click="applyKategori">Continue</button>
+                </div>
+              </transition>
+            </div>
+          </div>
+          <div class="search">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Cari Produk atau Judul Buku...." v-model="searchQuery" @keyup.enter="searchProducts" />
+          </div>
         </div>
         <!-- Ikon -->
         <div class="icons">
@@ -43,7 +89,7 @@
 
       <!-- Baris Bawah: Menu Navigasi -->
       <nav class="menu" :class="{ open: showMobileMenu }">
-        <div class="dropdown" @click="toggleKategori" ref="kategoriDropdownTriggerRef">
+        <div v-if="isMobile" class="dropdown" @click="toggleKategori" ref="kategoriDropdownTriggerRef">
           <router-link to="" class="dropdown-toggle"> Kategori <i class="fas fa-chevron-down"></i> </router-link>
 
           <!-- ⬇️ animasi scale/fade -->
@@ -84,14 +130,13 @@
         </div>
 
         <!-- link lain -->
-        <router-link to="/design-online">Design Online</router-link>
-        <router-link to="/pricelist-digital">Pricelist Digital</router-link>
-        <router-link to="/blogs">Blog</router-link>
       </nav>
     </div>
   </header>
 </template>
 <script>
+import products from "@/data/products.js";
+
 export default {
   data() {
     return {
@@ -103,13 +148,20 @@ export default {
       showMobileMenu: false,
       showWishlist: false,
       isMobile: window.innerWidth <= 768,
-      isLoggedIn: false, // Tambahkan isLoggedIn
-      profileImageUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png", // Default profile image
-      username: "el", // Default username
-      userFullName: "mhmdgabrielle ", // Placeholder for user's full name
-      userEmail: "mhmdgabrielle@example.com", // Placeholder for user's email
-      showLogoutConfirm: false, // Control popup visibility
+      isLoggedIn: false,
+      profileImageUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      username: "",
+      userFullName: "",
+      userEmail: "",
+      showLogoutConfirm: false,
+      searchQuery: "", // Tambahkan searchQuery untuk menyimpan input pencarian
+      products: products, // Impor data produk
     };
+  },
+  computed: {
+    hasSelection() {
+      return this.filter.terbaru || this.filter.diskon || this.sortBy !== "termurah";
+    },
   },
   methods: {
     navigateTo(path) {
@@ -137,19 +189,38 @@ export default {
     },
     logout() {
       if (confirm("Apakah Anda yakin ingin keluar akun?")) {
-        this.isLoggedIn = false;
-        localStorage.removeItem("isLoggedIn"); // Hapus isLoggedIn dari local storage
+        // Hapus semua data user dari localStorage
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userEmail");
+        localStorage.removeItem("userFullName");
+        localStorage.removeItem("username");
+
+        // Trigger custom event untuk update header
+        window.dispatchEvent(
+          new CustomEvent("loginStatusChanged", {
+            detail: { isLoggedIn: false },
+          })
+        );
+
+        // Update status login
+        this.checkLoginStatus();
+
         this.closeAll();
-        // Opsional: Arahkan ke halaman home setelah logout
-        this.$router.push({ name: "home" });
+        // Arahkan ke halaman home setelah logout
+        this.$router.push("/");
       }
     },
     handleLoginClick() {
-      localStorage.setItem("isLoggedIn", "true");
-      window.location.reload();
+      this.$router.push("/login");
     },
     handleRegisterClick() {
       this.$router.push("/register");
+    },
+
+    applyKategori() {
+      // Handle kategori application
+      console.log("Kategori applied:", { filter: this.filter, sortBy: this.sortBy });
+      this.closeAll();
     },
 
     /** Tutup semua dropdown */
@@ -162,9 +233,60 @@ export default {
 
     /** Handler global untuk klik‑di‑luar */
     handleClickOutside(event) {
-      if (this.$refs.profileDropdownRef && this.$refs.accountDropdownRef && !this.$refs.profileDropdownRef.contains(event.target) && !this.$refs.accountDropdownRef.contains(event.target)) {
+      const clickedProfileTrigger = this.$refs.profileDropdownRef && this.$refs.profileDropdownRef.contains(event.target);
+      const clickedAccountDropdown = this.$refs.accountDropdownRef && this.$refs.accountDropdownRef.contains(event.target);
+      const clickedKategoriTrigger = this.$refs.kategoriDropdownTriggerRef && this.$refs.kategoriDropdownTriggerRef.contains(event.target);
+      const clickedKategoriDropdown = this.$refs.kategoriDropdownContentRef && this.$refs.kategoriDropdownContentRef.contains(event.target);
+
+      if (!clickedProfileTrigger && !clickedAccountDropdown && !clickedKategoriTrigger && !clickedKategoriDropdown) {
         this.closeAll();
       }
+    },
+
+    /** Cek status login dan load data user */
+    checkLoginStatus() {
+      this.isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+      // Load user data from localStorage
+      if (this.isLoggedIn) {
+        this.userEmail = localStorage.getItem("userEmail") || "";
+        this.userFullName = localStorage.getItem("userFullName") || "";
+        this.username = localStorage.getItem("username") || "";
+      } else {
+        // Reset user data jika logout
+        this.userEmail = "";
+        this.userFullName = "";
+        this.username = "";
+      }
+    },
+
+    // Metode pencarian produk
+    searchProducts() {
+      if (!this.searchQuery.trim()) return; // Jangan lakukan pencarian jika query kosong
+
+      // Simpan query pencarian di localStorage agar bisa diakses di halaman hasil pencarian
+      localStorage.setItem("searchQuery", this.searchQuery);
+
+      // Filter produk berdasarkan query pencarian
+      const filteredProducts = this.products.filter((product) => {
+        const query = this.searchQuery.toLowerCase();
+        return product.name.toLowerCase().includes(query) || product.description.toLowerCase().includes(query);
+      });
+
+      // Simpan hasil pencarian di localStorage
+      localStorage.setItem("searchResults", JSON.stringify(filteredProducts));
+
+      // Tutup semua dropdown
+      this.closeAll();
+
+      // Navigasi ke halaman hasil pencarian dengan query sebagai parameter
+      this.$router.push({
+        path: "/search",
+        query: { q: this.searchQuery },
+      });
+
+      // Tidak reset searchQuery agar tetap terlihat di input search
+      // this.searchQuery = "";
     },
   },
   mounted() {
@@ -172,14 +294,23 @@ export default {
     window.addEventListener("resize", () => {
       this.isMobile = window.innerWidth <= 768;
     });
+
     // Cek status login saat komponen dimuat
-    this.isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    this.checkLoginStatus();
+
+    // Listen untuk perubahan localStorage
+    window.addEventListener("storage", this.checkLoginStatus);
+
+    // Listen untuk custom event login status change
+    window.addEventListener("loginStatusChanged", this.checkLoginStatus);
   },
   beforeUnmount() {
     document.removeEventListener("click", this.handleClickOutside);
     window.removeEventListener("resize", () => {
       this.isMobile = window.innerWidth <= 768;
     });
+    window.removeEventListener("storage", this.checkLoginStatus);
+    window.removeEventListener("loginStatusChanged", this.checkLoginStatus);
   },
 };
 </script>
@@ -213,6 +344,7 @@ export default {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 0.5rem 1rem;
+  gap: 20px;
 }
 
 .logo img {
@@ -222,6 +354,32 @@ export default {
   margin-top: 10px;
 }
 
+.search-section {
+  display: flex;
+  align-items: center;
+  padding-right: 50px;
+  gap: 25px;
+}
+
+.kategori-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  background: rgb(255, 255, 255);
+  color: black;
+  border: none;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.search-section {
+  padding-top: 20px;
+}
 .search {
   position: relative;
   display: flex;
@@ -244,11 +402,21 @@ export default {
   font-size: 0.85rem;
 }
 
+/* Tambahkan style untuk tombol pencarian */
+
+.search-button:hover {
+  background: #c6481d;
+}
+
+.search-button i {
+  font-size: 0.75rem;
+}
+
 .icons {
   justify-self: end;
   display: flex;
   gap: 2rem;
-  padding: 1rem 5rem;
+  padding: 2rem 5rem;
   margin-top: 15px;
 }
 
@@ -439,6 +607,7 @@ export default {
 /* dua kolom: filter (200 px) + list (sisanya) */
 .kategori-dropdown {
   position: absolute;
+  top: 93%;
   left: 0;
   right: 0;
   width: 100vw; /* ⬅️ Lebar full satu layar */
@@ -577,9 +746,22 @@ export default {
 
 /* 🌐 Ukuran layar kecil (HP) */
 @media (max-width: 768px) {
+  .profile-dropdown {
+    padding-top: 1rem;
+  }
   .top-bar {
     grid-template-columns: 1fr auto auto; /* Search, Logo (hidden), Icons */
     padding: 0.5rem 1rem;
+  }
+
+  .search-section {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .kategori-button-desktop {
+    display: none; /* Hide kategori button on mobile */
   }
 
   .logo {

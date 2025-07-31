@@ -126,7 +126,7 @@ function formatTanggal(tgl) {
 
 <style scoped>
 .transaksi-container {
-  padding: 40px 20px 20px 20px;
+  padding: 50px 20px 20px 20px;
   background: #fff;
   border-radius: 8px;
 }

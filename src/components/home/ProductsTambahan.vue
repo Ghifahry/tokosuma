@@ -6,7 +6,7 @@
     </div>
 
     <!-- suma.png is now outside the swiper-container -->
-    <div v-if="!isMobile" class="suma-background" :class="{ 'slide-out': activeIndex > 0, 'slide-in': activeIndex === 0 }"></div>
+    <div class="suma-background" :class="{ 'slide-out': activeIndex > 0, 'slide-in': activeIndex === 0 }"></div>
     <div v-if="!isMobile" class="swiper-container">
       <swiper
         :modules="[Pagination, Navigation]"
@@ -42,21 +42,23 @@
       </button>
     </div>
 
-    <swiper v-else :slides-per-view="2.2" :space-between="5" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
-      <swiper-slide v-for="product in products" :key="product.id">
-        <router-link :to="`/product/${product.id}`" class="product-card">
-          <img :src="product.image" :alt="product.name" class="product-img" />
-          <div class="product-info">
-            <p class="product-official">Toko Suma Official</p>
-            <div class="product-name-price">
-              <p class="product-name">{{ product.name }}</p>
-              <p class="product-price">{{ product.price }}</p>
+    <div v-else class="mobile-swiper-container">
+      <swiper :slides-per-view="2.2" :space-between="5" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" :slides-per-group="1" @slideChange="handleSlideChangeMobile">
+        <swiper-slide v-for="product in products" :key="product.id">
+          <router-link :to="`/product/${product.id}`" class="product-card">
+            <img :src="product.image" :alt="product.name" class="product-img" />
+            <div class="product-info">
+              <p class="product-official">Toko Suma Official</p>
+              <div class="product-name-price">
+                <p class="product-name">{{ product.name }}</p>
+                <p class="product-price">{{ product.price }}</p>
+              </div>
+              <p class="product-description-truncated">{{ truncateDescription(product.description) }}</p>
             </div>
-            <p class="product-description-truncated">{{ truncateDescription(product.description) }}</p>
-          </div>
-        </router-link>
-      </swiper-slide>
-    </swiper>
+          </router-link>
+        </swiper-slide>
+      </swiper>
+    </div>
   </section>
 </template>
 
@@ -107,14 +109,13 @@ const props = defineProps({
 });
 
 const activeIndex = ref(0);
-const activeIndexMobile = ref(0);
 
 function handleSlideChange(swiper) {
   activeIndex.value = swiper.activeIndex;
 }
 
 function handleSlideChangeMobile(swiper) {
-  activeIndexMobile.value = swiper.activeIndex;
+  activeIndex.value = swiper.activeIndex; // Use same activeIndex for mobile
 }
 </script>
 
@@ -334,11 +335,11 @@ function handleSlideChangeMobile(swiper) {
 
 @media (max-width: 768px) {
   .special-products {
-    padding: 0 1rem 4rem;
+    padding: 0 1rem 4rem; /* Keep horizontal padding to stay within bounds */
   }
 
   .section-header {
-    padding: 0 0.5rem;
+    padding: 0 0.5rem; /* Keep original padding */
     flex-wrap: nowrap; /* Prevent wrapping */
     align-items: center; /* Ensure vertical alignment */
   }
@@ -353,6 +354,44 @@ function handleSlideChangeMobile(swiper) {
     font-size: 0.75rem; /* Slightly reduce font size */
     padding: 0.25rem 0.2rem; /* Adjust padding */
     margin-bottom: 15px;
+  }
+
+  /* Mobile background suma styling */
+  .suma-background {
+    width: 160px;
+    height: 240px;
+    top: 100px;
+    left: 5px;
+  }
+
+  .mobile-swiper-container {
+    position: relative;
+    padding-left: 80px; /* Give space for suma background */
+    overflow: hidden; /* Keep content within bounds */
+  }
+
+  .mobile-product-swiper {
+    margin-left: 20px; /* Additional spacing from suma */
+    width: calc(100% - 100px); /* Adjust width to stay within bounds */
+  }
+
+  .mobile-product-swiper .swiper-wrapper {
+    padding-left: 0; /* Remove default padding */
+  }
+
+  .mobile-product-swiper .swiper-slide {
+    width: auto; /* Allow natural width */
+  }
+
+  /* Mobile slide animations */
+  .slide-out {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+
+  .slide-in {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 

@@ -106,7 +106,7 @@ onUnmounted(() => {
   .promo-container {
     /* Go full-width, remove padding and horizontal margin */
     padding: 0;
-    margin: 2rem 0 2rem 0;
+    margin: 4rem 0 2rem 0;
     width: 100%;
   }
   .promo-slider {

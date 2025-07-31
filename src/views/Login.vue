@@ -1,31 +1,13 @@
 <template>
-  <div class="register-container">
-    <div class="register-card">
-      <div class="register-header">
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
         <img src="https://tokosuma.co.id/assets/images/layout-5/logo/logo_tokosuma_coid.png" alt="Logo Toko Suma" class="logo" />
-        <h2>Daftar Akun Baru</h2>
-        <p>Bergabunglah dengan Toko Suma dan nikmati berbagai produk berkualitas!</p>
+        <h2>Masuk ke Akun Anda</h2>
+        <p>Selamat datang kembali! Silakan masuk ke akun Anda.</p>
       </div>
 
-      <form @submit.prevent="handleRegister" class="register-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="firstName">Nama Depan</label>
-            <div class="input-wrapper">
-              <i class="fas fa-user input-icon"></i>
-              <input type="text" id="firstName" v-model="form.firstName" placeholder="Masukkan nama depan" required />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="lastName">Nama Belakang</label>
-            <div class="input-wrapper">
-              <i class="fas fa-user input-icon"></i>
-              <input type="text" id="lastName" v-model="form.lastName" placeholder="Masukkan nama belakang" required />
-            </div>
-          </div>
-        </div>
-
+      <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
           <label for="email">Email</label>
           <div class="input-wrapper">
@@ -35,50 +17,26 @@
         </div>
 
         <div class="form-group">
-          <label for="phone">Nomor Telepon</label>
-          <div class="input-wrapper">
-            <i class="fas fa-phone input-icon"></i>
-            <input type="tel" id="phone" v-model="form.phone" placeholder="Masukkan nomor telepon" required />
-          </div>
-        </div>
-
-        <div class="form-group">
           <label for="password">Password</label>
           <div class="input-wrapper">
             <i class="fas fa-lock input-icon"></i>
-            <input :type="showPassword ? 'text' : 'password'" id="password" v-model="form.password" placeholder="Buat password minimal 8 karakter" required minlength="8" />
+            <input :type="showPassword ? 'text' : 'password'" id="password" v-model="form.password" placeholder="Masukkan password Anda" required />
             <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" class="password-toggle" @click="togglePassword"></i>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="confirmPassword">Konfirmasi Password</label>
-          <div class="input-wrapper">
-            <i class="fas fa-lock input-icon"></i>
-            <input :type="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" v-model="form.confirmPassword" placeholder="Konfirmasi password Anda" required />
-            <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" class="password-toggle" @click="toggleConfirmPassword"></i>
-          </div>
-        </div>
-
         <div class="form-options">
           <label class="checkbox-wrapper">
-            <input type="checkbox" v-model="form.agreeTerms" required />
+            <input type="checkbox" v-model="form.rememberMe" />
             <span class="checkmark"></span>
-            Saya setuju dengan<a href="#" class="terms-link">Syarat & Ketentuan</a> dan <a href="#" class="terms-link">Kebijakan Privasi</a>
+            Ingat saya
           </label>
+          <router-link to="/forgot-password" class="forgot-link">Lupa password?</router-link>
         </div>
 
-        <div class="form-options">
-          <label class="checkbox-wrapper">
-            <input type="checkbox" v-model="form.newsletter" />
-            <span class="checkmark"></span>
-            Saya ingin menerima newsletter dan penawaran khusus
-          </label>
-        </div>
-
-        <button type="submit" class="register-btn" :disabled="isLoading || !isFormValid">
+        <button type="submit" class="login-btn" :disabled="isLoading">
           <i v-if="isLoading" class="fas fa-spinner fa-spin"></i>
-          {{ isLoading ? "Memproses..." : "Daftar Sekarang" }}
+          {{ isLoading ? "Memproses..." : "Masuk" }}
         </button>
       </form>
 
@@ -86,19 +44,19 @@
         <span>atau</span>
       </div>
 
-      <div class="social-register">
+      <div class="social-login">
         <button class="social-btn google-btn">
           <i class="fab fa-google"></i>
-          Daftar dengan Google
+          Masuk dengan Google
         </button>
         <button class="social-btn facebook-btn">
           <i class="fab fa-facebook-f"></i>
-          Daftar dengan Facebook
+          Masuk dengan Facebook
         </button>
       </div>
 
-      <div class="login-link">
-        <p>Sudah punya akun? <router-link to="/login">Masuk di sini</router-link></p>
+      <div class="register-link">
+        <p>Belum punya akun? <router-link to="/register">Daftar sekarang</router-link></p>
       </div>
     </div>
   </div>
@@ -106,57 +64,31 @@
 
 <script>
 export default {
-  name: "Register",
+  name: "Login",
   data() {
     return {
       form: {
-        firstName: "",
-        lastName: "",
         email: "",
-        phone: "",
         password: "",
-        confirmPassword: "",
-        agreeTerms: false,
-        newsletter: false,
+        rememberMe: false,
       },
       showPassword: false,
-      showConfirmPassword: false,
       isLoading: false,
     };
   },
-  computed: {
-    isFormValid() {
-      return (
-        this.form.firstName &&
-        this.form.lastName &&
-        this.form.email &&
-        this.form.phone &&
-        this.form.password &&
-        this.form.confirmPassword &&
-        this.form.agreeTerms &&
-        this.form.password === this.form.confirmPassword &&
-        this.form.password.length >= 8
-      );
-    },
-  },
   methods: {
-    async handleRegister() {
-      if (!this.isFormValid) {
-        alert("Mohon lengkapi semua data dengan benar");
-        return;
-      }
-
+    async handleLogin() {
       this.isLoading = true;
 
       try {
-        // Simulasi register process
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Simulasi login process
+        await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        // Set login status after successful registration
+        // Set login status
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", this.form.email);
-        localStorage.setItem("userFullName", `${this.form.firstName} ${this.form.lastName}`);
-        localStorage.setItem("username", this.form.firstName.toLowerCase());
+        localStorage.setItem("userFullName", "mhmdgabrielle");
+        localStorage.setItem("username", "el");
 
         // Trigger custom event untuk update header
         window.dispatchEvent(
@@ -165,14 +97,11 @@ export default {
           })
         );
 
-        // Show success message
-        alert("Pendaftaran berhasil! Selamat datang di Toko Suma.");
-
         // Redirect to home page
         this.$router.push("/");
       } catch (error) {
-        console.error("Register error:", error);
-        alert("Gagal mendaftar. Silakan coba lagi.");
+        console.error("Login error:", error);
+        alert("Gagal masuk. Silakan coba lagi.");
       } finally {
         this.isLoading = false;
       }
@@ -181,16 +110,12 @@ export default {
     togglePassword() {
       this.showPassword = !this.showPassword;
     },
-
-    toggleConfirmPassword() {
-      this.showConfirmPassword = !this.showConfirmPassword;
-    },
   },
 };
 </script>
 
 <style scoped>
-.register-container {
+.login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -201,17 +126,17 @@ export default {
   font-family: "Poppins", sans-serif;
 }
 
-.register-card {
+.login-card {
   background: white;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(232, 84, 35, 0.1);
   padding: 40px;
   width: 100%;
-  max-width: 550px;
+  max-width: 450px;
   border: 1px solid #f0f0f0;
 }
 
-.register-header {
+.login-header {
   text-align: center;
   margin-bottom: 30px;
 }
@@ -221,28 +146,21 @@ export default {
   margin-bottom: 20px;
 }
 
-.register-header h2 {
+.login-header h2 {
   color: #333;
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 8px;
 }
 
-.register-header p {
+.login-header p {
   color: #666;
   font-size: 0.9rem;
   margin: 0;
 }
 
-.register-form {
+.login-form {
   margin-bottom: 25px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-bottom: 20px;
 }
 
 .form-group {
@@ -303,36 +221,37 @@ export default {
 }
 
 .form-options {
-  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
   font-size: 0.85rem;
 }
 
 .checkbox-wrapper {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   cursor: pointer;
   color: #666;
-  line-height: 1.4;
 }
 
 .checkbox-wrapper input[type="checkbox"] {
   margin-right: 8px;
-  margin-top: 2px;
   accent-color: #e85423;
 }
 
-.terms-link {
+.forgot-link {
   color: #e85423;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
-.terms-link:hover {
+.forgot-link:hover {
   color: #c6481d;
 }
 
-.register-btn {
+.login-btn {
   width: 100%;
   background: #e85423;
   color: white;
@@ -347,15 +266,14 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 20px;
 }
 
-.register-btn:hover:not(:disabled) {
+.login-btn:hover:not(:disabled) {
   background: #c6481d;
   transform: translateY(-1px);
 }
 
-.register-btn:disabled {
+.login-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
@@ -384,7 +302,7 @@ export default {
   font-size: 0.85rem;
 }
 
-.social-register {
+.social-login {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -419,38 +337,31 @@ export default {
   background: #f8f8f8;
 }
 
-.login-link {
+.register-link {
   text-align: center;
   font-size: 0.9rem;
   color: #666;
 }
 
-.login-link a {
+.register-link a {
   color: #e85423;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
-.login-link a:hover {
+.register-link a:hover {
   color: #c6481d;
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-}
-
 @media (max-width: 480px) {
-  .register-container {
+  .login-container {
     padding: 15px;
-    padding-top: 100px; /* Kurangi padding-top untuk mobile */
+    padding-top: 80px; /* Kurangi padding-top untuk mobile */
   }
 
-  .register-card {
+  .login-card {
     padding: 30px 25px;
   }
 
@@ -458,12 +369,14 @@ export default {
     width: 150px;
   }
 
-  .register-header h2 {
+  .login-header h2 {
     font-size: 1.3rem;
   }
 
-  .checkbox-wrapper {
-    font-size: 0.8rem;
+  .form-options {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
   }
 }
 </style>

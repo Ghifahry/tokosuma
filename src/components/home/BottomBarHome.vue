@@ -8,13 +8,9 @@
       <i class="fas fa-th-large"></i>
       <span>Kategori</span>
     </router-link>
-    <router-link to="/design-online" class="bottom-link" active-class="active-link">
-      <i class="fas fa-pencil-ruler"></i>
-      <span>Design Online</span>
-    </router-link>
-    <router-link to="/pricelist-digital" class="bottom-link" active-class="active-link">
-      <i class="fas fa-list-alt"></i>
-      <span>Pricelist Digital</span>
+    <router-link to="/blog" class="bottom-link" active-class="active-link">
+      <i class="fas fa-newspaper"></i>
+      <span>Blog</span>
     </router-link>
   </nav>
 </template>

@@ -78,12 +78,14 @@
       </div>
     </transition>
   </div>
+  <Footer />
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { wishlist } from "../data/wishlist";
+import Footer from "./Footer.vue";
 
 const route = useRoute();
 const productName = route.params.name;
@@ -179,7 +181,6 @@ function slugify(text) {
 
 onMounted(() => {
   console.log("Product Name from Route:", productName);
-  products.forEach((p) => console.log(`Slugified ${p.name}: ${slugify(p.name)}`));
   product.value = products.find((p) => slugify(p.name) === productName);
   console.log("Found Product:", product.value);
   window.scrollTo(0, 0); // Scroll to the top of the page
@@ -189,7 +190,7 @@ onMounted(() => {
 <style scoped>
 .product-detail {
   max-width: 1200px;
-  margin: 6.5rem auto 2rem auto;
+  margin: 10rem auto 2rem auto;
   padding: 1rem;
   background-color: #fff; /* Background putih untuk card */
   border-radius: 15px; /* Sudut membulat */
@@ -234,7 +235,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-top: 3rem; /* Menggeser ke bawah */
+  margin-top: 1.75rem; /* Menggeser ke bawah */
 }
 
 .quantity-control {

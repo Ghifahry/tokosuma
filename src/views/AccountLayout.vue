@@ -1,6 +1,7 @@
 <template>
   <section class="account-layout">
     <div class="main-content">
+      <AccountDropdown />
       <Sidebar class="mobile-hidden" />
       <div class="account-content">
         <router-view :key="$route.fullPath" />
@@ -68,6 +69,10 @@ import Footer from "@/components/Footer.vue";
 
   .desktop-hidden {
     display: flex;
+  }
+
+  .mobile-hidden {
+    display: none;
   }
 }
 </style>

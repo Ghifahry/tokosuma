@@ -40,7 +40,7 @@ const user = {
   display: flex;
   justify-content: flex-start; /* ⬅️ Changed to align top */
   box-sizing: border-box;
-  padding: 60px 20px 0 20px; /* ⬅️ Added top padding */
+  padding: 70px 20px 0 20px; /* ⬅️ Added top padding */
 }
 
 .sidebar-inner {

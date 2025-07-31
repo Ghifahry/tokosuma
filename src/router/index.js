@@ -10,15 +10,26 @@ import Ulasan from "@/components/account/Ulasan.vue";
 import Home from "@/views/Home.vue";
 import ProductDetail from "@/components/ProductDetail.vue";
 import Register from "@/views/Register.vue";
+import Login from "@/views/Login.vue";
+import ForgotPassword from "@/views/ForgotPassword.vue";
 import AllBlogs from "@/views/AllBlogs.vue";
-
-import PricelistDigital from "@/components/pricelist-digital/table.vue";
+import SearchResults from "@/views/SearchResults.vue"; // Impor komponen hasil pencarian
+import SyaratKetentuan from "@/views/Footer-View/SyaratKetentuan.vue";
+import KebijakanPrivasi from "@/views/Footer-View/KebijakanPrivasi.vue";
+import CaraPemesanan from "@/views/Footer-View/CaraPemesanan.vue";
+import CaraPembayaran from "@/views/Footer-View/CaraPembayaran.vue";
+import AboutUs from "@/views/Footer-View/AboutUs.vue";
 
 const routes = [
   {
     path: "/",
     name: "home",
     component: Home,
+  },
+  {
+    path: "/search",
+    name: "search-results",
+    component: SearchResults,
   },
   {
     path: "/account",
@@ -43,9 +54,14 @@ const routes = [
     component: Register,
   },
   {
-    path: "/pricelist-digital",
-    name: "pricelist-digital",
-    component: PricelistDigital,
+    path: "/login",
+    name: "login",
+    component: Login,
+  },
+  {
+    path: "/forgot-password",
+    name: "forgot-password",
+    component: ForgotPassword,
   },
   {
     path: "/blogs",
@@ -53,11 +69,40 @@ const routes = [
     component: AllBlogs,
     meta: { hideHeader: true },
   },
+  {
+    path: "/syarat-ketentuan",
+    name: "syarat-ketentuan",
+    component: SyaratKetentuan,
+  },
+  {
+    path: "/kebijakan-privasi",
+    name: "kebijakan-privasi",
+    component: KebijakanPrivasi,
+  },
+  {
+    path: "/cara-pemesanan",
+    name: "cara-pemesanan",
+    component: CaraPemesanan,
+  },
+  {
+    path: "/cara-pembayaran",
+    name: "cara-pembayaran",
+    component: CaraPembayaran,
+  },
+  {
+    path: "/about-us",
+    name: "about-us",
+    component: AboutUs,
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory("/tokosuma/"),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    // always scroll to top
+    return { top: 0 };
+  },
 });
 
 // Mock authentication check function
