@@ -14,11 +14,15 @@ import Login from "@/views/Login.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import AllBlogs from "@/views/AllBlogs.vue";
 import SearchResults from "@/views/SearchResults.vue"; // Impor komponen hasil pencarian
+import CategoryPage from "@/views/CategoryPage.vue"; // Impor komponen halaman kategori
 import SyaratKetentuan from "@/views/Footer-View/SyaratKetentuan.vue";
 import KebijakanPrivasi from "@/views/Footer-View/KebijakanPrivasi.vue";
 import CaraPemesanan from "@/views/Footer-View/CaraPemesanan.vue";
 import CaraPembayaran from "@/views/Footer-View/CaraPembayaran.vue";
 import AboutUs from "@/views/Footer-View/AboutUs.vue";
+
+// Global loading state
+let isLoading = false;
 
 const routes = [
   {
@@ -32,6 +36,11 @@ const routes = [
     component: SearchResults,
   },
   {
+    path: "/kategori/:slug",
+    name: "category-page",
+    component: CategoryPage,
+  },
+  {
     path: "/account",
     component: AccountLayout,
     children: [
@@ -41,7 +50,7 @@ const routes = [
       { path: "alamat", component: Alamat },
       { path: "ulasan", component: Ulasan },
     ],
-    meta: { requiresAuth: true }, // Protect all /account routes
+    meta: { requiresAuth: true, disableGlobalLoading: true }, // Protect all /account routes and disable global loading
   },
   {
     path: "/product/:name",
@@ -113,6 +122,13 @@ function isAuthenticated() {
 
 // Global navigation guard
 router.beforeEach((to, from, next) => {
+  // Show loading animation for route changes
+  if (to.path !== from.path) {
+    isLoading = true;
+    // Dispatch custom event for loading state
+    window.dispatchEvent(new CustomEvent("route-loading", { detail: { loading: true } }));
+  }
+
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!isAuthenticated()) {
       // User is not authenticated, redirect to home or login page
@@ -122,6 +138,16 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     next();
+  }
+});
+
+// Hide loading after route change
+router.afterEach((to, from) => {
+  if (to.path !== from.path) {
+    setTimeout(() => {
+      isLoading = false;
+      window.dispatchEvent(new CustomEvent("route-loading", { detail: { loading: false } }));
+    }, 300);
   }
 });
 

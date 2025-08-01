@@ -52,7 +52,7 @@ const props = defineProps({
 
 <style scoped>
 .blog-section {
-  padding: 4rem 0.5rem 4rem;
+  padding: 2rem 1rem 4rem;
   max-width: 1220px;
   margin: 0 auto;
   text-align: left;
@@ -173,7 +173,7 @@ const props = defineProps({
   font-size: 0.85rem;
   min-height: auto;
   border-radius: 4px;
-  border: 1.5px solid #e85423;
+  border: 1.5px solid #ffffff;
   background-color: transparent;
   color: #e85423;
   cursor: pointer;
@@ -204,13 +204,17 @@ const props = defineProps({
   .section-title {
     font-family: "Roboto", sans-serif;
     font-size: 1.2rem;
+    padding-left: 2px;
   }
 
   .see-more-button.top-right {
     white-space: nowrap; /* Prevent button text from wrapping */
     font-size: 0.75rem; /* Slightly reduce font size */
-    padding: 0.25rem 0.5rem; /* Adjust padding */
-    margin-bottom: 1px;
+    padding: 0.25rem 0.8rem;
+    margin-top: 5px;
+  }
+  .blog-section {
+    padding: 1rem 1rem 2rem;
   }
 }
 </style>

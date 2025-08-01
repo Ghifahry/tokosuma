@@ -1,6 +1,10 @@
 <template>
   <div class="product-detail">
-    <div v-if="product" class="product-info">
+    <!-- Loading Skeleton -->
+    <ProductDetailSkeleton v-if="isLoading" />
+
+    <!-- Actual Product Content -->
+    <div v-else-if="product" class="product-info">
       <div class="product-details-right">
         <img :src="product.image" :alt="product.name" class="hide-on-desktop" />
         <p class="toko-official">Toko Suma Official</p>
@@ -9,7 +13,16 @@
           <span class="review-count">Terjual {{ product.soldCount }}</span>
           <span class="rating"> <i class="fas fa-star yellow-star"></i> {{ product.rating.value }} ({{ product.rating.count }} rating) </span>
         </div>
-        <p class="product-price">{{ product.price }}</p>
+
+        <!-- Promo Badge -->
+        <div v-if="product.isPromo" class="promo-badge-detail">
+          <span class="promo-text-detail">-{{ product.discount }}%</span>
+        </div>
+
+        <div class="price-container-detail">
+          <p class="product-price">{{ product.price }}</p>
+          <p v-if="product.originalPrice" class="original-price-detail">{{ product.originalPrice }}</p>
+        </div>
         <div class="product-actions">
           <button class="favorite-button" @click="toggleWishlist">
             <i :class="isFavorite ? 'fas fa-heart' : 'far fa-heart'"></i>
@@ -86,6 +99,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { wishlist } from "../data/wishlist";
 import Footer from "./Footer.vue";
+import ProductDetailSkeleton from "./loading-screen/ProductDetailSkeleton.vue";
 
 const route = useRoute();
 const productName = route.params.name;
@@ -95,6 +109,7 @@ import products from "../data/products";
 const product = ref(null);
 const notificationMessage = ref("");
 const quantity = ref(1);
+const isLoading = ref(true);
 
 const isFavorite = computed(() => {
   if (!product.value) return false;
@@ -181,9 +196,14 @@ function slugify(text) {
 
 onMounted(() => {
   console.log("Product Name from Route:", productName);
-  product.value = products.find((p) => slugify(p.name) === productName);
-  console.log("Found Product:", product.value);
-  window.scrollTo(0, 0); // Scroll to the top of the page
+
+  // Simulate loading time
+  setTimeout(() => {
+    product.value = products.find((p) => slugify(p.name) === productName);
+    console.log("Found Product:", product.value);
+    isLoading.value = false;
+    window.scrollTo(0, 0); // Scroll to the top of the page
+  }, 800);
 });
 </script>
 
@@ -325,12 +345,45 @@ onMounted(() => {
   margin-bottom: 0;
 }
 
+/* Promo Badge Detail */
+.promo-badge-detail {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff4757, #ff3742);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+  margin-bottom: 0.5rem;
+}
+
+.promo-text-detail {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Price Container Detail */
+.price-container-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0.5rem 0;
+}
+
 .product-price {
   font-size: 2rem;
   color: #e85423;
   font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 1rem;
+  margin: 0;
+}
+
+.original-price-detail {
+  font-size: 1.2rem;
+  color: #999;
+  text-decoration: line-through;
+  margin: 0;
+  font-weight: 400;
 }
 
 .product-reviews {
@@ -558,6 +611,19 @@ onMounted(() => {
 
   .product-price {
     font-size: 1.2rem;
+  }
+
+  .original-price-detail {
+    font-size: 1rem;
+  }
+
+  .promo-badge-detail {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+
+  .promo-text-detail {
+    font-size: 0.75rem;
   }
 }
 

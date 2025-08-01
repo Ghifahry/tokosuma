@@ -1,29 +1,40 @@
 <template>
   <div class="main-content">
-    <nav>
-      <router-link to="/promo-slider">Promo Slider</router-link> | <router-link to="/special-products">Special Products</router-link> |
-      <router-link to="/blog-section">Blog Section</router-link>
-    </nav>
-    <PromoSlider />
-    <OfficialStore :stores="stores" :isMobile="isMobile" />
-    <Banner :imageSrc="bannerImage" link="https://example.com" />
-    <SpecialProducts :isMobile="isMobile" />
-    <Banner :imageSrc="bannerImage" link="https://example.com" />
-    <BlogSection :blogs="blogs" :isMobile="isMobile" />
-    <Footer />
+    <!-- Loading Skeleton -->
+    <HomeSkeleton v-if="isLoading" />
+
+    <!-- Actual Content -->
+    <div v-else>
+      <nav>
+        <router-link to="/promo-slider">Promo Slider</router-link> | <router-link to="/special-products">Special Products</router-link> |
+        <router-link to="/blog-section">Blog Section</router-link>
+      </nav>
+      <PromoSlider />
+      <OfficialStore :stores="stores" :isMobile="isMobile" />
+      <Banner :imageSrc="bannerImage" link="https://example.com" />
+      <SpecialProducts :isMobile="isMobile" />
+      <PromoProducts :isMobile="isMobile" />
+      <Banner :imageSrc="bannerImage" link="https://example.com" />
+      <BlogSection :blogs="blogs" :isMobile="isMobile" />
+      <Footer />
+    </div>
   </div>
 </template>
 
 <script setup>
 import PromoSlider from "@/components/home/PromoSlider.vue";
 import SpecialProducts from "@/components/home/SpecialProducts.vue";
+import PromoProducts from "@/components/home/PromoProducts.vue";
 import BlogSection from "@/components/home/BlogSection.vue";
 import OfficialStore from "@/components/home/OfficialStore.vue";
 import Banner from "@/components/home/Banner.vue";
 import Footer from "@/components/Footer.vue";
+import HomeSkeleton from "@/components/loading-screen/HomeSkeleton.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 import bannerImage from "@/assets/banner.png";
 import blogs from "@/data/blogs.json";
+
+// ... existing code ...
 
 const stores = [
   { id: 1, name: "Toko Suma", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_aLKez05Nt-EtV13BqEfvNDQ0BSnJA7pNZQ&s" },
@@ -52,6 +63,7 @@ const stores = [
 ];
 
 const isMobile = ref(false);
+const isLoading = ref(true);
 
 function updateIsMobile() {
   isMobile.value = window.innerWidth <= 768;
@@ -60,6 +72,11 @@ function updateIsMobile() {
 onMounted(() => {
   updateIsMobile();
   window.addEventListener("resize", updateIsMobile);
+
+  // Simulate loading time
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1000);
 });
 
 onUnmounted(() => {

@@ -210,21 +210,24 @@ function handleSlideChangeMobile(swiper) {
 .product-name-price {
   position: relative;
   padding: 0 0.8rem;
-  height: 5rem;
+  height: 4rem;
 }
 
 .product-name {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #333;
   font-weight: 500;
   margin: 0;
   padding: 0;
-  line-height: 1.5rem;
-  display: block;
-  height: auto;
-  overflow: visible;
-  text-overflow: unset;
+  line-height: 1.1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: normal;
+  max-width: 100%;
+  height: 2.2rem;
 }
 
 .product-price {

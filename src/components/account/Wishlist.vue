@@ -203,12 +203,18 @@ function slugify(text) {
 }
 
 .product-name {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #222;
   font-weight: 700;
   margin: 0.2rem 0 0.4rem 0;
-  display: block;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
   line-height: 1.2;
+  max-height: 2.2rem;
 }
 
 .product-price {
@@ -235,12 +241,18 @@ function slugify(text) {
 }
 
 .product-name {
-  font-size: 14px;
+  font-size: 13px;
   color: #333;
   font-weight: 500;
   margin: 0;
-  display: inline-block;
-  vertical-align: middle;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  max-height: 2.6rem;
+  line-height: 1.3;
 }
 
 .product-price {

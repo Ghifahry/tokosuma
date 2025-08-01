@@ -34,17 +34,11 @@
 
                   <!-- ==== KANAN: Daftar Kategori ==== -->
                   <ul class="kategori-list">
-                    <!-- Contoh kategori utama -->
-                    <li><button @click="navigateTo('/kategori/kaos')">Kaos Custom</button></li>
-                    <li><button @click="navigateTo('/kategori/hoodie')">Hoodie & Sweater</button></li>
-                    <li><button @click="navigateTo('/kategori/totebag')">Tote Bag</button></li>
-                    <li><button @click="navigateTo('/kategori/mug')">Mug & Tumbler</button></li>
-                    <li><button @click="navigateTo('/kategori/sticker')">Sticker</button></li>
-                    <li><button @click="navigateTo('/kategori/phonecase')">Phone Case</button></li>
-                    <li><button @click="navigateTo('/kategori/notebook')">Notebook</button></li>
-                    <li><button @click="navigateTo('/kategori/plakat')">Plakat & Award</button></li>
-                    <li><button @click="navigateTo('/kategori/merch')">Merch Corporate</button></li>
-                    <li><button @click="navigateTo('/kategori/others')">Lain‑lain…</button></li>
+                    <li v-for="category in availableCategories" :key="category.slug">
+                      <button @click="navigateTo(`/kategori/${category.slug}`)">
+                        {{ category.name }}
+                      </button>
+                    </li>
                   </ul>
 
                   <button class="btn-continue" :disabled="!hasSelection" @click="applyKategori">Continue</button>
@@ -112,8 +106,12 @@
               <!-- ==== KANAN: Daftar Kategori ==== -->
               <ul class="kategori-list">
                 <!-- Contoh kategori utama -->
-                <li><button @click="navigateTo('/kategori/kaos')">Kaos Custom</button></li>
-                <li><button @click="navigateTo('/kategori/hoodie')">Hoodie & Sweater</button></li>
+                <li v-for="category in availableCategories" :key="category.slug">
+                  <button @click="navigateTo(`/kategori/${category.slug}`)">
+                    {{ category.name }}
+                  </button>
+                </li>
+
                 <li><button @click="navigateTo('/kategori/totebag')">Tote Bag</button></li>
                 <li><button @click="navigateTo('/kategori/mug')">Mug & Tumbler</button></li>
                 <li><button @click="navigateTo('/kategori/sticker')">Sticker</button></li>
@@ -161,6 +159,56 @@ export default {
   computed: {
     hasSelection() {
       return this.filter.terbaru || this.filter.diskon || this.sortBy !== "termurah";
+    },
+    availableCategories() {
+      const categories = [];
+      const categoryMap = new Map();
+
+      // Analisis produk untuk menentukan kategori yang ada
+      this.products.forEach((product) => {
+        const name = product.name.toLowerCase();
+
+        // Deteksi kategori berdasarkan nama produk
+        if (name.includes("buku") || name.includes("novel") || name.includes("calender")) {
+          if (!categoryMap.has("buku")) {
+            categoryMap.set("buku", { name: "Buku", slug: "buku", count: 0 });
+          }
+          categoryMap.get("buku").count++;
+        }
+
+        if (name.includes("tas") || name.includes("bag")) {
+          if (!categoryMap.has("tas")) {
+            categoryMap.set("tas", { name: "Tas", slug: "tas", count: 0 });
+          }
+          categoryMap.get("tas").count++;
+        }
+
+        if (name.includes("gelas") || name.includes("mug") || name.includes("tumbler")) {
+          if (!categoryMap.has("gelas")) {
+            categoryMap.set("gelas", { name: "Gelas & Mug", slug: "gelas", count: 0 });
+          }
+          categoryMap.get("gelas").count++;
+        }
+
+        if (name.includes("kalender") || name.includes("calender")) {
+          if (!categoryMap.has("kalender")) {
+            categoryMap.set("kalender", { name: "Kalender", slug: "kalender", count: 0 });
+          }
+          categoryMap.get("kalender").count++;
+        }
+
+        if (name.includes("tulis") || name.includes("campus")) {
+          if (!categoryMap.has("alat-tulis")) {
+            categoryMap.set("alat-tulis", { name: "Alat Tulis", slug: "alat-tulis", count: 0 });
+          }
+          categoryMap.get("alat-tulis").count++;
+        }
+      });
+
+      // Konversi Map ke Array dan urutkan berdasarkan jumlah produk
+      return Array.from(categoryMap.values())
+        .filter((category) => category.count > 0)
+        .sort((a, b) => b.count - a.count);
     },
   },
   methods: {
@@ -343,15 +391,14 @@ export default {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 0.5rem 1rem;
-  gap: 20px;
+  gap: 10px;
 }
 
 .logo img {
   width: 150px;
   justify-self: start;
   padding: 0.5rem 1rem;
-  margin-top: 10px;
+  margin-left: 50px;
 }
 
 .search-section {
@@ -378,7 +425,7 @@ export default {
 }
 
 .search-section {
-  padding-top: 20px;
+  padding-top: 10px; /* Reduced from 20px to move search bar higher */
 }
 .search {
   position: relative;
@@ -398,7 +445,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 30px;
   width: 400px;
-  height: 40px;
+  height: 45px; /* Increased from 40px to make search bar taller */
   font-size: 0.85rem;
 }
 
@@ -417,7 +464,7 @@ export default {
   display: flex;
   gap: 2rem;
   padding: 2rem 5rem;
-  margin-top: 15px;
+  margin-top: 5px; /* Reduced from 15px to align with raised search bar */
 }
 
 .icons i {
@@ -735,8 +782,9 @@ export default {
   }
 
   .icons {
-    gap: 2rem;
-    padding-right: 3.5rem;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    align-items: center;
   }
 
   .hamburger {
@@ -747,17 +795,21 @@ export default {
 /* 🌐 Ukuran layar kecil (HP) */
 @media (max-width: 768px) {
   .profile-dropdown {
-    padding-top: 1rem;
+    padding-top: 0; /* Remove top padding to align with search bar */
+    position: relative; /* Ensure proper positioning for dropdown */
   }
   .top-bar {
     grid-template-columns: 1fr auto auto; /* Search, Logo (hidden), Icons */
     padding: 0.5rem 1rem;
+    align-items: center; /* Ensure vertical alignment */
   }
 
   .search-section {
     flex-direction: column;
-    gap: 10px;
+    gap: 8px; /* Reduced gap to move search bar higher */
     width: 100%;
+    align-items: stretch;
+    padding-top: 5px; /* Added padding-top for mobile */
   }
 
   .kategori-button-desktop {
@@ -783,14 +835,16 @@ export default {
 
   .search input {
     width: 100%; /* Make input take full width of its parent (.search) */
-
     padding: 0.4rem 1.5rem 0.4rem 1.8rem; /* Adjust padding */
     font-size: 0.75rem;
+    height: 38px; /* Increased height for mobile to match desktop proportion */
+    box-sizing: border-box;
   }
 
   .icons {
-    padding: 0.5rem 2rem 1.5rem 1rem; /* Adjusted padding for mobile */
+    padding: 0.5rem 1rem; /* Adjusted padding to align with search bar */
     gap: 0.5rem; /* Adjusted gap for mobile */
+    align-items: center; /* Ensure vertical alignment */
   }
 
   .profile-pic {
@@ -808,8 +862,12 @@ export default {
   }
 
   .auth-buttons .account-btn {
-    padding: 0.3rem 0.8rem;
+    padding: 0.4rem 0.8rem; /* Increased padding to match search bar height */
     font-size: 0.75rem;
+    height: 38px; /* Match search bar height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .menu {
@@ -835,6 +893,55 @@ export default {
 
   .kategori-list {
     columns: 1;
+  }
+
+  /* Account dropdown styling for mobile */
+  .account-dropdown {
+    position: absolute;
+    top: calc(100% + 5px); /* Position below the profile dropdown with small gap */
+    right: -10px; /* Slight offset to align with search bar */
+    width: 280px; /* Increased width for mobile */
+    min-width: 280px; /* Ensure minimum width */
+    background: #fff;
+    padding: 1rem;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    z-index: 999;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .account-dropdown .user-info {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+  }
+
+  .account-dropdown .user-info .user-full-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  .account-dropdown .user-info .user-email {
+    font-size: 0.85rem;
+    color: #777;
+  }
+
+  .account-dropdown .account-btn {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .account-dropdown .account-btn:hover {
+    background-color: #f5f5f5;
+    color: #e85423;
   }
 }
 .account-btn {

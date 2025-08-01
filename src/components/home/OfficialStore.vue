@@ -77,7 +77,7 @@ function handleSlideChangeMobile(swiper) {
 
 <style scoped>
 .official-store {
-  padding: 4rem 0.5rem 4rem;
+  padding: 2rem 1rem 4rem;
   max-width: 1220px;
   margin: 0 auto;
   text-align: left;
@@ -89,7 +89,7 @@ function handleSlideChangeMobile(swiper) {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .section-title {
@@ -187,11 +187,11 @@ function handleSlideChangeMobile(swiper) {
 
 @media (max-width: 768px) {
   .official-store {
-    padding: 0 1rem 4rem;
+    padding: 1rem 1rem 2rem;
   }
 
   .section-header {
-    padding: 0 0.5rem;
+    padding: 2 0.5rem;
     flex-wrap: nowrap;
     align-items: center;
   }
@@ -199,6 +199,7 @@ function handleSlideChangeMobile(swiper) {
   .section-title {
     white-space: nowrap;
     font-size: 1.2rem;
+    padding-left: 7px;
   }
 }
 

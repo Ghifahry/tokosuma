@@ -106,7 +106,7 @@ onUnmounted(() => {
   .promo-container {
     /* Go full-width, remove padding and horizontal margin */
     padding: 0;
-    margin: 4rem 0 2rem 0;
+    margin: 1rem 0 2rem 0;
     width: 100%;
   }
   .promo-slider {
@@ -118,7 +118,7 @@ onUnmounted(() => {
   .promo-img {
     height: auto;
     max-height: 250px;
-    border-radius: 0; /* Remove radius for edge-to-edge */
+    border-radius: 5px; /* Remove radius for edge-to-edge */
   }
   .promo-boards {
     display: none;

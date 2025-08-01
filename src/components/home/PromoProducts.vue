@@ -1,12 +1,12 @@
 <template>
-  <section class="special-products">
+  <section class="promo-products">
     <div class="section-header">
-      <h2 class="section-title">Special Products</h2>
+      <h2 class="section-title">Back To School</h2>
       <button class="see-more-button top-right" @click="$router.push('/produk')">Lihat Semua Produk <i class="fas fa-chevron-right"></i></button>
     </div>
 
-    <!-- suma.png is now outside the swiper-container -->
-    <div class="suma-background" :class="{ 'slide-out': activeIndex > 0, 'slide-in': activeIndex === 0 }"></div>
+    <!-- backtoschool.png is now outside the swiper-container -->
+    <div class="backtoschool-background" :class="{ 'slide-out': activeIndex > 0, 'slide-in': activeIndex === 0 }"></div>
 
     <div v-if="!isMobile" class="swiper-container">
       <swiper
@@ -14,8 +14,8 @@
         :slides-per-view="6.2"
         :space-between="-230"
         :navigation="{
-          nextEl: '.swiper-button-next-special-products',
-          prevEl: '.swiper-button-prev-special-products',
+          nextEl: '.swiper-button-next-promo-products',
+          prevEl: '.swiper-button-prev-promo-products',
         }"
         class="desktop-product-swiper"
         :pagination="false"
@@ -23,22 +23,33 @@
       >
         <swiper-slide v-for="(product, index) in products" :key="product.id" class="product-slide">
           <router-link :to="`/product/${slugify(product.name)}`" class="product-card">
-            <img :src="product.image" :alt="product.name" class="product-img" />
+            <div class="product-image-container">
+              <img :src="product.image" :alt="product.name" class="product-img" />
+            </div>
             <div class="product-info">
               <p class="product-official">Toko Suma Official</p>
               <div class="product-name-price">
                 <p class="product-name">{{ product.name }}</p>
-                <p class="product-price">{{ product.price }}</p>
+                <div class="price-container">
+                  <div class="price-row">
+                    <span class="original-price">{{ product.originalPrice }}</span>
+                    <div class="discount-badge">
+                      <span class="discount-text">{{ product.discount }}%</span>
+                      <span class="discount-label">OFF</span>
+                    </div>
+                  </div>
+                  <span class="product-price">{{ product.promoPrice }}</span>
+                </div>
               </div>
             </div>
           </router-link>
         </swiper-slide>
       </swiper>
       <!-- Custom Navigation Buttons -->
-      <button class="swiper-button-prev-special-products">
+      <button class="swiper-button-prev-promo-products">
         <i class="fas fa-chevron-left"></i>
       </button>
-      <button class="swiper-button-next-special-products">
+      <button class="swiper-button-next-promo-products">
         <i class="fas fa-chevron-right"></i>
       </button>
     </div>
@@ -47,12 +58,23 @@
       <swiper :slides-per-view="2.2" :space-between="5" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
         <swiper-slide v-for="product in products" :key="product.id">
           <router-link :to="`/product/${slugify(product.name)}`" class="product-card">
-            <img :src="product.image" :alt="product.name" class="product-img" />
+            <div class="product-image-container">
+              <img :src="product.image" :alt="product.name" class="product-img" />
+            </div>
             <div class="product-info">
               <p class="product-official">Toko Suma Official</p>
               <div class="product-name-price">
                 <p class="product-name">{{ product.name }}</p>
-                <p class="product-price">{{ product.price }}</p>
+                <div class="price-container">
+                  <div class="price-row">
+                    <span class="original-price">{{ product.originalPrice }}</span>
+                    <div class="discount-badge">
+                      <span class="discount-text">{{ product.discount }}%</span>
+                      <span class="discount-label">OFF</span>
+                    </div>
+                  </div>
+                  <span class="product-price">{{ product.promoPrice }}</span>
+                </div>
               </div>
             </div>
           </router-link>
@@ -68,12 +90,8 @@ import { Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import bgSuma from "@/assets/suma.png";
+import bgBacktoschool from "@/assets/backtoschool.png";
 import { ref } from "vue";
-
-import { specialProducts } from "@/data/specialProducts.js";
-
-const products = specialProducts;
 
 const props = defineProps({
   isMobile: {
@@ -82,6 +100,81 @@ const props = defineProps({
   },
 });
 
+const products = [
+  {
+    id: 1,
+    name: "Buku Novel Terpopuler",
+    image: "https://image.gramedia.net/rs:fit:256:0/plain/https://cdn.gramedia.com/uploads/items/9786024249939_FLOATING-IN-S.jpg",
+    originalPrice: "Rp 150.000",
+    promoPrice: "Rp 120.000",
+    discount: 20,
+  },
+  {
+    id: 2,
+    name: "Tas Sekolah Premium",
+    image: "https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/HAPPY_BLACK_vZ3ATpc.png",
+    originalPrice: "Rp 250.000",
+    promoPrice: "Rp 200.000",
+    discount: 20,
+  },
+  {
+    id: 3,
+    name: "Buku Untuk Di Baca",
+    image: "https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/9786028508377_Buku-Untuk-Dibaca--All-About-Love-Life-And-Hope-Edisi-Terbaru.jpg",
+    originalPrice: "Rp 80.000",
+    promoPrice: "Rp 60.000",
+    discount: 25,
+  },
+  {
+    id: 4,
+    name: "Kalender 2030",
+    image: "https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/Kalender_Bip_2021.png",
+    originalPrice: "Rp 120.000",
+    promoPrice: "Rp 90.000",
+    discount: 25,
+  },
+  {
+    id: 5,
+    name: "Alat Tulis Set Lengkap",
+    image: "https://image.gramedia.net/rs:fit:256:0/plain/https://cdn.gramedia.com/uploads/product-metas/3i-9ate9ea.png",
+    originalPrice: "Rp 100.000",
+    promoPrice: "Rp 75.000",
+    discount: 25,
+  },
+  {
+    id: 6,
+    name: "Sesungguhnya Kita Sudah Tidak Kuat Lagi untuk ",
+    image: "https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/9786232447912.jpg",
+    originalPrice: "Rp 180.000",
+    promoPrice: "Rp 135.000",
+    discount: 25,
+  },
+  {
+    id: 7,
+    name: "Tas Gelori",
+    image: "https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/BUSQUETS-SHOULDER-BAG_depan.jpg",
+    originalPrice: "Rp 300.000",
+    promoPrice: "Rp 225.000",
+    discount: 25,
+  },
+  {
+    id: 8,
+    name: "Tas Aksara",
+    image: "https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/207967874.jpg",
+    originalPrice: "Rp 120.000",
+    promoPrice: "Rp 96.000",
+    discount: 20,
+  },
+  {
+    id: 9,
+    name: "Buku Hipnotis",
+    image: "https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/products/nnirper8--.jpg",
+    originalPrice: "Rp 200.000",
+    promoPrice: "Rp 160.000",
+    discount: 20,
+  },
+];
+
 const activeIndex = ref(0);
 
 function handleSlideChange(swiper) {
@@ -89,7 +182,7 @@ function handleSlideChange(swiper) {
 }
 
 function handleSlideChangeMobile(swiper) {
-  activeIndex.value = swiper.activeIndex; // Use same activeIndex for mobile
+  activeIndex.value = swiper.activeIndex;
 }
 
 function slugify(text) {
@@ -105,7 +198,7 @@ function slugify(text) {
 </script>
 
 <style scoped>
-.special-products {
+.promo-products {
   padding: 2rem 1rem 4rem;
   max-width: 1220px;
   margin: 0 auto;
@@ -157,7 +250,7 @@ function slugify(text) {
   border: 1px solid #d3d3d3;
   transition: transform 0.2s ease;
   cursor: pointer;
-  height: 270px;
+  height: 280px;
   outline: 2px solid transparent;
   outline-offset: -2px;
   display: block;
@@ -172,6 +265,12 @@ function slugify(text) {
   position: relative;
 }
 
+.product-image-container {
+  position: relative;
+  width: 100%;
+  height: 180px;
+}
+
 .product-img {
   width: 100%;
   height: 180px;
@@ -183,7 +282,7 @@ function slugify(text) {
 .product-name-price {
   position: relative;
   padding: 0 0.8rem;
-  height: 4rem;
+  height: 4.5rem;
 }
 
 .product-name {
@@ -201,12 +300,61 @@ function slugify(text) {
   white-space: normal;
   max-width: 100%;
   height: 2.2rem;
+  margin-bottom: 0.5rem;
 }
 
-.product-price {
+.price-container {
   position: absolute;
   bottom: 0;
   left: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  width: calc(100% - 1.6rem);
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.original-price {
+  font-size: 0.75rem;
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+}
+
+.discount-badge {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+  padding: 1px 4px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(255, 107, 107, 0.3);
+  font-size: 0.5rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 22px;
+}
+
+.discount-text {
+  font-size: 0.55rem;
+  font-weight: 700;
+}
+
+.discount-label {
+  font-size: 0.4rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.product-price {
   font-size: 0.9rem;
   color: #e85423;
   font-weight: 600;
@@ -214,11 +362,6 @@ function slugify(text) {
   padding: 0;
   display: block;
   text-align: left;
-  width: calc(100% - 1.6rem);
-}
-
-.product-price {
-  margin-top: 0.1rem;
 }
 
 .product-official {
@@ -230,13 +373,13 @@ function slugify(text) {
   text-align: left;
 }
 
-.suma-background {
+.backtoschool-background {
   position: absolute;
   left: 18px;
   top: 100px;
   width: 230px;
   height: 350px;
-  background-image: url("@/assets/suma.png");
+  background-image: url("@/assets/backtoschool.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top;
@@ -245,11 +388,11 @@ function slugify(text) {
 }
 
 .desktop-product-swiper .swiper-wrapper {
-  padding-left: 100px; /* shift slides right inside full-width slider */
+  padding-left: 100px;
 }
 
 .desktop-product-swiper .swiper-slide:first-child {
-  padding-left: 11rem; /* shift first product card slightly right */
+  padding-left: 11rem;
 }
 
 .slide-out {
@@ -267,8 +410,8 @@ function slugify(text) {
   overflow: visible;
 }
 
-.swiper-button-prev-special-products,
-.swiper-button-next-special-products {
+.swiper-button-prev-promo-products,
+.swiper-button-next-promo-products {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -290,17 +433,17 @@ function slugify(text) {
   visibility: hidden;
 }
 
-.swiper-container:hover .swiper-button-prev-special-products,
-.swiper-container:hover .swiper-button-next-special-products {
+.swiper-container:hover .swiper-button-prev-promo-products,
+.swiper-container:hover .swiper-button-next-promo-products {
   opacity: 1;
   visibility: visible;
 }
 
-.swiper-button-prev-special-products {
+.swiper-button-prev-promo-products {
   left: -20px;
 }
 
-.swiper-button-next-special-products {
+.swiper-button-next-promo-products {
   right: -20px;
 }
 
@@ -311,31 +454,30 @@ function slugify(text) {
 }
 
 @media (max-width: 768px) {
-  .special-products {
+  .promo-products {
     padding: 1rem 1rem 2rem;
   }
 
   .section-header {
     padding: 0 0.5rem;
-    flex-wrap: nowrap; /* Prevent wrapping */
-    align-items: center; /* Ensure vertical alignment */
+    flex-wrap: nowrap;
+    align-items: center;
   }
 
   .section-title {
-    white-space: nowrap; /* Prevent title from wrapping */
+    white-space: nowrap;
     font-size: 1.2rem;
-    padding-right: 15px; /* Slightly reduce font size */
+    padding-right: 15px;
   }
 
   .see-more-button.top-right {
-    white-space: nowrap; /* Prevent button text from wrapping */
-    font-size: 0.75rem; /* Slightly reduce font size */
-    padding: 0.25rem 0.2rem; /* Adjust padding */
+    white-space: nowrap;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.2rem;
     margin-bottom: 15px;
   }
 
-  /* Mobile background suma styling */
-  .suma-background {
+  .backtoschool-background {
     width: 260px;
     height: 290px;
     top: 100px;
@@ -343,7 +485,7 @@ function slugify(text) {
   }
 
   .mobile-swiper-container {
-    position: relative; /* Give space for suma background */
+    position: relative;
   }
 
   .mobile-product-swiper {
@@ -352,10 +494,9 @@ function slugify(text) {
   }
 
   .mobile-product-swiper .swiper-slide:first-child {
-    padding-left: 10rem; /* shift first product card to accommodate bigger background */
+    padding-left: 10rem;
   }
 
-  /* Mobile slide animations */
   .slide-out {
     transform: translateX(-100px);
     opacity: 0;
@@ -365,9 +506,26 @@ function slugify(text) {
     transform: translateX(0);
     opacity: 1;
   }
+
+  .discount-badge {
+    padding: 1px 3px;
+    font-size: 0.45rem;
+    min-width: 20px;
+  }
+
+  .discount-text {
+    font-size: 0.5rem;
+  }
+
+  .discount-label {
+    font-size: 0.35rem;
+  }
+
+  .price-row {
+    gap: 0.3rem;
+  }
 }
 
-/* For very narrow screens like Samsung Fold */
 @media (max-width: 480px) {
   .mobile-product-swiper {
     --swiper-slides-per-view: 1.5;
@@ -375,22 +533,20 @@ function slugify(text) {
   }
 }
 
-/* For tablet screens */
 @media (min-width: 769px) and (max-width: 1024px) {
   .mobile-product-swiper {
-    --swiper-space-between: 20; /* Increased gap for tablet */
+    --swiper-space-between: 20;
   }
 
   .mobile-product-swiper .swiper-slide:first-child {
-    padding-left: 12rem; /* Increased padding for tablet */
+    padding-left: 12rem;
   }
 
   .mobile-product-swiper {
-    margin-left: 8px; /* Increased margin for tablet */
+    margin-left: 8px;
   }
 
-  /* Tablet background suma styling */
-  .suma-background {
+  .backtoschool-background {
     width: 280px;
     height: 320px;
     top: 100px;
@@ -398,22 +554,20 @@ function slugify(text) {
   }
 }
 
-/* For larger tablet screens */
 @media (min-width: 1025px) and (max-width: 1200px) {
   .mobile-product-swiper {
-    --swiper-space-between: 25; /* Even larger gap for larger tablets */
+    --swiper-space-between: 25;
   }
 
   .mobile-product-swiper .swiper-slide:first-child {
-    padding-left: 14rem; /* Increased padding for larger tablets */
+    padding-left: 14rem;
   }
 
   .mobile-product-swiper {
-    margin-left: 10px; /* Increased margin for larger tablets */
+    margin-left: 10px;
   }
 
-  /* Larger tablet background suma styling */
-  .suma-background {
+  .backtoschool-background {
     width: 300px;
     height: 350px;
     top: 100px;

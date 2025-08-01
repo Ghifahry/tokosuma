@@ -23,7 +23,8 @@ const props = defineProps({
 .banner-container {
   width: 100%;
   max-width: 1220px;
-  margin: 2rem auto;
+  margin: 0 auto;
+  padding: 2rem 1rem;
   text-align: center;
   box-sizing: border-box;
 }
@@ -38,8 +39,8 @@ const props = defineProps({
 
 @media (max-width: 768px) {
   .banner-container {
-    margin: 1rem auto;
-    padding: 0 1rem;
+    margin: 0 auto;
+    padding: 1rem 1rem;
     width: 100%;
   }
 }
