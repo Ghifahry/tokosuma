@@ -82,10 +82,6 @@ const props = defineProps({
   color: inherit;
 }
 
-.blog-card:hover {
-  transform: translateY(-5px);
-}
-
 .blog-img {
   width: 100%;
   height: 180px;

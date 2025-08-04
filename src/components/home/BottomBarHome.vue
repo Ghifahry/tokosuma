@@ -8,7 +8,7 @@
       <i class="fas fa-th-large"></i>
       <span>Kategori</span>
     </router-link>
-    <router-link to="/blog" class="bottom-link" active-class="active-link">
+    <router-link to="/blogs" class="bottom-link" active-class="active-link">
       <i class="fas fa-newspaper"></i>
       <span>Blog</span>
     </router-link>

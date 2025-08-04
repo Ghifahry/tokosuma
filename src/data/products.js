@@ -36,7 +36,7 @@ const products = [
       { reviewerName: "Siti Aminah", rating: 4, date: "2024-07-18", comment: "Desainnya elegan dan praktis untuk sekolah." },
     ],
     stock: 50,
-    category: "tas",
+    category: "t  as",
     isPromo: true,
   },
   {

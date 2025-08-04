@@ -84,11 +84,12 @@ export default {
         // Simulasi login process
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        // Set login status
+        // Regular user login
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("userEmail", this.form.email);
         localStorage.setItem("userFullName", "mhmdgabrielle");
-        localStorage.setItem("username", "el");
+        localStorage.setItem("username", "TOKOSUMAVIEWER");
+        localStorage.setItem("userRole", "user");
 
         // Trigger custom event untuk update header
         window.dispatchEvent(

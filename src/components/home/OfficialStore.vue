@@ -120,10 +120,6 @@ function handleSlideChangeMobile(swiper) {
   padding: 1rem;
 }
 
-.store-card:hover {
-  transform: translateY(-5px);
-}
-
 .store-logo {
   width: 80px;
   height: 80px;

@@ -48,13 +48,28 @@
           </div>
           <div class="search">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" placeholder="Cari Produk atau Judul Buku...." v-model="searchQuery" @keyup.enter="searchProducts" />
+            <input type="text" placeholder="Cari Produk atau Judul Buku...." v-model="searchQuery" @keyup.enter="searchProducts" @input="handleSearchInput" @focus="showSearchSuggestions = true" @blur="handleSearchBlur" ref="searchInput" />
+            <!-- Search Suggestions Dropdown -->
+            <transition name="zoom-fade">
+              <div v-if="showSearchSuggestions && searchSuggestions.length > 0" class="search-suggestions" @click.stop>
+                <ul class="suggestions-list">
+                  <li v-for="suggestion in searchSuggestions" :key="suggestion" @click="selectSuggestion(suggestion)" class="suggestion-item">
+                    <div class="suggestion-content">
+                      <i class="fas fa-search suggestion-icon"></i>
+                      <div class="suggestion-details">
+                        <div class="suggestion-name">{{ suggestion }}</div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </transition>
           </div>
         </div>
+        <!-- Small Vertical Separator -->
+        <div class="small-separator"></div>
         <!-- Ikon -->
         <div class="icons">
-          <!-- Cart -->
-
           <!-- Account -->
           <div v-if="isLoggedIn" class="dropdown profile-dropdown" @click="toggleAccount" ref="profileDropdownRef">
             <img :src="profileImageUrl" alt="User Profile" class="profile-pic" />
@@ -66,9 +81,20 @@
                   <span class="user-full-name">{{ userFullName }}</span>
                   <span class="user-email">{{ userEmail }}</span>
                 </div>
-                <button @click="navigateTo('/account/akun')" class="account-btn">Akun</button>
-                <button @click="navigateTo('/cart')" class="account-btn">Cart</button>
-                <button @click="navigateTo('/account/wishlist')" class="account-btn wishlist-separator">Wishlist</button>
+                <button @click="navigateTo('/account/akun')" class="account-btn">
+                  <i class="fas fa-user"></i>
+                  Akun
+                </button>
+                <button @click="navigateTo('/cart')" class="account-btn cart-btn">
+                  <i class="fas fa-shopping-cart"></i>
+                  Cart
+                  <span v-if="cartItemCount > 0" class="cart-count">{{ cartItemCount }}</span>
+                </button>
+                <button @click="navigateTo('/account/wishlist')" class="account-btn wishlist-separator">
+                  <i class="fas fa-heart"></i>
+                  Wishlist
+                </button>
+                <button v-if="isSuperAdmin" @click="navigateTo('/admin/dashboard')" class="account-btn admin-btn">Dashboard</button>
                 <button @click="logout" class="account-btn">Logout</button>
               </div>
             </transition>
@@ -112,13 +138,13 @@
                   </button>
                 </li>
 
-                <li><button @click="navigateTo('/kategori/totebag')">Tote Bag</button></li>
+                <li><button @click="navigateTo('/kategori/totebag')">Tote Bag</button></li>
                 <li><button @click="navigateTo('/kategori/mug')">Mug & Tumbler</button></li>
                 <li><button @click="navigateTo('/kategori/sticker')">Sticker</button></li>
-                <li><button @click="navigateTo('/kategori/phonecase')">Phone Case</button></li>
+                <li><button @click="navigateTo('/kategori/phonecase')">Phone Case</button></li>
                 <li><button @click="navigateTo('/kategori/notebook')">Notebook</button></li>
                 <li><button @click="navigateTo('/kategori/plakat')">Plakat & Award</button></li>
-                <li><button @click="navigateTo('/kategori/merch')">Merch Corporate</button></li>
+                <li><button @click="navigateTo('/kategori/merch')">Merch Corporate</button></li>
                 <li><button @click="navigateTo('/kategori/others')">Lain‑lain…</button></li>
               </ul>
 
@@ -154,9 +180,17 @@ export default {
       showLogoutConfirm: false,
       searchQuery: "", // Tambahkan searchQuery untuk menyimpan input pencarian
       products: products, // Impor data produk
+      showSearchSuggestions: false,
+      searchSuggestions: [],
+      searchTimeout: null,
+      userRole: "",
+      cartItemCount: 0,
     };
   },
   computed: {
+    isSuperAdmin() {
+      return this.userRole === "super_admin";
+    },
     hasSelection() {
       return this.filter.terbaru || this.filter.diskon || this.sortBy !== "termurah";
     },
@@ -277,6 +311,7 @@ export default {
       this.showCart = false;
       this.showAccount = false;
       this.showWishlist = false;
+      this.showSearchSuggestions = false;
     },
 
     /** Handler global untuk klik‑di‑luar */
@@ -285,8 +320,9 @@ export default {
       const clickedAccountDropdown = this.$refs.accountDropdownRef && this.$refs.accountDropdownRef.contains(event.target);
       const clickedKategoriTrigger = this.$refs.kategoriDropdownTriggerRef && this.$refs.kategoriDropdownTriggerRef.contains(event.target);
       const clickedKategoriDropdown = this.$refs.kategoriDropdownContentRef && this.$refs.kategoriDropdownContentRef.contains(event.target);
+      const clickedSearchInput = this.$refs.searchInput && this.$refs.searchInput.contains(event.target);
 
-      if (!clickedProfileTrigger && !clickedAccountDropdown && !clickedKategoriTrigger && !clickedKategoriDropdown) {
+      if (!clickedProfileTrigger && !clickedAccountDropdown && !clickedKategoriTrigger && !clickedKategoriDropdown && !clickedSearchInput) {
         this.closeAll();
       }
     },
@@ -300,12 +336,109 @@ export default {
         this.userEmail = localStorage.getItem("userEmail") || "";
         this.userFullName = localStorage.getItem("userFullName") || "";
         this.username = localStorage.getItem("username") || "";
+        this.userRole = localStorage.getItem("userRole") || "";
       } else {
         // Reset user data jika logout
         this.userEmail = "";
         this.userFullName = "";
         this.username = "";
+        this.userRole = "";
       }
+    },
+
+    // Handle search input untuk recommendations
+    handleSearchInput() {
+      // Clear previous timeout
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      // Set new timeout untuk debounce
+      this.searchTimeout = setTimeout(() => {
+        this.generateSearchSuggestions();
+      }, 300);
+    },
+
+    // Generate search suggestions
+    generateSearchSuggestions() {
+      if (!this.searchQuery.trim()) {
+        this.searchSuggestions = [];
+        return;
+      }
+
+      const query = this.searchQuery.toLowerCase();
+
+      // Kata kunci rekomendasi berdasarkan kategori dan produk populer
+      const keywordSuggestions = [
+        "buku",
+        "novel",
+        "tas",
+        "sekolah",
+        "kalender",
+        "alat tulis",
+        "pulpen",
+        "pensil",
+        "notebook",
+        "mug",
+        "tumbler",
+        "gelas",
+        "sticker",
+        "phone case",
+        "plakat",
+        "award",
+        "merch",
+        "corporate",
+        "back to school",
+        "perlengkapan sekolah",
+        "buku novel",
+        "tas sekolah",
+        "kalender 2024",
+        "set alat tulis",
+        "mug custom",
+        "tumbler stainless",
+        "sticker vinyl",
+        "case hp",
+        "plakat acrylic",
+        "merchandise",
+      ];
+
+      // Filter kata kunci yang cocok dengan query
+      const filteredKeywords = keywordSuggestions.filter((keyword) => keyword.toLowerCase().includes(query));
+
+      // Sort by relevance (exact matches first, then partial matches)
+      filteredKeywords.sort((a, b) => {
+        const aLower = a.toLowerCase();
+        const bLower = b.toLowerCase();
+
+        // Exact match gets higher priority
+        if (aLower === query && bLower !== query) return -1;
+        if (bLower === query && aLower !== query) return 1;
+
+        // Starts with query gets higher priority
+        if (aLower.startsWith(query) && !bLower.startsWith(query)) return -1;
+        if (bLower.startsWith(query) && !aLower.startsWith(query)) return 1;
+
+        // Sort alphabetically for remaining items
+        return aLower.localeCompare(bLower);
+      });
+
+      // Limit to 8 suggestions
+      this.searchSuggestions = filteredKeywords.slice(0, 8);
+    },
+
+    // Handle search blur
+    handleSearchBlur() {
+      // Delay hiding suggestions to allow clicking on them
+      setTimeout(() => {
+        this.showSearchSuggestions = false;
+      }, 200);
+    },
+
+    // Select a suggestion
+    selectSuggestion(suggestion) {
+      this.searchQuery = suggestion;
+      this.showSearchSuggestions = false;
+      this.searchProducts();
     },
 
     // Metode pencarian produk
@@ -351,6 +484,13 @@ export default {
 
     // Listen untuk custom event login status change
     window.addEventListener("loginStatusChanged", this.checkLoginStatus);
+
+    // Clear search query on page refresh
+    this.searchQuery = "";
+
+    // Clear search-related localStorage on page refresh
+    localStorage.removeItem("searchQuery");
+    localStorage.removeItem("searchResults");
   },
   beforeUnmount() {
     document.removeEventListener("click", this.handleClickOutside);
@@ -359,6 +499,11 @@ export default {
     });
     window.removeEventListener("storage", this.checkLoginStatus);
     window.removeEventListener("loginStatusChanged", this.checkLoginStatus);
+
+    // Clear timeout on unmount
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
   },
 };
 </script>
@@ -449,6 +594,61 @@ export default {
   font-size: 0.85rem;
 }
 
+/* Search Suggestions Styles */
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  margin-top: 5px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.suggestions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.suggestion-item {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background-color: #f8f9fa;
+}
+
+.suggestion-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.suggestion-icon {
+  color: #e85423;
+  font-size: 0.9rem;
+  width: 16px;
+  text-align: center;
+}
+
+.suggestion-details {
+  flex: 1;
+}
+
+.suggestion-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+}
+
 /* Tambahkan style untuk tombol pencarian */
 
 .search-button:hover {
@@ -465,6 +665,18 @@ export default {
   gap: 2rem;
   padding: 2rem 5rem;
   margin-top: 5px; /* Reduced from 15px to align with raised search bar */
+}
+
+/* Small Vertical Separator */
+.small-separator {
+  position: absolute;
+  right: 300px; /* Position it before the icons section */
+  top: 45%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 30px;
+  background: #ddd;
+  z-index: 1;
 }
 
 .icons i {
@@ -651,7 +863,7 @@ export default {
 }
 
 /* ----- ukuran & posisi khusus dropdown Kategori ----- */
-/* dua kolom: filter (200 px) + list (sisanya) */
+/* dua kolom: filter (200 px) + list (sisanya) */
 .kategori-dropdown {
   position: absolute;
   top: 93%;
@@ -790,6 +1002,25 @@ export default {
   .hamburger {
     margin-left: 0.5rem;
   }
+
+  /* Mobile search suggestions */
+  .search-suggestions {
+    width: 100%;
+    max-height: 300px;
+  }
+
+  .suggestion-content {
+    padding: 10px 12px;
+  }
+
+  .suggestion-icon {
+    font-size: 0.8rem;
+    width: 14px;
+  }
+
+  .suggestion-name {
+    font-size: 0.8rem;
+  }
 }
 
 /* 🌐 Ukuran layar kecil (HP) */
@@ -845,6 +1076,10 @@ export default {
     padding: 0.5rem 1rem; /* Adjusted padding to align with search bar */
     gap: 0.5rem; /* Adjusted gap for mobile */
     align-items: center; /* Ensure vertical alignment */
+  }
+
+  .small-separator {
+    display: none; /* Hide separator on mobile */
   }
 
   .profile-pic {
@@ -957,6 +1192,27 @@ export default {
   transition: background 0.2s, color 0.2s;
 }
 
+.account-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-btn i {
+  width: 16px;
+  text-align: center;
+  color: #666;
+}
+
+.account-btn.cart-btn {
+  color: #666;
+  font-weight: 500;
+}
+
+.account-btn.cart-btn i {
+  color: #666;
+}
+
 .account-btn.wishlist-separator {
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
@@ -992,5 +1248,15 @@ export default {
 
 .register-btn:hover {
   background-color: #c6481d;
+}
+
+.admin-btn {
+  background-color: #2c3e50 !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+.admin-btn:hover {
+  background-color: #34495e !important;
 }
 </style>

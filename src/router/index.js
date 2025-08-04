@@ -15,6 +15,7 @@ import ForgotPassword from "@/views/ForgotPassword.vue";
 import AllBlogs from "@/views/AllBlogs.vue";
 import SearchResults from "@/views/SearchResults.vue"; // Impor komponen hasil pencarian
 import CategoryPage from "@/views/CategoryPage.vue"; // Impor komponen halaman kategori
+import Cart from "@/views/Cart.vue"; // Impor komponen cart
 import SyaratKetentuan from "@/views/Footer-View/SyaratKetentuan.vue";
 import KebijakanPrivasi from "@/views/Footer-View/KebijakanPrivasi.vue";
 import CaraPemesanan from "@/views/Footer-View/CaraPemesanan.vue";
@@ -56,6 +57,11 @@ const routes = [
     path: "/product/:name",
     name: "product-detail",
     component: ProductDetail,
+  },
+  {
+    path: "/cart",
+    name: "cart",
+    component: Cart,
   },
   {
     path: "/register",
@@ -120,6 +126,12 @@ function isAuthenticated() {
   return true; // Changed to true to simulate authenticated user and fix loading loop
 }
 
+// Check if user is admin
+function isAdmin() {
+  const userRole = localStorage.getItem("userRole");
+  return userRole === "super_admin";
+}
+
 // Global navigation guard
 router.beforeEach((to, from, next) => {
   // Show loading animation for route changes
@@ -133,6 +145,13 @@ router.beforeEach((to, from, next) => {
     if (!isAuthenticated()) {
       // User is not authenticated, redirect to home or login page
       next({ path: "/" });
+    } else if (to.matched.some((record) => record.meta.requiresAdmin)) {
+      if (!isAdmin()) {
+        // User is not admin, redirect to home page
+        next({ path: "/" });
+      } else {
+        next();
+      }
     } else {
       next();
     }
