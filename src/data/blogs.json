@@ -1,32 +1,102 @@
 [
   {
     "id": 1,
-    "title": "Cara Membuat Kerajinan Dari Kertas",
-    "snippet": "Pelajari teknik dasar membuat kerajinan tangan dari bahan sederhana.",
-    "image": "https://i.pinimg.com/736x/b6/03/f4/b603f46c6ac1fef4302e1c845980250a.jpg"
+    "title": "5 Tips Memilih Alat Tulis Berkualitas untuk Sekolah",
+    "slug": "5-tips-memilih-alat-tulis-berkualitas-untuk-sekolah",
+    "snippet": "Panduan lengkap memilih alat tulis yang tahan lama dan nyaman digunakan untuk aktivitas belajar sehari-hari.",
+    "image": "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=250&fit=crop",
+    "category": "Alat Tulis",
+    "date": "2024-01-15",
+    "readTime": "5 min read"
   },
   {
     "id": 2,
-    "title": "5 Tips Menulis Buku Pertama",
-    "snippet": "Langkah-langkah mudah untuk mulai menulis buku pertamamu.",
-    "image": "https://i.pinimg.com/736x/90/03/56/900356e7d4b2e96f22eb94afcd014e76.jpg"
+    "title": "Inspirasi Desain Kalender 2024 yang Unik dan Fungsional",
+    "slug": "inspirasi-desain-kalender-2024-yang-unik-dan-fungsional",
+    "snippet": "Kumpulan ide desain kalender dinding yang tidak hanya cantik tapi juga praktis untuk mengatur jadwal harian.",
+    "image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop",
+    "category": "Kalender",
+    "date": "2024-01-12",
+    "readTime": "7 min read"
   },
   {
     "id": 3,
-    "title": "Inspirasi Desain Kalender Dinding",
-    "snippet": "Tren desain kalender yang bisa kamu buat sendiri di rumah.",
-    "image": "https://i.pinimg.com/736x/cf/8e/0e/cf8e0eee48b8279dc940c211b70239ed.jpg"
+    "title": "Review Novel Terpopuler 2024 yang Wajib Dibaca",
+    "slug": "review-novel-terpopuler-2024-yang-wajib-dibaca",
+    "snippet": "Daftar buku novel terbaik yang sedang trending dan layak masuk dalam koleksi bacaan favoritmu.",
+    "image": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=250&fit=crop",
+    "category": "Buku",
+    "date": "2024-01-10",
+    "readTime": "8 min read"
   },
   {
     "id": 4,
-    "title": "Film Sore Istri Dari Masa Depan Meluap?",
-    "snippet": "Tren desain kalender yang bisa kamu buat sendiri di rumah.",
-    "image": "https://i.pinimg.com/736x/4b/8b/98/4b8b9824d8d28cf0b35775a7e27ac202.jpg"
+    "title": "Cara Merawat Tas Sekolah agar Awet dan Bersih",
+    "slug": "cara-merawat-tas-sekolah-agar-awet-dan-bersih",
+    "snippet": "Tips dan trik merawat tas sekolah agar tetap bersih, rapi, dan tahan lama sepanjang tahun ajaran.",
+    "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=250&fit=crop",
+    "category": "Tas",
+    "date": "2024-01-08",
+    "readTime": "6 min read"
   },
   {
     "id": 5,
-    "title": "Codingan Emang Seribet Itu?",
-    "snippet": "Tren desain kalender yang bisa kamu buat sendiri di rumah.",
-    "image": "https://i.pinimg.com/736x/56/67/93/5667936906181a6fbe0501b471e2b5bd.jpg"
+    "title": "Tren Mug dan Tumbler Custom untuk Hadiah Spesial",
+    "slug": "tren-mug-dan-tumbler-custom-untuk-hadiah-spesial",
+    "snippet": "Ide kreatif desain mug dan tumbler custom yang cocok untuk hadiah ulang tahun, pernikahan, atau acara spesial.",
+    "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=250&fit=crop",
+    "category": "Mug & Tumbler",
+    "date": "2024-01-05",
+    "readTime": "4 min read"
+  },
+  {
+    "id": 6,
+    "title": "Panduan Lengkap Memilih Notebook untuk Kebutuhan Berbeda",
+    "slug": "panduan-lengkap-memilih-notebook-untuk-kebutuhan-berbeda",
+    "snippet": "Tips memilih notebook yang tepat sesuai kebutuhan, dari yang sederhana hingga yang premium.",
+    "image": "https://images.unsplash.com/photo-1531346680769-a1d79b57de5c?w=400&h=250&fit=crop",
+    "category": "Notebook",
+    "date": "2024-01-03",
+    "readTime": "9 min read"
+  },
+  {
+    "id": 7,
+    "title": "Sticker Vinyl vs Sticker Kertas: Mana yang Lebih Bagus?",
+    "slug": "sticker-vinyl-vs-sticker-kertas-mana-yang-lebih-bagus",
+    "snippet": "Perbandingan detail antara sticker vinyl dan sticker kertas untuk membantu kamu memilih yang terbaik.",
+    "image": "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=250&fit=crop",
+    "category": "Sticker",
+    "date": "2024-01-01",
+    "readTime": "6 min read"
+  },
+  {
+    "id": 10,
+    "title": "Merchandise Corporate: Investasi Branding yang Efektif",
+    "slug": "merchandise-corporate-investasi-branding-yang-efektif",
+    "snippet": "Mengapa merchandise corporate penting untuk branding dan tips memilih produk yang tepat.",
+    "image": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=250&fit=crop",
+    "category": "Merchandise",
+    "date": "2023-12-22",
+    "readTime": "8 min read"
+  },
+  {
+    "id": 11,
+    "title": "Back to School: Checklist Perlengkapan Sekolah Lengkap",
+    "slug": "back-to-school-checklist-perlengkapan-sekolah-lengkap",
+    "snippet": "Daftar lengkap perlengkapan sekolah yang wajib disiapkan untuk tahun ajaran baru.",
+    "image": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=250&fit=crop",
+    "category": "Back to School",
+    "date": "2023-12-20",
+    "readTime": "10 min read"
+  },
+  {
+    "id": 12,
+    "title": "Eco-Friendly Stationery: Alat Tulis Ramah Lingkungan",
+    "slug": "eco-friendly-stationery-alat-tulis-ramah-lingkungan",
+    "snippet": "Rekomendasi alat tulis yang ramah lingkungan dan berkontribusi pada kelestarian bumi.",
+    "image": "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=400&h=250&fit=crop",
+    "category": "Alat Tulis",
+    "date": "2023-12-18",
+    "readTime": "6 min read"
   }
 ]

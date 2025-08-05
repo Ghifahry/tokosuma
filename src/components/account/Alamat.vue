@@ -193,7 +193,7 @@ function gunakanLokasi() {
 
 <style scoped>
 .alamat-container {
-  padding: 45px 20px 20px 20px;
+  padding: 15px 20px 20px 20px;
   background: #fff;
   border-radius: 8px;
 }

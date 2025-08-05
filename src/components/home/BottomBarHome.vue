@@ -4,7 +4,7 @@
       <i class="fas fa-home"></i>
       <span>Home</span>
     </router-link>
-    <router-link to="/kategori" class="bottom-link" active-class="active-link">
+    <router-link to="/mobile-categories" class="bottom-link" active-class="active-link">
       <i class="fas fa-th-large"></i>
       <span>Kategori</span>
     </router-link>
@@ -12,13 +12,32 @@
       <i class="fas fa-newspaper"></i>
       <span>Blog</span>
     </router-link>
+    <router-link v-if="isLoggedIn" to="/account/akun" class="bottom-link" active-class="active-link">
+      <i class="fas fa-user"></i>
+      <span>Akun</span>
+    </router-link>
   </nav>
 </template>
 
 <script setup>
 import { useRoute } from "vue-router";
+import { ref, onMounted } from "vue";
+
 const route = useRoute();
 const isHomePage = route.path === "/";
+const isLoggedIn = ref(false);
+
+const checkLoginStatus = () => {
+  isLoggedIn.value = localStorage.getItem("isLoggedIn") === "true";
+};
+
+onMounted(() => {
+  checkLoginStatus();
+
+  // Listen for login status changes
+  window.addEventListener("loginStatusChanged", checkLoginStatus);
+  window.addEventListener("storage", checkLoginStatus);
+});
 </script>
 
 <style scoped>

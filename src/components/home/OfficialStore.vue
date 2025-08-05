@@ -109,7 +109,7 @@ function handleSlideChangeMobile(swiper) {
   border: 1px solid #d3d3d3;
   transition: transform 0.2s ease;
   cursor: pointer;
-  height: 180px;
+  height: 155px;
   outline: 2px solid transparent;
   outline-offset: -2px;
   display: flex;

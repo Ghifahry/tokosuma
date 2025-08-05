@@ -63,9 +63,6 @@
             <span class="price-label">Harga Normal:</span>
             <span class="price-value-crossed">{{ product.originalPrice }}</span>
           </div>
-          <div class="savings" v-if="product.isPromo">
-            <span>Anda Hemat: {{ calculateSavings() }}</span>
-          </div>
         </div>
 
         <!-- Product Actions -->
@@ -344,14 +341,6 @@ function decreaseQuantity() {
 
 function formatPrice(value) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(value);
-}
-
-function calculateSavings() {
-  if (!product.value || !product.value.originalPrice) return "";
-  const original = parseFloat(product.value.originalPrice.replace(/[^\d]/g, ""));
-  const current = parseFloat(product.value.price.replace(/[^\d]/g, ""));
-  const savings = original - current;
-  return formatPrice(savings);
 }
 
 function calculateTotalPrice() {
@@ -639,11 +628,11 @@ onMounted(() => {
   gap: 0.5rem;
   background: linear-gradient(135deg, #ff4757, #ff3742);
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.2rem;
+  margin: -15px auto -20px -1px;
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
 }
 
 .price-section {

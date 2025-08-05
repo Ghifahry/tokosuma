@@ -54,10 +54,10 @@
               </div>
 
               <div class="product-quantity">
-                <button class="delete-btn" @click="deleteItem(item.id)">
-                  <i class="fas fa-trash"></i>
-                </button>
                 <div class="quantity-controls">
+                  <button class="delete-btn" @click="deleteItem(item.id)">
+                    <i class="fas fa-trash"></i>
+                  </button>
                   <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1">
                     <i class="fas fa-minus"></i>
                   </button>
@@ -66,10 +66,6 @@
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
-              </div>
-
-              <div class="product-total">
-                <span class="total-price">Rp{{ formatPrice(item.price * item.quantity) }}</span>
               </div>
             </div>
           </div>
@@ -270,6 +266,8 @@ export default {
     },
     saveCartItems() {
       localStorage.setItem("cart", JSON.stringify(this.cartItems));
+      // Dispatch event to update cart count in header
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
     },
     toggleMobileSummary() {
       this.showMobileSummary = !this.showMobileSummary;
@@ -697,6 +695,10 @@ export default {
     padding: 1rem;
   }
 
+  .cart-products {
+    margin-top: -60px;
+  }
+
   .product-card {
     grid-template-columns: auto 60px 1fr;
     gap: 0.75rem;
@@ -847,6 +849,8 @@ export default {
     z-index: 1000;
     border-radius: 12px 12px 0 0;
     transition: all 0.3s ease;
+    margin: 0 10px;
+    width: calc(100% - 20px);
   }
 
   .mobile-summary-header {
@@ -973,7 +977,7 @@ export default {
 
   /* Add bottom padding to cart content to prevent overlap */
   .cart-main {
-    padding-bottom: 120px;
+    padding-bottom: 140px;
   }
 }
 </style>

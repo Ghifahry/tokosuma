@@ -5,10 +5,6 @@
 
     <!-- Actual Content -->
     <div v-else>
-      <nav>
-        <router-link to="/promo-slider">Promo Slider</router-link> | <router-link to="/special-products">Special Products</router-link> |
-        <router-link to="/blog-section">Blog Section</router-link>
-      </nav>
       <PromoSlider />
       <OfficialStore :stores="stores" :isMobile="isMobile" />
       <Banner :imageSrc="bannerImage" link="https://example.com" />

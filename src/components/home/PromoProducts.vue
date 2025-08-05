@@ -55,7 +55,7 @@
     </div>
 
     <div v-else class="mobile-swiper-container">
-      <swiper :slides-per-view="2.2" :space-between="5" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
+      <swiper :slides-per-view="2.2" :space-between="1" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
         <swiper-slide v-for="product in products" :key="product.id">
           <router-link :to="`/product/${slugify(product.name)}`" class="product-card">
             <div class="product-image-container">
@@ -329,14 +329,11 @@ function slugify(text) {
 }
 
 .discount-badge {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-  color: white;
-  padding: 1px 4px;
+  color: #fa4d64;
+  padding: 1px 2px;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  box-shadow: 0 1px 3px rgba(255, 107, 107, 0.3);
   font-size: 0.5rem;
   font-weight: 700;
   line-height: 1;
@@ -356,7 +353,7 @@ function slugify(text) {
 
 .product-price {
   font-size: 0.9rem;
-  color: #e85423;
+  color: #060606;
   font-weight: 600;
   margin: 0;
   padding: 0;
@@ -458,6 +455,11 @@ function slugify(text) {
     padding: 1rem 1rem 2rem;
   }
 
+  .product-card {
+    width: 140px; /* Adjusted width for mobile */
+    height: 275px; /* Adjusted height for mobile */
+  }
+
   .section-header {
     padding: 0 0.5rem;
     flex-wrap: nowrap;
@@ -480,7 +482,7 @@ function slugify(text) {
   .backtoschool-background {
     width: 260px;
     height: 290px;
-    top: 100px;
+    top: 93px;
     left: -11px;
   }
 

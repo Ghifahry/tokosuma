@@ -24,14 +24,9 @@
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Autoplay } from "swiper/modules";
 import { ref, onMounted, onUnmounted } from "vue";
+import { promos } from "@/data/promos.js";
 import "swiper/css";
 import "swiper/css/pagination";
-
-const promos = [
-  { id: 1, image: "https://tokosuma.co.id/../toko-suma/storage/app/public/banner/24042025085051-70568.jpg", link: "/promo/diskon-50" },
-  { id: 2, image: "https://tokosuma.co.id/../toko-suma/storage/app/public/banner/03082023193040-29660.webp", link: "/promo/beli-2-gratis-1" },
-  { id: 3, image: "https://tokosuma.co.id/../toko-suma/storage/app/public/banner/01092021110229-94965.png", link: "/promo/free-ongkir" },
-];
 
 const isMobile = ref(false);
 
@@ -55,7 +50,7 @@ onUnmounted(() => {
   justify-content: center;
   gap: 1rem;
   max-width: 1220px;
-  margin: 7rem auto 2rem;
+  margin: 8rem auto 2rem;
 }
 .promo-slider {
   flex: -1;
@@ -82,12 +77,12 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  flex: 0 0 320px;
+  flex: 0 0 400px;
 }
 
 .promo-board-item {
   width: 100%;
-  height: 202px;
+  height: 203px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
@@ -106,7 +101,7 @@ onUnmounted(() => {
   .promo-container {
     /* Go full-width, remove padding and horizontal margin */
     padding: 0;
-    margin: 1rem 0 2rem 0;
+    margin: 4.2rem 0 2rem 0;
     width: 100%;
   }
   .promo-slider {

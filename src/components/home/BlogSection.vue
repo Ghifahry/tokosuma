@@ -20,7 +20,7 @@
       class="blog-swiper"
     >
       <swiper-slide v-for="blog in blogs" :key="blog.id" class="blog-slide">
-        <router-link :to="`/blog/${blog.id}`" class="blog-card">
+        <router-link :to="`/blog/${blog.slug}`" class="blog-card">
           <img :src="blog.image" :alt="blog.title" class="blog-img" />
           <div class="blog-content">
             <h3 class="blog-title">{{ blog.title }}</h3>

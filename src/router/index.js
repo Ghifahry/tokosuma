@@ -13,6 +13,7 @@ import Register from "@/views/Register.vue";
 import Login from "@/views/Login.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import AllBlogs from "@/views/AllBlogs.vue";
+import BlogDetail from "@/views/BlogDetail.vue";
 import SearchResults from "@/views/SearchResults.vue"; // Impor komponen hasil pencarian
 import CategoryPage from "@/views/CategoryPage.vue"; // Impor komponen halaman kategori
 import Cart from "@/views/Cart.vue"; // Impor komponen cart
@@ -21,6 +22,10 @@ import KebijakanPrivasi from "@/views/Footer-View/KebijakanPrivasi.vue";
 import CaraPemesanan from "@/views/Footer-View/CaraPemesanan.vue";
 import CaraPembayaran from "@/views/Footer-View/CaraPembayaran.vue";
 import AboutUs from "@/views/Footer-View/AboutUs.vue";
+import Faq from "@/components/top-header/Faq.vue";
+import TermsAndConditions from "@/components/top-header/TermsAndConditions.vue";
+import ContactUs from "@/components/top-header/ContactUs.vue";
+import MobileCategoryPage from "@/views/MobileCategoryPage.vue";
 
 // Global loading state
 let isLoading = false;
@@ -85,6 +90,11 @@ const routes = [
     meta: { hideHeader: true },
   },
   {
+    path: "/blog/:slug",
+    name: "blog-detail",
+    component: BlogDetail,
+  },
+  {
     path: "/syarat-ketentuan",
     name: "syarat-ketentuan",
     component: SyaratKetentuan,
@@ -108,6 +118,26 @@ const routes = [
     path: "/about-us",
     name: "about-us",
     component: AboutUs,
+  },
+  {
+    path: "/faq",
+    name: "faq",
+    component: Faq,
+  },
+  {
+    path: "/terms-and-conditions",
+    name: "terms-and-conditions",
+    component: TermsAndConditions,
+  },
+  {
+    path: "/contact-us",
+    name: "contact-us",
+    component: ContactUs,
+  },
+  {
+    path: "/mobile-categories",
+    name: "mobile-categories",
+    component: MobileCategoryPage,
   },
 ];
 

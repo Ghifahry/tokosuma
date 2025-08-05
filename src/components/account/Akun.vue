@@ -151,6 +151,11 @@
           </svg>
           Simpan Perubahan
         </button>
+
+        <button @click="logout" class="logout-button">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </button>
       </form>
     </div>
   </div>
@@ -234,6 +239,16 @@ function simpanPerubahan() {
   console.log("Data dikirim ke backend:", { ...form });
   alert("Perubahan berhasil disimpan!");
 }
+
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+function logout() {
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('userRole');
+  window.dispatchEvent(new CustomEvent('loginStatusChanged'));
+  router.push('/');
+}
 </script>
 
 <style scoped>
@@ -243,6 +258,7 @@ function simpanPerubahan() {
   background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
   border-radius: 20px;
   padding: 30px;
+  padding: 15px;
 }
 
 .profile-section {
@@ -439,7 +455,7 @@ input:disabled {
 
 .password-link:hover {
   background: rgba(255, 255, 255, 0.2);
-  }
+}
 
 .save-button {
   display: flex;
@@ -465,6 +481,34 @@ input:disabled {
 }
 
 .save-button:active {
+  transform: translateY(0);
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+  margin-top: 20px;
+}
+
+.logout-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+}
+
+.logout-button:active {
   transform: translateY(0);
 }
 

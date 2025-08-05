@@ -44,7 +44,7 @@
     </div>
 
     <div v-else class="mobile-swiper-container">
-      <swiper :slides-per-view="2.2" :space-between="5" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
+      <swiper :slides-per-view="2.2" :space-between="1" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
         <swiper-slide v-for="product in products" :key="product.id">
           <router-link :to="`/product/${slugify(product.name)}`" class="product-card">
             <img :src="product.image" :alt="product.name" class="product-img" />
@@ -208,7 +208,7 @@ function slugify(text) {
   bottom: 0;
   left: 0.8rem;
   font-size: 0.9rem;
-  color: #e85423;
+  color: #000000;
   font-weight: 600;
   margin: 0;
   padding: 0;
@@ -311,6 +311,10 @@ function slugify(text) {
 }
 
 @media (max-width: 768px) {
+  .product-card {
+    width: 140px; /* Adjusted width for mobile */
+    height: 270px; /* Adjusted height for mobile */
+  }
   .special-products {
     padding: 1rem 1rem 2rem;
   }
@@ -338,7 +342,7 @@ function slugify(text) {
   .suma-background {
     width: 260px;
     height: 290px;
-    top: 100px;
+    top: 90px;
     left: -11px;
   }
 
@@ -378,23 +382,8 @@ function slugify(text) {
 /* For tablet screens */
 @media (min-width: 769px) and (max-width: 1024px) {
   .mobile-product-swiper {
-    --swiper-space-between: 20; /* Increased gap for tablet */
-  }
-
-  .mobile-product-swiper .swiper-slide:first-child {
-    padding-left: 12rem; /* Increased padding for tablet */
-  }
-
-  .mobile-product-swiper {
-    margin-left: 8px; /* Increased margin for tablet */
-  }
-
-  /* Tablet background suma styling */
-  .suma-background {
-    width: 280px;
-    height: 320px;
-    top: 100px;
-    left: -15px;
+    --swiper-space-between: 15; /* Consistent gap for tablet */
+    --swiper-slides-per-view: 2.1; /* Same as mobile */
   }
 }
 
