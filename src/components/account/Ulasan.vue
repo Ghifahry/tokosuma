@@ -2,7 +2,6 @@
   <div class="ulasan-container">
     <div class="header">
       <div class="title-info">
-        <h2>Ulasan Produk</h2>
         <p>Total Ulasan: {{ sortedUlasan.length }}</p>
       </div>
 
@@ -41,6 +40,7 @@
 <script setup>
 import { ref, computed } from "vue";
 
+// Reactive data
 const sortBy = ref("terbaru");
 
 const ulasanList = ref([
@@ -60,25 +60,31 @@ const ulasanList = ref([
   },
 ]);
 
+// Computed properties
 const sortedUlasan = computed(() => {
-  return [...ulasanList.value].sort((a, b) => {
-    return sortBy.value === "terbaru" ? new Date(b.tanggal) - new Date(a.tanggal) : new Date(a.tanggal) - new Date(b.tanggal);
+  const sorted = [...ulasanList.value];
+  return sorted.sort((a, b) => {
+    const dateA = new Date(a.tanggal);
+    const dateB = new Date(b.tanggal);
+    return sortBy.value === "terbaru" ? dateB - dateA : dateA - dateB;
   });
 });
 
-function formatTanggal(tanggal) {
+// Methods
+const formatTanggal = (tanggal) => {
   const date = new Date(tanggal);
   return date.toLocaleDateString("id-ID", {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
-}
+};
 </script>
 
 <style scoped>
+/* Layout */
 .ulasan-container {
-  padding: 15px 20px 20px 20px;
+  padding: 20px;
   background: #fff;
   border-radius: 8px;
 }
@@ -88,20 +94,23 @@ function formatTanggal(tanggal) {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  gap: 10px;
 }
 
 .title-info h2 {
-  margin: 8px 0 0;
+  margin: 0 0 5px 0;
   font-size: 20px;
   color: #333;
 }
 
 .title-info p {
-  font-size: 13px;
-  color: #888;
+  font-size: 14px;
+  color: #666;
+  margin: 0;
 }
 
+/* Sort Controls */
 .sort {
   display: flex;
   align-items: center;
@@ -109,11 +118,10 @@ function formatTanggal(tanggal) {
 }
 
 .sort label {
-  font-size: 13px;
+  font-size: 14px;
   color: #444;
 }
 
-/* ⬇️ Modern Dropdown Style */
 .custom-select-wrapper {
   position: relative;
   width: 140px;
@@ -122,13 +130,19 @@ function formatTanggal(tanggal) {
 .custom-select {
   width: 100%;
   appearance: none;
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 8px 12px;
+  font-size: 14px;
   border-radius: 6px;
   border: 1px solid #ccc;
   background-color: #f9f9f9;
   color: #333;
   cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: #e85423;
 }
 
 .arrow {
@@ -140,68 +154,118 @@ function formatTanggal(tanggal) {
   font-size: 12px;
   color: #888;
 }
-/* ⬆️ End Dropdown */
 
+/* Review List */
 .ulasan-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
 }
 
 .ulasan-card {
   border: 1px solid #e5e5e5;
-  padding: 12px;
-  border-radius: 6px;
+  padding: 15px;
+  border-radius: 8px;
   background-color: #fafafa;
+  transition: all 0.2s ease;
 }
 
 .ulasan-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .ulasan-card h3 {
-  font-size: 15px;
+  font-size: 16px;
   margin: 0;
   color: #222;
+  font-weight: 500;
 }
 
 .rating {
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   color: #e85423;
 }
 
 .komentar {
-  font-size: 13px;
+  font-size: 14px;
   color: #444;
-  margin: 4px 0;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
 }
 
 .tanggal {
-  font-size: 11px;
+  font-size: 12px;
   color: #999;
 }
 
+/* Empty State */
 .empty {
   text-align: center;
-  padding: 40px 10px;
-  color: #777;
+  padding: 60px 20px;
+  color: #666;
 }
 
+.empty h4 {
+  font-size: 18px;
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.empty p {
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Links */
 .ulasan-card-link {
   text-decoration: none;
   color: inherit;
   display: block;
-  border-radius: 6px;
-  transition: box-shadow 0.2s ease;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.ulasan-card-link:hover {
+  transform: translateY(-2px);
 }
 
 .ulasan-card-link:hover .ulasan-card {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  background-color: #f3b661;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5f5;
   cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ulasan-container {
+    padding: 15px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .custom-select-wrapper {
+    width: 120px;
+  }
+
+  .ulasan-card {
+    padding: 12px;
+  }
+
+  .ulasan-card h3 {
+    font-size: 15px;
+  }
+
+  .komentar {
+    font-size: 13px;
+  }
 }
 </style>

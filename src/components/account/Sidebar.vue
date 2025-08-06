@@ -1,7 +1,7 @@
 <template>
   <aside class="sidebar mobile-hidden">
     <div class="sidebar-inner">
-      <!-- Profil -->
+      <!-- Profile -->
       <div class="profile">
         <img :src="user.profilePicture" alt="Foto Profil" class="profile-img" />
         <div class="profile-text">
@@ -24,6 +24,7 @@
 </template>
 
 <script setup>
+// User data
 const user = {
   name: "mhmdgabrielle",
   email: "mhmdgabrielle@gmail.com",
@@ -40,7 +41,7 @@ const user = {
   display: flex;
   justify-content: flex-start; /* ⬅️ Changed to align top */
   box-sizing: border-box;
-  padding: 70px 20px 0 20px; /* ⬅️ Added top padding */
+  padding: 40px 20px 0 20px; /* ⬅️ Added top padding */
 }
 
 .sidebar-inner {

@@ -44,7 +44,7 @@
     </div>
 
     <div v-else class="mobile-swiper-container">
-      <swiper :slides-per-view="2.2" :space-between="1" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
+      <swiper :slides-per-view="2.4" :space-between="1" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
         <swiper-slide v-for="product in products" :key="product.id">
           <router-link :to="`/product/${slugify(product.name)}`" class="product-card">
             <img :src="product.image" :alt="product.name" class="product-img" />
@@ -157,11 +157,40 @@ function slugify(text) {
   border: 1px solid #d3d3d3;
   transition: transform 0.2s ease;
   cursor: pointer;
-  height: 270px;
+  height: 280px;
   outline: 2px solid transparent;
   outline-offset: -2px;
   display: block;
   text-decoration: none;
+}
+
+/* Responsive product card sizes */
+@media (max-width: 768px) {
+  .product-card {
+    width: 130px;
+    height: 260px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    width: 130px;
+    height: 240px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .product-card {
+    width: 145px;
+    height: 270px;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .product-card {
+    width: 150px;
+    height: 275px;
+  }
 }
 
 .product-card:hover {
@@ -174,7 +203,7 @@ function slugify(text) {
 
 .product-img {
   width: 100%;
-  height: 180px;
+  height: 160px;
   object-fit: contain;
   display: block;
   background-color: #ffffff;
@@ -183,7 +212,7 @@ function slugify(text) {
 .product-name-price {
   position: relative;
   padding: 0 0.8rem;
-  height: 4rem;
+  height: 4.5rem;
 }
 
 .product-name {
@@ -207,18 +236,14 @@ function slugify(text) {
   position: absolute;
   bottom: 0;
   left: 0.8rem;
-  font-size: 0.9rem;
-  color: #000000;
+  font-size: 0.8rem;
+  color: #060606;
   font-weight: 600;
   margin: 0;
   padding: 0;
   display: block;
   text-align: left;
   width: calc(100% - 1.6rem);
-}
-
-.product-price {
-  margin-top: 0.1rem;
 }
 
 .product-official {
@@ -304,6 +329,41 @@ function slugify(text) {
   right: -20px;
 }
 
+/* Responsive navigation buttons */
+@media (max-width: 1024px) {
+  .swiper-button-prev-special-products,
+  .swiper-button-next-special-products {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+
+  .swiper-button-prev-special-products {
+    left: -15px;
+  }
+
+  .swiper-button-next-special-products {
+    right: -15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .swiper-button-prev-special-products,
+  .swiper-button-next-special-products {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .swiper-button-prev-special-products {
+    left: -10px;
+  }
+
+  .swiper-button-next-special-products {
+    right: -10px;
+  }
+}
+
 .swiper-button-prev-custom:hover,
 .swiper-button-next-custom:hover {
   background-color: #e85423;
@@ -311,10 +371,6 @@ function slugify(text) {
 }
 
 @media (max-width: 768px) {
-  .product-card {
-    width: 140px; /* Adjusted width for mobile */
-    height: 270px; /* Adjusted height for mobile */
-  }
   .special-products {
     padding: 1rem 1rem 2rem;
   }
@@ -353,10 +409,17 @@ function slugify(text) {
   .mobile-product-swiper {
     margin-left: 5px;
     bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
 
   .mobile-product-swiper .swiper-slide:first-child {
     padding-left: 10rem; /* shift first product card to accommodate bigger background */
+  }
+
+  /* Improve touch performance */
+  .mobile-product-swiper .swiper-slide {
+    touch-action: pan-y pinch-zoom;
   }
 
   /* Mobile slide animations */
@@ -371,24 +434,144 @@ function slugify(text) {
   }
 }
 
+/* For large desktop screens */
+@media (min-width: 1201px) {
+  .special-products {
+    padding: 2rem 1rem 4rem;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .desktop-product-swiper .swiper-slide:first-child {
+    padding-left: 11rem;
+  }
+
+  .suma-background {
+    width: 230px;
+    height: 350px;
+    top: 100px;
+    left: 18px;
+  }
+}
+
 /* For very narrow screens like Samsung Fold */
 @media (max-width: 480px) {
+  .special-products {
+    padding: 0.5rem 0.5rem 1.5rem;
+  }
+
+  .section-header {
+    padding: 0 0.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .see-more-button.top-right {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    margin-bottom: 10px;
+  }
+
+  .product-img {
+    height: 130px;
+  }
+
+  .product-name {
+    font-size: 0.65rem;
+    line-height: 0.9rem;
+    height: 2rem;
+    margin-bottom: 0.8rem;
+    margin-top: -0.2rem;
+  }
+
+  .product-name-price {
+    height: 4.5rem;
+    padding: 0.7rem 0.5rem 0 0.5rem;
+  }
+
+  .product-price {
+    font-size: 0.8rem;
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    width: calc(100% - 1rem);
+  }
+
+  .product-official {
+    font-size: 0.6rem;
+    margin: 1rem 0 0.1rem 0.5rem;
+  }
+
   .mobile-product-swiper {
-    --swiper-slides-per-view: 1.5;
-    --swiper-space-between: 12;
+    --swiper-slides-per-view: 2.4;
+    --swiper-space-between: 1;
+  }
+
+  .suma-background {
+    width: 200px;
+    height: 250px;
+    top: 50px;
+    left: -5px;
+  }
+
+  .mobile-product-swiper .swiper-slide:first-child {
+    padding-left: 8rem;
   }
 }
 
 /* For tablet screens */
 @media (min-width: 769px) and (max-width: 1024px) {
+  .special-products {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .see-more-button.top-right {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.7rem;
+  }
+
   .mobile-product-swiper {
-    --swiper-space-between: 15; /* Consistent gap for tablet */
-    --swiper-slides-per-view: 2.1; /* Same as mobile */
+    --swiper-space-between: 1;
+    --swiper-slides-per-view: 2.4;
+  }
+
+  .suma-background {
+    width: 280px;
+    height: 320px;
+    top: 95px;
+    left: -15px;
+  }
+
+  .mobile-product-swiper .swiper-slide:first-child {
+    padding-left: 12rem;
   }
 }
 
 /* For larger tablet screens */
 @media (min-width: 1025px) and (max-width: 1200px) {
+  .special-products {
+    padding: 1.8rem 1rem 3.5rem;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+  }
+
+  .product-card {
+    width: 150px;
+    height: 265px;
+  }
+
   .mobile-product-swiper {
     --swiper-space-between: 25; /* Even larger gap for larger tablets */
   }

@@ -55,7 +55,7 @@
     </div>
 
     <div v-else class="mobile-swiper-container">
-      <swiper :slides-per-view="2.2" :space-between="1" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
+      <swiper :slides-per-view="2.4" :space-between="1" :modules="[Pagination]" :pagination="false" class="mobile-product-swiper" @slideChange="handleSlideChangeMobile">
         <swiper-slide v-for="product in products" :key="product.id">
           <router-link :to="`/product/${slugify(product.name)}`" class="product-card">
             <div class="product-image-container">
@@ -257,6 +257,35 @@ function slugify(text) {
   text-decoration: none;
 }
 
+/* Responsive product card sizes */
+@media (max-width: 768px) {
+  .product-card {
+    width: 130px;
+    height: 260px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    width: 130px;
+    height: 240px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .product-card {
+    width: 145px;
+    height: 270px;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .product-card {
+    width: 150px;
+    height: 275px;
+  }
+}
+
 .product-card:hover {
   transform: translateY(-1px);
 }
@@ -268,12 +297,12 @@ function slugify(text) {
 .product-image-container {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 160px;
 }
 
 .product-img {
   width: 100%;
-  height: 180px;
+  height: 160px;
   object-fit: contain;
   display: block;
   background-color: #ffffff;
@@ -320,7 +349,7 @@ function slugify(text) {
 }
 
 .original-price {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #999;
   text-decoration: line-through;
   font-weight: 400;
@@ -330,14 +359,14 @@ function slugify(text) {
 
 .discount-badge {
   color: #fa4d64;
-  padding: 1px 2px;
-  border-radius: 6px;
+  padding: 1px 1px;
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
-  font-size: 0.5rem;
+  font-size: 0.45rem;
   font-weight: 700;
   line-height: 1;
-  min-width: 22px;
+  min-width: 20px;
 }
 
 .discount-text {
@@ -346,13 +375,13 @@ function slugify(text) {
 }
 
 .discount-label {
-  font-size: 0.4rem;
+  font-size: 0.35rem;
   font-weight: 600;
   opacity: 0.9;
 }
 
 .product-price {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #060606;
   font-weight: 600;
   margin: 0;
@@ -444,6 +473,41 @@ function slugify(text) {
   right: -20px;
 }
 
+/* Responsive navigation buttons */
+@media (max-width: 1024px) {
+  .swiper-button-prev-promo-products,
+  .swiper-button-next-promo-products {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+
+  .swiper-button-prev-promo-products {
+    left: -15px;
+  }
+
+  .swiper-button-next-promo-products {
+    right: -15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .swiper-button-prev-promo-products,
+  .swiper-button-next-promo-products {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .swiper-button-prev-promo-products {
+    left: -10px;
+  }
+
+  .swiper-button-next-promo-products {
+    right: -10px;
+  }
+}
+
 .swiper-button-prev-custom:hover,
 .swiper-button-next-custom:hover {
   background-color: #e85423;
@@ -455,9 +519,16 @@ function slugify(text) {
     padding: 1rem 1rem 2rem;
   }
 
-  .product-card {
-    width: 140px; /* Adjusted width for mobile */
-    height: 275px; /* Adjusted height for mobile */
+  .product-name-price {
+    height: 5.5rem;
+    padding: 0.2rem 0.6rem 0 0.6rem;
+  }
+
+  .price-container {
+    position: absolute;
+    bottom: 0.3rem;
+    left: 0.6rem;
+    width: calc(100% - 1.2rem);
   }
 
   .section-header {
@@ -492,11 +563,18 @@ function slugify(text) {
 
   .mobile-product-swiper {
     margin-left: 5px;
-    bottom: 20px;
+    bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
 
   .mobile-product-swiper .swiper-slide:first-child {
     padding-left: 10rem;
+  }
+
+  /* Improve touch performance */
+  .mobile-product-swiper .swiper-slide {
+    touch-action: pan-y pinch-zoom;
   }
 
   .slide-out {
@@ -510,17 +588,17 @@ function slugify(text) {
   }
 
   .discount-badge {
-    padding: 1px 3px;
-    font-size: 0.45rem;
-    min-width: 20px;
+    padding: 1px 2px;
+    font-size: 0.4rem;
+    min-width: 18px;
   }
 
   .discount-text {
-    font-size: 0.5rem;
+    font-size: 0.45rem;
   }
 
   .discount-label {
-    font-size: 0.35rem;
+    font-size: 0.3rem;
   }
 
   .price-row {
@@ -528,15 +606,127 @@ function slugify(text) {
   }
 }
 
+/* For large desktop screens */
+@media (min-width: 1201px) {
+  .promo-products {
+    padding: 2rem 1rem 4rem;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .desktop-product-swiper .swiper-slide:first-child {
+    padding-left: 11rem;
+  }
+
+  .backtoschool-background {
+    width: 230px;
+    height: 350px;
+    top: 100px;
+    left: 18px;
+  }
+}
+
 @media (max-width: 480px) {
+  .promo-products {
+    padding: 0.5rem 0.5rem 1.5rem;
+  }
+
+  .section-header {
+    padding: 0 0.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .see-more-button.top-right {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    margin-bottom: 10px;
+  }
+
+  .product-img {
+    height: 130px;
+  }
+
+  .product-name {
+    font-size: 0.65rem;
+    line-height: 0.9rem;
+    height: 2rem;
+    margin-bottom: 0.8rem;
+    margin-top: -0.2rem;
+  }
+
+  .product-name-price {
+    height: 4.5rem;
+    padding: 0.7rem 0.5rem 0 0.5rem;
+  }
+
+  .price-container {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    width: calc(100% - 1rem);
+  }
+
+  .product-official {
+    font-size: 0.6rem;
+    margin: -1rem 0 0.1rem 0.5rem;
+  }
+
+  .discount-badge {
+    padding: 1px 1px;
+    min-width: 16px;
+  }
+
+  .discount-text {
+    font-size: 0.4rem;
+  }
+
+  .discount-label {
+    font-size: 0.25rem;
+  }
   .mobile-product-swiper {
+    .price-row {
+      gap: 0.2rem;
+      margin-bottom: 0.3rem;
+    }
+
     --swiper-slides-per-view: 1.5;
     --swiper-space-between: 12;
+  }
+
+  .backtoschool-background {
+    width: 200px;
+    height: 250px;
+    top: 65px;
+    left: -5px;
+  }
+
+  .mobile-product-swiper .swiper-slide:first-child {
+    padding-left: 8rem;
   }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  .mobile-product-swiper {
+  .promo-products {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .see-more-button.top-right {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.7rem;
+  }
+
+  .product-card {
     --swiper-space-between: 20;
   }
 
@@ -551,13 +741,21 @@ function slugify(text) {
   .backtoschool-background {
     width: 280px;
     height: 320px;
-    top: 100px;
+    top: 90px;
     left: -15px;
   }
 }
 
 @media (min-width: 1025px) and (max-width: 1200px) {
-  .mobile-product-swiper {
+  .promo-products {
+    padding: 1.8rem 1rem 3.5rem;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+  }
+
+  .product-card {
     --swiper-space-between: 25;
   }
 

@@ -1,9 +1,5 @@
 <template>
-  <div class="header">
-    <div class="title-info">
-      <h2>Akun</h2>
-    </div>
-  </div>
+  <div class="header"></div>
 
   <div class="akun-container">
     <div class="profile-section">
@@ -163,9 +159,18 @@
 
 <script setup>
 import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 
+// Constants
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const DEFAULT_PROFILE_IMAGE = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+// Router
+const router = useRouter();
+
+// Reactive data
 const form = reactive({
-  foto: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+  foto: DEFAULT_PROFILE_IMAGE,
   nama: "mhmdgabrielle",
   email: "mhmdgabrielle@gmail.com",
   gender: "Laki-laki",
@@ -179,88 +184,93 @@ const error = reactive({
 
 const fileInput = ref(null);
 
-function triggerUpload() {
+// Methods
+const triggerUpload = () => {
   fileInput.value.click();
-}
+};
 
-function unggahFoto(event) {
+const unggahFoto = (event) => {
   const file = event.target.files[0];
-  if (file) {
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Ukuran file melebihi 2MB.");
-      return;
-    }
+  if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      form.foto = e.target.result;
-    };
-    reader.readAsDataURL(file);
+  if (file.size > MAX_FILE_SIZE) {
+    alert("Ukuran file melebihi 2MB.");
+    return;
   }
-}
 
-function validateNomor(event) {
-  const angka = event.target.value;
-  const onlyDigits = angka.replace(/\D/g, "");
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    form.foto = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+const validateNomor = (event) => {
+  const input = event.target.value;
+  const onlyDigits = input.replace(/\D/g, "");
   form.noTelepon = onlyDigits;
 
-  if (onlyDigits.length < 10) {
-    error.noTelepon = "Nomor telepon minimal 10 digit.";
-  } else if (onlyDigits.length > 13) {
-    error.noTelepon = "Nomor telepon maksimal 13 digit.";
-  } else if (!/^\d+$/.test(onlyDigits)) {
-    error.noTelepon = "Nomor telepon hanya boleh berisi angka.";
-  } else {
-    error.noTelepon = "";
-  }
-}
+  const validationRules = [
+    { condition: onlyDigits.length < 10, message: "Nomor telepon minimal 10 digit." },
+    { condition: onlyDigits.length > 13, message: "Nomor telepon maksimal 13 digit." },
+    { condition: !/^\d+$/.test(onlyDigits), message: "Nomor telepon hanya boleh berisi angka." },
+  ];
 
-function simpanPerubahan() {
+  const validationError = validationRules.find((rule) => rule.condition);
+  error.noTelepon = validationError ? validationError.message : "";
+};
+
+const simpanPerubahan = () => {
   if (error.noTelepon) {
     alert("Periksa kembali inputan Anda.");
     return;
   }
 
-  if (!form.nama.trim()) {
-    alert("Nama lengkap harus diisi.");
-    return;
-  }
+  const requiredFields = [
+    { field: form.nama.trim(), message: "Nama lengkap harus diisi." },
+    { field: form.gender, message: "Jenis kelamin harus dipilih." },
+    { field: form.dob, message: "Tanggal lahir harus diisi." },
+  ];
 
-  if (!form.gender) {
-    alert("Jenis kelamin harus dipilih.");
-    return;
-  }
-
-  if (!form.dob) {
-    alert("Tanggal lahir harus diisi.");
+  const missingField = requiredFields.find((item) => !item.field);
+  if (missingField) {
+    alert(missingField.message);
     return;
   }
 
   console.log("Data dikirim ke backend:", { ...form });
   alert("Perubahan berhasil disimpan!");
-}
+};
 
-import { useRouter } from 'vue-router';
-const router = useRouter();
-
-function logout() {
-  localStorage.removeItem('isLoggedIn');
-  localStorage.removeItem('userRole');
-  window.dispatchEvent(new CustomEvent('loginStatusChanged'));
-  router.push('/');
-}
+const logout = () => {
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("userRole");
+  window.dispatchEvent(new CustomEvent("loginStatusChanged"));
+  router.push("/");
+};
 </script>
 
 <style scoped>
+/* Layout */
 .akun-container {
   max-width: 800px;
   margin: 0 auto;
   background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
   border-radius: 20px;
-  padding: 30px;
   padding: 15px;
 }
 
+.header {
+  margin-bottom: 20px;
+}
+
+.title-info h2 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+}
+
+/* Profile Section */
 .profile-section {
   display: flex;
   align-items: center;
@@ -530,12 +540,6 @@ input:disabled {
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: 30px;
-}
-
-.title-info h2 {
-  font-size: 20px;
-  margin: 35px 10px 10px 30px;
-  color: #333;
 }
 
 .title-info p {

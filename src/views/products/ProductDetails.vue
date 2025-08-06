@@ -238,11 +238,11 @@
         <div class="purchase-actions">
           <button class="btn-primary add-to-cart-btn" @click="addToCart">
             <i class="fas fa-shopping-cart"></i>
-            <span>Keranjang{{ quantity > 1 ? ` (${quantity})` : "" }}</span>
+            <span>Keranjang</span>
           </button>
           <button class="btn-secondary buy-now-btn" @click="buyNow">
             <i class="fas fa-bolt"></i>
-            <span>Beli Langsung{{ quantity > 1 ? ` (${quantity})` : "" }}</span>
+            <span>Beli</span>
           </button>
         </div>
       </div>
@@ -262,15 +262,15 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { wishlist } from "../data/wishlist";
-import Footer from "./Footer.vue";
-import ProductDetailSkeleton from "./loading-screen/ProductDetailSkeleton.vue";
+import { wishlist } from "../../data/wishlist";
+import Footer from "../../components/Footer.vue";
+import ProductDetailSkeleton from "../../components/loading-screen/ProductDetailSkeleton.vue";
 
 const route = useRoute();
 const router = useRouter();
 const productName = route.params.name;
 
-import products from "../data/products";
+import products from "../../data/products";
 
 const product = ref(null);
 const notificationMessage = ref("");
@@ -398,41 +398,44 @@ function addToCart() {
   const existingItemIndex = cart.findIndex((item) => item.name === cartItem.name && item.variant === cartItem.variant);
 
   if (existingItemIndex > -1) {
-    // Update quantity if product already exists
+    // Update existing item quantity
     cart[existingItemIndex].quantity += cartItem.quantity;
   } else {
-    // Add new item to cart
+    // Add new item
     cart.push(cartItem);
   }
 
-  // Save to localStorage
+  // Save back to localStorage
   localStorage.setItem("cart", JSON.stringify(cart));
 
-  console.log(`Added ${quantity.value} of ${product.value.name} to cart.`);
-  showNotification(`${quantity.value} ${product.value.name} ditambahkan ke keranjang!`, "success");
+  showNotification("Produk berhasil ditambahkan ke keranjang!", "success");
 }
 
 function buyNow() {
-  console.log(`Buying ${quantity.value} of ${product.value.name} now.`);
-  showNotification(`Membeli ${quantity.value} ${product.value.name} sekarang!`, "success");
+  addToCart();
+  // Navigate to cart page
+  router.push("/cart");
 }
 
 function toggleWishlist() {
   if (!product.value) return;
-  const index = wishlist.value.findIndex((item) => item.id === product.value.id);
-  if (index === -1) {
-    const wishlistItem = {
-      id: product.value.id,
-      nama: product.value.name,
-      harga: product.value.price,
-      tanggal: new Date().toISOString(),
-      image: product.value.image,
-    };
-    wishlist.value.push(wishlistItem);
-    showNotification("Produk ditambahkan ke favorit", "success");
+
+  const existingIndex = wishlist.value.findIndex((item) => item.id === product.value.id);
+
+  if (existingIndex > -1) {
+    // Remove from wishlist
+    wishlist.value.splice(existingIndex, 1);
+    showNotification("Produk dihapus dari wishlist", "info");
   } else {
-    wishlist.value.splice(index, 1);
-    showNotification("Produk dihapus dari favorit", "info");
+    // Add to wishlist
+    wishlist.value.push({
+      id: product.value.id,
+      name: product.value.name,
+      price: product.value.price,
+      image: selectedImage.value,
+      store: product.value.store || "TokoSuma Official Store",
+    });
+    showNotification("Produk ditambahkan ke wishlist!", "success");
   }
 }
 
@@ -440,41 +443,47 @@ function shareProduct() {
   if (navigator.share) {
     navigator.share({
       title: product.value.name,
-      text: `Lihat produk ${product.value.name} di Toko Suma!`,
+      text: `Lihat produk ${product.value.name} di TokoSuma!`,
       url: window.location.href,
     });
   } else {
     // Fallback: copy to clipboard
     navigator.clipboard.writeText(window.location.href);
-    showNotification("Link produk disalin ke clipboard", "info");
+    showNotification("Link produk berhasil disalin!", "success");
   }
 }
 
 function viewProduct(relatedProduct) {
-  const slug = slugify(relatedProduct.name);
-  router.push(`/product/${slug}`);
+  const productSlug = relatedProduct.name.toLowerCase().replace(/\s+/g, "-");
+  router.push(`/product/${productSlug}`);
 }
 
-function slugify(text) {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w-]+/g, "")
-    .replace(/--+/g, "-")
-    .replace(/^-+/, "")
-    .replace(/-+$/, "");
+function loadProduct() {
+  isLoading.value = true;
+
+  // Simulate API call delay
+  setTimeout(() => {
+    const foundProduct = products.find((p) => {
+      const productSlug = p.name.toLowerCase().replace(/\s+/g, "-");
+      return productSlug === productName;
+    });
+
+    if (foundProduct) {
+      product.value = foundProduct;
+      if (foundProduct.variants && foundProduct.variants.length > 0) {
+        selectedVariant.value = foundProduct.variants[0];
+      }
+    } else {
+      // Product not found, redirect to home or show error
+      router.push("/");
+    }
+
+    isLoading.value = false;
+  }, 1000);
 }
 
 onMounted(() => {
-  console.log("Product Name from Route:", productName);
-
-  setTimeout(() => {
-    product.value = products.find((p) => slugify(p.name) === productName);
-    console.log("Found Product:", product.value);
-    isLoading.value = false;
-    window.scrollTo(0, 0);
-  }, 800);
+  loadProduct();
 });
 </script>
 
@@ -482,8 +491,8 @@ onMounted(() => {
 .product-detail {
   max-width: 1200px;
   margin: 8rem auto 2rem auto;
-  padding: 1rem;
-  background-color: #fff;
+  padding: 2rem;
+  background: white;
   border-radius: 15px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
   border: 1px solid #d3d3d3;
@@ -491,9 +500,9 @@ onMounted(() => {
 
 .product-info {
   display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
 }
 
 /* Product Gallery */
@@ -824,14 +833,15 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
+  gap: 0.3rem;
+  padding: 0.6rem 0.8rem;
   border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 400;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-width: 80px;
 }
 
 .btn-primary {
@@ -1209,38 +1219,6 @@ onMounted(() => {
   object-fit: contain;
 }
 
-/* Notification */
-.notification-popup {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  font-weight: 600;
-  z-index: 1000;
-  user-select: none;
-  max-width: 300px;
-}
-
-.notification-popup.success {
-  background: #28a745;
-  color: white;
-}
-
-.notification-popup.info {
-  background: #17a2b8;
-  color: white;
-}
-
-.notification-popup.error {
-  background: #dc3545;
-  color: white;
-}
-
 /* Fixed Bottom Purchase Container */
 .fixed-purchase-container {
   position: fixed;
@@ -1259,114 +1237,126 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .product-summary {
   display: flex;
-  align-items: start;
+  align-items: center;
   gap: 1rem;
   flex: 1;
 }
 
 .summary-image {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 8px;
-  border: 1px solid #e1e5e9;
-}
-
-.summary-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
 }
 
 .summary-info h4 {
-  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
   color: #2c3e50;
-  margin: 0 0 0.25rem 0;
-  font-weight: 600;
-  text-align: left;
 }
 
 .summary-price {
-  font-size: 1rem;
-  color: #e85423;
-  font-weight: 700;
   margin: 0;
-  text-align: left;
-}
-
-.quantity-display {
-  margin-top: 0.25rem;
-}
-
-.quantity-display span {
-  font-size: 0.8rem;
-  color: #666;
-  font-weight: 500;
-  background: #f8f9fa;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #e85423;
 }
 
 .purchase-actions {
   display: flex;
-  gap: 1rem;
-  align-items: center;
-  margin-left: auto;
+  gap: 0.5rem;
 }
 
-.purchase-actions .btn-primary,
-.purchase-actions .btn-secondary {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
+/* Notification Popup */
+.notification-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
   border-radius: 8px;
-  font-weight: 600;
-  min-width: 120px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 1001;
+  animation: slideIn 0.3s ease;
 }
 
-/* Responsive Design */
+.notification-popup.success {
+  border-left: 4px solid #28a745;
+}
+
+.notification-popup.info {
+  border-left: 4px solid #17a2b8;
+}
+
+.notification-popup.error {
+  border-left: 4px solid #dc3545;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 @media (max-width: 768px) {
   .product-detail {
     margin: 5rem auto 2rem auto;
-    padding: 0.5rem;
+    padding: 1rem;
   }
 
   .product-info {
     grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .main-image {
-    height: 300px;
+    gap: 2rem;
   }
 
   .product-name {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   .price-value {
     font-size: 1.5rem;
   }
 
-  .product-stats {
-    gap: 1rem;
-  }
-
   .product-actions {
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
   }
 
-  .action-btn {
-    justify-content: center;
+  .action-separator {
+    display: none;
+  }
+
+  .main-image {
+    height: 250px;
+  }
+
+  .thumbnail-item {
+    width: 60px;
+    height: 60px;
   }
 
   .tab-navigation {
@@ -1378,73 +1368,28 @@ onMounted(() => {
     font-size: 0.9rem;
   }
 
-  .specs-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .reviews-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .related-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
-
   .fixed-purchase-container {
+    position: fixed;
+    top: auto;
+    left: 20px;
+    right: 20px;
+    bottom: 70px;
     padding: 0.75rem;
-    bottom: 75px;
-    left: 15px;
-    right: 15px;
     border-radius: 10px;
   }
 
   .purchase-content {
     flex-direction: column;
-    gap: 0.75rem;
-    align-items: flex-start;
-  }
-
-  .product-summary {
-    justify-content: flex-start;
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  .summary-info {
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  .summary-info h4 {
-    text-align: left;
-  }
-
-  .summary-price {
-    text-align: left;
+    gap: 1rem;
   }
 
   .purchase-actions {
     width: 100%;
-    justify-content: center;
-    margin-left: 0;
   }
 
-  .purchase-actions .btn-primary,
-  .purchase-actions .btn-secondary {
+  .btn-primary,
+  .btn-secondary {
     flex: 1;
-    min-width: auto;
   }
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

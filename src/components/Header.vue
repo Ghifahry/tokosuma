@@ -133,7 +133,7 @@ onUnmounted(() => {
 
 .search-section {
   display: flex;
-  top: 0.4rem;
+  top: 0.45rem;
   align-items: center;
   padding-right: 40px;
   gap: 25px;
@@ -155,7 +155,7 @@ onUnmounted(() => {
   justify-self: end;
   display: flex;
   gap: 2rem;
-  padding: 2.4rem 5rem 2rem 7rem;
+  padding: 2.5rem 5rem 1.7rem 7rem;
   margin-top: 5px;
   margin-left: -20px;
 }
@@ -169,7 +169,7 @@ onUnmounted(() => {
 .register-btn {
   padding: 7px 12px;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -229,7 +229,7 @@ onUnmounted(() => {
     grid-template-columns: 1fr auto;
     padding: 0.5rem 1rem;
     align-items: center;
-    margin: 0.5rem auto 1rem;
+    margin: 0.2rem auto 1rem;
   }
 
   .search-section {
@@ -240,6 +240,7 @@ onUnmounted(() => {
     padding-top: 5px;
     padding-right: 0;
     justify-content: space-between;
+    margin-bottom: 1px;
   }
 
   .logo {
@@ -296,10 +297,10 @@ onUnmounted(() => {
   }
 
   .icons {
-    padding: 0.2rem 1rem;
+    padding: 0.5rem 1rem;
     gap: 0.5rem;
     align-items: center;
-    margin-right: 20px;
+    margin-right: 2px;
   }
 
   .small-separator {

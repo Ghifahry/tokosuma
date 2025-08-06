@@ -1,41 +1,11 @@
 <template>
   <div class="mobile-category-page">
-    <div class="header">
-      <button @click="$router.go(-1)" class="back-button">
-        <i class="fas fa-arrow-left"></i>
-      </button>
-      <h1>Kategori</h1>
-    </div>
+    <MobileCategoryHeader @go-back="$router.go(-1)" />
 
     <div class="content">
-      <aside class="filter-sort">
-        <h4>Filter</h4>
-        <label><input type="checkbox" v-model="filter.terbaru" /> Terbaru</label>
-        <label><input type="checkbox" v-model="filter.diskon" /> Diskon</label>
+      <MobileCategoryFilter v-model:filter="filter" v-model:sort-by="sortBy" @filter-change="handleFilterChange" @sort-change="handleSortChange" />
 
-        <h4 class="mt-3">Sort</h4>
-        <select v-model="sortBy">
-          <option value="termurah">Termurah</option>
-          <option value="termahal">Termahal</option>
-          <option value="terlaris">Terlaris</option>
-        </select>
-      </aside>
-
-      <ul class="kategori-list">
-        <li v-for="category in availableCategories" :key="category.slug">
-          <button @click="navigateTo(`/kategori/${category.slug}`)">
-            {{ category.name }}
-          </button>
-        </li>
-        <li><button @click="navigateTo('/kategori/totebag')">Tote Bag</button></li>
-        <li><button @click="navigateTo('/kategori/mug')">Mug & Tumbler</button></li>
-        <li><button @click="navigateTo('/kategori/sticker')">Sticker</button></li>
-        <li><button @click="navigateTo('/kategori/phonecase')">Phone Case</button></li>
-        <li><button @click="navigateTo('/kategori/notebook')">Notebook</button></li>
-        <li><button @click="navigateTo('/kategori/plakat')">Plakat & Award</button></li>
-        <li><button @click="navigateTo('/kategori/merch')">Merch Corporate</button></li>
-        <li><button @click="navigateTo('/kategori/others')">Lain‑lain…</button></li>
-      </ul>
+      <MobileCategoryList :available-categories="availableCategories" @navigate-to="navigateTo" />
 
       <button class="btn-apply" :disabled="!hasSelection" @click="applyKategori">Terapkan</button>
     </div>
@@ -46,6 +16,7 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import products from "@/data/products.js";
+import { MobileCategoryHeader, MobileCategoryFilter, MobileCategoryList } from "@/components/kategori-mobile";
 
 const router = useRouter();
 
@@ -108,6 +79,14 @@ const navigateTo = (path) => {
   router.push(path);
 };
 
+const handleFilterChange = (newFilter) => {
+  filter.value = newFilter;
+};
+
+const handleSortChange = (newSortBy) => {
+  sortBy.value = newSortBy;
+};
+
 const applyKategori = () => {
   console.log("Kategori applied:", { filter: filter.value, sortBy: sortBy.value });
   // Implement actual filtering/sorting logic or emit event to parent/store
@@ -131,99 +110,8 @@ const applyKategori = () => {
   font-family: "Poppins", sans-serif;
 }
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  z-index: 1000;
-}
-
-.back-button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #333;
-  cursor: pointer;
-  margin-right: 1rem;
-}
-
-.header h1 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0;
-}
-
 .content {
   padding: 1rem;
-}
-
-.filter-sort {
-  background: #fff;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.filter-sort h4 {
-  margin-top: 0;
-  margin-bottom: 0.8rem;
-  color: #333;
-}
-
-.filter-sort label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.filter-sort input[type="checkbox"] {
-  margin-right: 0.5rem;
-}
-
-.filter-sort select {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-.kategori-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.kategori-list li button {
-  width: 100%;
-  text-align: left;
-  padding: 1rem;
-  border: none;
-  background: transparent;
-  font-size: 1rem;
-  color: #333;
-  cursor: pointer;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.2s;
-}
-
-.kategori-list li:last-child button {
-  border-bottom: none;
-}
-
-.kategori-list li button:hover {
-  background-color: #f5f5f5;
 }
 
 .btn-apply {

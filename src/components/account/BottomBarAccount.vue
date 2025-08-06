@@ -24,6 +24,7 @@
 </template>
 
 <style scoped>
+/* Mobile Bottom Navigation */
 .bottom-bar {
   display: none;
 }
@@ -34,30 +35,47 @@
     justify-content: space-around;
     align-items: center;
     background-color: #fff;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #e0e0e0;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 10px 0;
+    padding: 12px 0 8px;
     z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   }
 
   .bottom-link {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #444;
+    color: #666;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    padding: 4px 8px;
+    border-radius: 8px;
+    min-width: 60px;
+  }
+
+  .bottom-link:hover {
+    color: #e85423;
+    background-color: #fff5f2;
   }
 
   .bottom-link i {
     font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .bottom-link span {
+    line-height: 1.2;
   }
 
   .active-link {
     color: #e85423;
+    background-color: #fff5f2;
   }
 }
 </style>

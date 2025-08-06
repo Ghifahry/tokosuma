@@ -3,7 +3,6 @@
     <!-- Header -->
     <div class="header">
       <div class="title-info">
-        <h2>Wishlist</h2>
         <p>Total Barang: {{ filteredWishlist.length }}</p>
       </div>
       <div class="sort">
@@ -55,50 +54,50 @@
 import { ref, computed } from "vue";
 import { wishlist } from "../../data/wishlist";
 
+// Reactive data
 const modalConfirm = ref(false);
 const confirmId = ref(null);
 const sortBy = ref("terbaru");
 
-function showConfirm(id) {
+// Computed properties
+const filteredWishlist = computed(() => {
+  const sorted = [...wishlist.value];
+  const sortFunctions = {
+    terbaru: (a, b) => new Date(b.tanggal) - new Date(a.tanggal),
+    terlama: (a, b) => new Date(a.tanggal) - new Date(b.tanggal),
+    termurah: (a, b) => a.harga - b.harga,
+    termahal: (a, b) => b.harga - a.harga,
+  };
+
+  return sorted.sort(sortFunctions[sortBy.value] || sortFunctions.terbaru);
+});
+
+// Methods
+const showConfirm = (id) => {
   confirmId.value = id;
   modalConfirm.value = true;
-}
+};
 
-function hapusItem(id) {
+const hapusItem = (id) => {
   wishlist.value = wishlist.value.filter((item) => item.id !== id);
   modalConfirm.value = false;
   confirmId.value = null;
-}
+};
 
-const filteredWishlist = computed(() => {
-  return [...wishlist.value].sort((a, b) => {
-    switch (sortBy.value) {
-      case "terbaru":
-        return new Date(b.tanggal) - new Date(a.tanggal);
-      case "terlama":
-        return new Date(a.tanggal) - new Date(b.tanggal);
-      case "termurah":
-        return a.harga - b.harga;
-      case "termahal":
-        return b.harga - a.harga;
-    }
-  });
-});
-
-function formatRupiah(angka) {
+const formatRupiah = (angka) => {
   return angka.toLocaleString("id-ID");
-}
+};
 
-function formatTanggal(tanggal) {
+const formatTanggal = (tanggal) => {
   const date = new Date(tanggal);
   return date.toLocaleDateString("id-ID", {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
-}
+};
 
-function slugify(text) {
+const slugify = (text) => {
   return text
     .toString()
     .toLowerCase()
@@ -107,12 +106,13 @@ function slugify(text) {
     .replace(/\-\-+/g, "-")
     .replace(/^-+/, "")
     .replace(/-+$/, "");
-}
+};
 </script>
 
 <style scoped>
+/* Layout */
 .wishlist-container {
-  padding: 15px 20px 20px 20px;
+  padding: 20px;
   background: #fff;
   border-radius: 8px;
 }
@@ -121,12 +121,21 @@ function slugify(text) {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  gap: 10px;
 }
 
 .title-info h2 {
   font-size: 20px;
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.title-info p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
 }
 
 .sort {
@@ -135,239 +144,215 @@ function slugify(text) {
   gap: 8px;
 }
 
-.sort select {
-  appearance: none;
-  background-color: #f5f7fa;
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 6px 12px;
-  border-radius: 6px;
+.sort label {
   font-size: 14px;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 12px;
+  color: #444;
 }
 
+.sort select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Card Grid */
 .card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
 }
 
 .card {
-  width: 130px;
-  height: 250px;
-  border: 1px solid #ccc;
+  position: relative;
+  border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s;
-  box-sizing: border-box;
-  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-4px);
-}
-
-.card-image {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
-  object-fit: contain;
-  background-color: #ffffff;
-  display: block;
-}
-
-.card-body {
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.product-official {
-  font-size: 0.75rem;
-  color: #333;
-  opacity: 0.7;
-  margin: 0.3rem 0 0.4rem 0;
-  display: block;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.product-name-price {
-  /* Removed flex layout to stack vertically */
-  margin-top: 0;
-  margin-bottom: 0.4rem;
-}
-
-.product-name {
-  font-size: 0.9rem;
-  color: #222;
-  font-weight: 700;
-  margin: 0.2rem 0 0.4rem 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
-  line-height: 1.2;
-  max-height: 2.2rem;
-}
-
-.product-price {
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #e85423;
-  margin: 0 0 0.6rem 0;
-  display: block;
-}
-
-.card-body small {
-  display: block;
-  margin-top: 0.6rem;
-  font-size: 0.75rem;
-  color: #666;
-  font-style: italic;
-}
-
-.product-name-price {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.2rem;
-}
-
-.product-name {
-  font-size: 13px;
-  color: #333;
-  font-weight: 500;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
-  max-height: 2.6rem;
-  line-height: 1.3;
-}
-
-.product-price {
-  font-weight: bold;
-  font-size: 13px;
-  color: #e85423;
-  margin: 0;
-  display: inline-block;
-  vertical-align: middle;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .hapus-button {
   position: absolute;
-  top: 4px;
-  right: 6px;
-  background: white;
-  color: black;
-  border: 1px solid #ccc;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 14px;
+  border: none;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
   cursor: pointer;
-  padding: 0;
-  line-height: 18px;
-  text-align: center;
-  transition: background-color 0.2s ease;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.2s ease;
 }
 
 .hapus-button:hover {
-  background: #f0f0f0;
+  background: rgba(255, 0, 0, 1);
 }
 
+.card-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.card-body {
+  padding: 12px;
+}
+
+.product-official {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 4px 0;
+}
+
+.product-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.product-price {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e85423;
+  margin: 0 0 8px 0;
+}
+
+.card-body small {
+  font-size: 11px;
+  color: #999;
+}
+
+/* Empty State */
 .empty-wishlist {
   text-align: center;
-  padding: 40px 10px;
-  color: #777;
-  font-size: 15px;
-  background: #fdfdfd;
-  border: 1px dashed #ccc;
-  border-radius: 8px;
+  padding: 60px 20px;
+  color: #666;
 }
 
+.empty-wishlist h3 {
+  font-size: 18px;
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.empty-wishlist p {
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 1000;
 }
 
 .modal-box {
   background: white;
-  padding: 20px;
+  padding: 30px;
   border-radius: 8px;
-  width: 280px;
-  max-width: 90%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  max-width: 400px;
+  width: 90%;
   text-align: center;
 }
 
 .modal-box h3 {
-  margin: 0 0 10px;
+  margin: 0 0 15px 0;
+  color: #333;
+}
+
+.modal-box p {
+  margin: 0 0 20px 0;
+  color: #666;
+  line-height: 1.5;
 }
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
   gap: 10px;
-  margin-top: 20px;
+  justify-content: center;
 }
 
 .modal-actions button {
-  padding: 6px 12px;
-  border: none;
+  padding: 8px 20px;
   border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
   cursor: pointer;
-}
-
-.modal-actions .hapus {
-  background-color: #f44336;
-  color: white;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
 .modal-actions button:hover {
-  opacity: 0.9;
+  background: #e9e9e9;
 }
 
+.modal-actions button.hapus {
+  background: #e85423;
+  color: white;
+  border-color: #e85423;
+}
+
+.modal-actions button.hapus:hover {
+  background: #d44a1f;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .card {
-    width: 48%;
-  }
-}
-
-@media (max-width: 480px) {
-  .card {
-    flex: 0 0 calc((100% - 32px) / 3);
-    width: auto;
+  .wishlist-container {
+    padding: 15px;
   }
 
   .header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 15px;
   }
 
-  .sort {
-    align-self: stretch;
-    justify-content: space-between;
-    width: 100%;
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+
+  .card-image {
+    height: 120px;
+  }
+
+  .card-body {
+    padding: 10px;
+  }
+
+  .product-name {
+    font-size: 13px;
+  }
+
+  .product-price {
+    font-size: 14px;
   }
 }
 </style>

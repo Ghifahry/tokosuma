@@ -48,7 +48,7 @@ const blog = computed(() => {
 .blog-detail-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 8rem 4rem;
 }
 
 .blog-detail {

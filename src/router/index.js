@@ -8,15 +8,16 @@ import Alamat from "@/components/account/Alamat.vue";
 import Ulasan from "@/components/account/Ulasan.vue";
 
 import Home from "@/views/Home.vue";
-import ProductDetail from "@/components/ProductDetail.vue";
-import Register from "@/views/Register.vue";
-import Login from "@/views/Login.vue";
-import ForgotPassword from "@/views/ForgotPassword.vue";
-import AllBlogs from "@/views/AllBlogs.vue";
-import BlogDetail from "@/views/BlogDetail.vue";
+import ProductDetail from "@/views/products/ProductDetails.vue";
+import Register from "@/views/auth/Register.vue";
+import Login from "@/views/auth/Login.vue";
+import ForgotPassword from "@/views/auth/ForgotPassword.vue";
+import AllBlogs from "@/views/blogs/AllBlogs.vue";
+import BlogDetail from "@/views/blogs/BlogDetail.vue";
 import SearchResults from "@/views/SearchResults.vue"; // Impor komponen hasil pencarian
-import CategoryPage from "@/views/CategoryPage.vue"; // Impor komponen halaman kategori
+import CategoryPage from "@/views/category/CategoryPage.vue"; // Impor komponen halaman kategori
 import Cart from "@/views/Cart.vue"; // Impor komponen cart
+import PaymentDetails from "@/views/payment/PaymentDetails.vue"; // Impor komponen payment details
 import SyaratKetentuan from "@/views/Footer-View/SyaratKetentuan.vue";
 import KebijakanPrivasi from "@/views/Footer-View/KebijakanPrivasi.vue";
 import CaraPemesanan from "@/views/Footer-View/CaraPemesanan.vue";
@@ -25,7 +26,7 @@ import AboutUs from "@/views/Footer-View/AboutUs.vue";
 import Faq from "@/components/top-header/Faq.vue";
 import TermsAndConditions from "@/components/top-header/TermsAndConditions.vue";
 import ContactUs from "@/components/top-header/ContactUs.vue";
-import MobileCategoryPage from "@/views/MobileCategoryPage.vue";
+import MobileCategoryPage from "@/views/category/MobileCategoryPage.vue";
 
 // Global loading state
 let isLoading = false;
@@ -67,6 +68,11 @@ const routes = [
     path: "/cart",
     name: "cart",
     component: Cart,
+  },
+  {
+    path: "/checkout",
+    name: "checkout",
+    component: PaymentDetails,
   },
   {
     path: "/register",
@@ -198,6 +204,13 @@ router.afterEach((to, from) => {
       window.dispatchEvent(new CustomEvent("route-loading", { detail: { loading: false } }));
     }, 300);
   }
+});
+
+// Error handling for navigation
+router.onError((error) => {
+  console.error("Router error:", error);
+  isLoading = false;
+  window.dispatchEvent(new CustomEvent("route-loading", { detail: { loading: false } }));
 });
 
 export default router;

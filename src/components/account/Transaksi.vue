@@ -1,11 +1,9 @@
 <template>
   <div class="transaksi-container">
     <div class="header">
-      <h2 class="title">Transaksi</h2>
-
       <div class="submenu-row">
         <div class="submenu-inline">
-          <button v-for="menu in menus" :key="menu.value" :class="['submenu-button', { active: selectedMenu === menu.value }]" @click="selectedMenu = menu.value" type="button">
+          <button v-for="menu in MENU_OPTIONS" :key="menu.value" :class="['submenu-button', { active: selectedMenu === menu.value }]" @click="selectedMenu = menu.value" type="button">
             {{ menu.label }}
           </button>
         </div>
@@ -43,7 +41,8 @@
 <script setup>
 import { ref, computed } from "vue";
 
-const menus = [
+// Constants
+const MENU_OPTIONS = [
   { label: "Semua", value: "semua" },
   { label: "Diproses", value: "diproses" },
   { label: "Dikirim", value: "dikirim" },
@@ -51,6 +50,7 @@ const menus = [
   { label: "Dibatalkan", value: "cancel" },
 ];
 
+// Reactive data
 const selectedMenu = ref("semua");
 const sortBy = ref("terbaru");
 
@@ -89,49 +89,55 @@ const daftarTransaksi = ref([
   },
 ]);
 
+// Computed properties
 const sortedTransaksi = computed(() => {
-  return [...daftarTransaksi.value].sort((a, b) => {
-    return sortBy.value === "terbaru" ? new Date(b.tanggal) - new Date(a.tanggal) : new Date(a.tanggal) - new Date(b.tanggal);
+  const sorted = [...daftarTransaksi.value];
+  return sorted.sort((a, b) => {
+    const dateA = new Date(a.tanggal);
+    const dateB = new Date(b.tanggal);
+    return sortBy.value === "terbaru" ? dateB - dateA : dateA - dateB;
   });
 });
 
 const filteredTransaksi = computed(() => {
-  const status = selectedMenu.value;
-
-  if (status === "semua") return sortedTransaksi.value;
+  if (selectedMenu.value === "semua") return sortedTransaksi.value;
 
   return sortedTransaksi.value.filter((item) => {
-    const s = item.status.toLowerCase();
-    if (status === "diproses") return s.includes("kemas") || s.includes("proses");
-    if (status === "dikirim") return s.includes("kirim");
-    if (status === "sudahtiba") return s.includes("sampai") || s.includes("tiba");
-    if (status === "cancel") return s.includes("cancel") || s.includes("dibatalkan");
-    return true;
+    const status = item.status.toLowerCase();
+    const filterMap = {
+      diproses: () => status.includes("kemas") || status.includes("proses"),
+      dikirim: () => status.includes("kirim"),
+      sudahtiba: () => status.includes("sampai") || status.includes("tiba"),
+      cancel: () => status.includes("cancel") || status.includes("dibatalkan"),
+    };
+
+    return filterMap[selectedMenu.value]?.() || true;
   });
 });
 
-function formatHarga(nilai) {
+// Methods
+const formatHarga = (nilai) => {
   return nilai.toLocaleString("id-ID");
-}
+};
 
-function formatTanggal(tgl) {
-  const date = new Date(tgl);
+const formatTanggal = (tanggal) => {
+  const date = new Date(tanggal);
   return date.toLocaleDateString("id-ID", {
     day: "2-digit",
     month: "long",
     year: "numeric",
   });
-}
+};
 </script>
 
 <style scoped>
+/* Layout */
 .transaksi-container {
-  padding: 20px 20px 20px 20px;
+  padding: 20px;
   background: #fff;
   border-radius: 8px;
 }
 
-/* Header */
 .header {
   margin-bottom: 16px;
   display: flex;
@@ -145,7 +151,7 @@ function formatTanggal(tgl) {
   color: #333;
 }
 
-/* Submenu dan Sort */
+/* Submenu and Sort */
 .submenu-row {
   display: flex;
   justify-content: space-between;
@@ -181,7 +187,7 @@ function formatTanggal(tgl) {
   font-size: 13px;
   cursor: pointer;
   color: #333;
-  transition: background-color 0.2s, color 0.2s;
+  transition: all 0.2s ease;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -192,7 +198,6 @@ function formatTanggal(tgl) {
   border-color: #e85423;
 }
 
-/* Urutkan Dropdown */
 .sort-inline {
   display: flex;
   align-items: center;
@@ -215,32 +220,7 @@ function formatTanggal(tgl) {
   cursor: pointer;
 }
 
-/* Responsif Mobile */
-@media (max-width: 768px) {
-  .submenu-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .submenu-inline {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  .sort-inline {
-    width: 100%;
-    justify-content: flex-start;
-    margin-top: 4px;
-    padding-left: 2px;
-  }
-
-  .sort-inline label {
-    min-width: 60px;
-  }
-}
-
-/* Daftar Transaksi */
+/* Transaction List */
 .transaksi-list {
   display: flex;
   flex-direction: column;
@@ -310,5 +290,29 @@ function formatTanggal(tgl) {
   background-color: #f3f3f3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .submenu-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .submenu-inline {
+    width: 100%;
+  }
+
+  .sort-inline {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 4px;
+    padding-left: 2px;
+  }
+
+  .sort-inline label {
+    min-width: 60px;
+  }
 }
 </style>
