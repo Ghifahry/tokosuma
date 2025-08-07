@@ -1,7 +1,5 @@
 <template>
   <div class="cart-container">
-    <CustomSidebar @sidebar-toggle="handleSidebarToggle" />
-
     <div class="cart-main">
       <!-- Cart Header -->
       <CartHeader />
@@ -39,11 +37,11 @@
 <script>
 import CustomSidebar from "@/components/CustomSidebar.vue";
 import { CartHeader, CartProductList, CartSummary } from "@/components/cart";
+import { useCart } from "@/composables/useCart.js";
 
 export default {
   name: "Cart",
   components: {
-    CustomSidebar,
     CartHeader,
     CartProductList,
     CartSummary,
@@ -59,6 +57,12 @@ export default {
       selectAll: false,
       cartItems: [],
       shippingCost: 0,
+    };
+  },
+  setup() {
+    const { checkoutWithAuth } = useCart();
+    return {
+      checkoutWithAuth,
     };
   },
   computed: {
@@ -141,11 +145,7 @@ export default {
     },
     checkout() {
       if (this.hasSelectedItems) {
-        this.$router.push("/checkout").catch((err) => {
-          if (err.name !== "NavigationDuplicated") {
-            alert("Error navigating to checkout page");
-          }
-        });
+        this.checkoutWithAuth();
       } else {
         alert("Pilih produk terlebih dahulu untuk checkout");
       }

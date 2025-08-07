@@ -52,7 +52,7 @@ import { useCart } from "@/composables/useCart";
 import { useResponsive } from "@/composables/useResponsive";
 
 const router = useRouter();
-const { isLoggedIn, userEmail, userFullName, username, profileImageUrl, logout, isSuperAdmin } = useAuth();
+const { isLoggedIn, userEmail, userFullName, username, profileImageUrl, logout: authLogout, isSuperAdmin } = useAuth();
 const { cartItemCount } = useCart();
 const { isMobile } = useResponsive();
 
@@ -78,6 +78,12 @@ const handleLoginClick = () => {
 
 const handleRegisterClick = () => {
   router.push("/register");
+};
+
+const logout = () => {
+  authLogout();
+  showAccount.value = false;
+  router.push("/");
 };
 
 const handleClickOutside = (event) => {

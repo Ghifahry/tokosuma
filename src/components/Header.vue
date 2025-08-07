@@ -53,9 +53,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useCart } from "@/composables/useCart";
+import { useAuth } from "@/composables/useAuth";
 import SearchBar from "./header/SearchBar.vue";
 import CategoryDropdown from "./header/CategoryDropdown.vue";
 import AccountDropdown from "./header/AccountDropdown.vue";
@@ -65,11 +66,7 @@ import TopHeader from "./top-header/TopHeader.vue";
 const router = useRouter();
 const showMobileMenu = ref(false);
 const { cartItemCount, navigateToCart } = useCart();
-const isLoggedIn = ref(false);
-
-const checkLoginStatus = () => {
-  isLoggedIn.value = localStorage.getItem("isLoggedIn") === "true";
-};
+const { isLoggedIn } = useAuth();
 
 const navigateToLogin = () => {
   router.push("/login");
@@ -78,17 +75,6 @@ const navigateToLogin = () => {
 const navigateToRegister = () => {
   router.push("/register");
 };
-
-onMounted(() => {
-  checkLoginStatus();
-  window.addEventListener("loginStatusChanged", checkLoginStatus);
-  window.addEventListener("storage", checkLoginStatus);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("loginStatusChanged", checkLoginStatus);
-  window.removeEventListener("storage", checkLoginStatus);
-});
 </script>
 
 <style scoped>

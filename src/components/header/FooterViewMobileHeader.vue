@@ -1,24 +1,26 @@
 <template>
-  <div v-if="isMobile" class="mobile-header-elements">
-    <!-- Back Button for Account Pages -->
-    <button v-if="isAccountPage" @click="goBack" class="back-btn">
+  <div v-if="isMobile" class="mobile-header">
+    <button @click="goBack" class="back-btn">
       <i class="fas fa-arrow-left"></i>
     </button>
+    <h1 class="page-title">{{ title }}</h1>
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { useResponsive } from "@/composables/useResponsive";
 
-const route = useRoute();
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+});
+
 const router = useRouter();
 const { isMobile } = useResponsive();
-
-const isAccountPage = computed(() => {
-  return route.path.startsWith("/account");
-});
 
 const goBack = () => {
   router.push("/my-account");
@@ -26,10 +28,16 @@ const goBack = () => {
 </script>
 
 <style scoped>
-.mobile-header-elements {
+.mobile-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  padding: 12px 16px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .back-btn {
@@ -44,7 +52,7 @@ const goBack = () => {
   cursor: pointer;
   transition: background-color 0.2s ease;
   color: #666;
-  flex-shrink: 0;
+  margin-right: 12px;
 }
 
 .back-btn:hover {
@@ -55,6 +63,20 @@ const goBack = () => {
   font-size: 1rem;
 }
 
+.page-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+  padding-right: 47px; /* Balance the back button space */
+}
+
 /* Desktop - Hide mobile elements */
-/* Not needed anymore since we use v-if="isMobile" */
+@media (min-width: 769px) {
+  .mobile-header {
+    display: none;
+  }
+}
 </style>

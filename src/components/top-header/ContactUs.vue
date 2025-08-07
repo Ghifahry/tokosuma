@@ -29,34 +29,34 @@
 </template>
 
 <script>
-import Footer from '@/components/Footer.vue';
-import { contactInfoData } from '@/data/top-header/data.js';
+import Footer from "@/components/Footer.vue";
+import { contactInfoData } from "@/data/top-header/data.js";
 
 export default {
-  name: 'ContactUs',
+  name: "ContactUs",
   components: {
-    Footer
+    Footer,
   },
   data() {
     return {
       contactInfo: contactInfoData,
       form: {
-        name: '',
-        email: '',
-        message: ''
-      }
+        name: "",
+        email: "",
+        message: "",
+      },
     };
   },
   methods: {
     submitForm() {
       // Di sini Anda dapat menambahkan logika untuk mengirim formulir
       // misalnya, menggunakan axios untuk mengirim data ke backend
-      alert('Pesan Anda telah terkirim!');
-      this.form.name = '';
-      this.form.email = '';
-      this.form.message = '';
-    }
-  }
+      alert("Pesan Anda telah terkirim!");
+      this.form.name = "";
+      this.form.email = "";
+      this.form.message = "";
+    },
+  },
 };
 </script>
 
@@ -65,7 +65,7 @@ export default {
   max-width: 800px;
   margin: 6rem auto;
   padding: 2rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 h1 {
@@ -113,7 +113,7 @@ h1 {
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .submit-btn {
@@ -132,4 +132,3 @@ h1 {
   background-color: #d44a1e;
 }
 </style>
-

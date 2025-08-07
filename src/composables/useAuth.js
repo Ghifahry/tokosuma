@@ -25,21 +25,20 @@ export function useAuth() {
   };
 
   const logout = () => {
-    if (confirm("Apakah Anda yakin ingin keluar akun?")) {
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("userEmail");
-      localStorage.removeItem("userFullName");
-      localStorage.removeItem("username");
-      localStorage.removeItem("userRole");
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userFullName");
+    localStorage.removeItem("username");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userData");
 
-      window.dispatchEvent(
-        new CustomEvent("loginStatusChanged", {
-          detail: { isLoggedIn: false },
-        })
-      );
+    window.dispatchEvent(
+      new CustomEvent("loginStatusChanged", {
+        detail: { isLoggedIn: false },
+      })
+    );
 
-      checkLoginStatus();
-    }
+    checkLoginStatus();
   };
 
   const isSuperAdmin = () => {

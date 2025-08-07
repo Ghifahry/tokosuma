@@ -133,7 +133,7 @@
           </router-link>
         </div>
 
-        <button type="submit" class="save-button">
+        <button type="submit" class="save-button" @click="simpanPerubahan">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16L21 8V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21Z"
@@ -158,8 +158,10 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
+import { useAuth } from "@/composables/useAuth";
+import { updateUserProfile } from "@/data/userProfiles";
 
 // Constants
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
@@ -168,11 +170,14 @@ const DEFAULT_PROFILE_IMAGE = "https://cdn-icons-png.flaticon.com/512/149/149071
 // Router
 const router = useRouter();
 
+// Auth composable
+const { userEmail, userFullName, logout: authLogout } = useAuth();
+
 // Reactive data
 const form = reactive({
   foto: DEFAULT_PROFILE_IMAGE,
-  nama: "mhmdgabrielle",
-  email: "mhmdgabrielle@gmail.com",
+  nama: "",
+  email: "",
   gender: "Laki-laki",
   dob: "2000-01-01",
   noTelepon: "081234567890",
@@ -183,6 +188,93 @@ const error = reactive({
 });
 
 const fileInput = ref(null);
+
+// Load user data from localStorage
+const loadUserData = () => {
+  console.log("Loading user data...");
+  console.log("userEmail:", userEmail.value);
+  console.log("userFullName:", userFullName.value);
+
+  // Set email and name from auth composable first
+  form.email = userEmail.value || "";
+  form.nama = userFullName.value || "";
+
+  // Jika email kosong, coba ambil dari localStorage
+  if (!form.email) {
+    form.email = localStorage.getItem("userEmail") || "";
+  }
+
+  // Load from localStorage for additional user data
+  const storedUserData = localStorage.getItem("userData");
+  if (storedUserData) {
+    try {
+      const userData = JSON.parse(storedUserData);
+      console.log("Loaded user data:", userData);
+
+      // Update form dengan data dari userData
+      form.foto = userData.foto || DEFAULT_PROFILE_IMAGE;
+      form.gender = userData.gender || "Laki-laki";
+      form.dob = userData.dob || "2000-01-01";
+      form.noTelepon = userData.noTelepon || "";
+
+      // Update nama dan email jika belum set
+      if (!form.nama && userData.nama) {
+        form.nama = userData.nama;
+      }
+      if (!form.email && userData.email) {
+        form.email = userData.email;
+      }
+    } catch (e) {
+      console.error("Error parsing user data:", e);
+    }
+  }
+
+  // Also try to load from userProfiles if available
+  if (form.email) {
+    const userProfileKey = `user_${form.email}`;
+    const userProfile = localStorage.getItem(userProfileKey);
+    if (userProfile) {
+      try {
+        const profileData = JSON.parse(userProfile);
+        console.log("Loaded profile data:", profileData);
+
+        // Update form with profile data (prioritize profile data)
+        form.foto = profileData.foto || form.foto;
+        form.gender = profileData.gender || form.gender;
+        form.dob = profileData.dob || form.dob;
+        form.noTelepon = profileData.noTelepon || form.noTelepon;
+        form.nama = profileData.nama || form.nama;
+        form.email = profileData.email || form.email;
+      } catch (e) {
+        console.error("Error parsing profile data:", e);
+      }
+    }
+  }
+
+  // Fallback values jika data masih kosong
+  if (!form.foto) form.foto = DEFAULT_PROFILE_IMAGE;
+  if (!form.gender) form.gender = "Laki-laki";
+  if (!form.dob) form.dob = "2000-01-01";
+  if (!form.noTelepon) form.noTelepon = "";
+
+  console.log("Final form data:", form);
+};
+
+// Watch for changes in auth data
+watch([userEmail, userFullName], () => {
+  loadUserData();
+});
+
+// Initialize data on mount
+onMounted(() => {
+  console.log("Component mounted");
+  loadUserData();
+
+  // Debug: Check localStorage
+  console.log("localStorage userData:", localStorage.getItem("userData"));
+  console.log("localStorage userEmail:", localStorage.getItem("userEmail"));
+  console.log("localStorage userFullName:", localStorage.getItem("userFullName"));
+});
 
 // Methods
 const triggerUpload = () => {
@@ -210,6 +302,12 @@ const validateNomor = (event) => {
   const onlyDigits = input.replace(/\D/g, "");
   form.noTelepon = onlyDigits;
 
+  // Clear error if input is empty (optional field)
+  if (onlyDigits.length === 0) {
+    error.noTelepon = "";
+    return;
+  }
+
   const validationRules = [
     { condition: onlyDigits.length < 10, message: "Nomor telepon minimal 10 digit." },
     { condition: onlyDigits.length > 13, message: "Nomor telepon maksimal 13 digit." },
@@ -221,6 +319,12 @@ const validateNomor = (event) => {
 };
 
 const simpanPerubahan = () => {
+  console.log("=== SAVING CHANGES ===");
+  console.log("Form data:", form);
+  console.log("Email:", form.email);
+  console.log("Current localStorage userEmail:", localStorage.getItem("userEmail"));
+  console.log("Current localStorage userData:", localStorage.getItem("userData"));
+
   if (error.noTelepon) {
     alert("Periksa kembali inputan Anda.");
     return;
@@ -238,15 +342,51 @@ const simpanPerubahan = () => {
     return;
   }
 
-  console.log("Data dikirim ke backend:", { ...form });
-  alert("Perubahan berhasil disimpan!");
+  if (!form.email) {
+    alert("Email tidak ditemukan. Silakan login ulang.");
+    return;
+  }
+
+  try {
+    // Update user profile menggunakan function updateUserProfile
+    const updatedData = {
+      foto: form.foto,
+      nama: form.nama.trim(),
+      gender: form.gender,
+      dob: form.dob,
+      noTelepon: form.noTelepon,
+    };
+
+    console.log("Calling updateUserProfile with email:", form.email);
+    console.log("Updated data:", updatedData);
+
+    const updatedUser = updateUserProfile(form.email, updatedData);
+
+    // Trigger event to update other components
+    window.dispatchEvent(
+      new CustomEvent("loginStatusChanged", {
+        detail: { isLoggedIn: true },
+      })
+    );
+
+    console.log("Data berhasil diupdate:", updatedUser);
+    alert("Perubahan berhasil disimpan!");
+
+    // Reload data to ensure everything is updated
+    setTimeout(() => {
+      loadUserData();
+    }, 100);
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    alert(`Gagal menyimpan perubahan: ${error.message}`);
+  }
 };
 
 const logout = () => {
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("userRole");
-  window.dispatchEvent(new CustomEvent("loginStatusChanged"));
-  router.push("/");
+  if (confirm("Apakah Anda yakin ingin keluar akun?")) {
+    authLogout();
+    router.push("/");
+  }
 };
 </script>
 

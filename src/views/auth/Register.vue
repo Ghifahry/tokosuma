@@ -76,7 +76,7 @@
           </label>
         </div>
 
-        <button type="submit" class="register-btn" :disabled="isLoading || !isFormValid">
+        <button type="submit" class="register-btn" :disabled="isLoading">
           <i v-if="isLoading" class="fas fa-spinner fa-spin"></i>
           {{ isLoading ? "Memproses..." : "Daftar Sekarang" }}
         </button>
@@ -105,6 +105,8 @@
 </template>
 
 <script>
+import { registerNewUser, isUserRegistered } from "@/data/userProfiles";
+
 export default {
   name: "Register",
   data() {
@@ -124,39 +126,36 @@ export default {
       isLoading: false,
     };
   },
-  computed: {
-    isFormValid() {
-      return (
-        this.form.firstName &&
-        this.form.lastName &&
-        this.form.email &&
-        this.form.phone &&
-        this.form.password &&
-        this.form.confirmPassword &&
-        this.form.agreeTerms &&
-        this.form.password === this.form.confirmPassword &&
-        this.form.password.length >= 8
-      );
-    },
-  },
   methods: {
     async handleRegister() {
-      if (!this.isFormValid) {
-        alert("Mohon lengkapi semua data dengan benar");
+      // Validasi form
+      if (!this.validateForm()) {
         return;
       }
 
       this.isLoading = true;
 
       try {
+        // Cek apakah email sudah terdaftar
+        if (isUserRegistered(this.form.email)) {
+          alert("Email sudah terdaftar. Silakan gunakan email lain atau login.");
+          this.isLoading = false;
+          return;
+        }
+
         // Simulasi register process
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        // Set login status after successful registration
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userEmail", this.form.email);
-        localStorage.setItem("userFullName", `${this.form.firstName} ${this.form.lastName}`);
-        localStorage.setItem("username", this.form.firstName.toLowerCase());
+        // Register user baru menggunakan function registerNewUser
+        const newUser = registerNewUser({
+          firstName: this.form.firstName,
+          lastName: this.form.lastName,
+          email: this.form.email,
+          phone: this.form.phone,
+          password: this.form.password,
+          gender: "Laki-laki",
+          dob: "2000-01-01",
+        });
 
         // Trigger custom event untuk update header
         window.dispatchEvent(
@@ -166,16 +165,64 @@ export default {
         );
 
         // Show success message
-        alert("Pendaftaran berhasil! Selamat datang di Toko Suma.");
+        alert(`Pendaftaran berhasil! Selamat datang ${newUser.nama} di Toko Suma.`);
 
         // Redirect to home page
         this.$router.push("/");
       } catch (error) {
         console.error("Register error:", error);
-        alert("Gagal mendaftar. Silakan coba lagi.");
+        alert(error.message || "Gagal mendaftar. Silakan coba lagi.");
       } finally {
         this.isLoading = false;
       }
+    },
+
+    validateForm() {
+      // Validasi field required
+      if (!this.form.firstName.trim()) {
+        alert("Nama depan harus diisi");
+        return false;
+      }
+      if (!this.form.lastName.trim()) {
+        alert("Nama belakang harus diisi");
+        return false;
+      }
+      if (!this.form.email.trim()) {
+        alert("Email harus diisi");
+        return false;
+      }
+      if (!this.form.phone.trim()) {
+        alert("Nomor telepon harus diisi");
+        return false;
+      }
+      if (!this.form.password) {
+        alert("Password harus diisi");
+        return false;
+      }
+      if (!this.form.confirmPassword) {
+        alert("Konfirmasi password harus diisi");
+        return false;
+      }
+
+      // Validasi password
+      if (this.form.password.length < 8) {
+        alert("Password minimal 8 karakter");
+        return false;
+      }
+
+      // Validasi konfirmasi password
+      if (this.form.password !== this.form.confirmPassword) {
+        alert("Konfirmasi password tidak sama");
+        return false;
+      }
+
+      // Validasi terms
+      if (!this.form.agreeTerms) {
+        alert("Anda harus menyetujui Syarat & Ketentuan");
+        return false;
+      }
+
+      return true;
     },
 
     togglePassword() {
@@ -197,7 +244,7 @@ export default {
   justify-content: center;
   background: linear-gradient(135deg, #fff8f5 0%, #fff 100%);
   padding: 20px;
-  padding-top: 150px; /* Tambahkan padding-top untuk menghindari header */
+  padding-top: 150px;
   font-family: "Poppins", sans-serif;
 }
 
@@ -285,78 +332,100 @@ export default {
   color: #e85423;
 }
 
-.form-group input {
+.input-wrapper input {
   width: 100%;
-  padding: 12px 40px 12px 40px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  padding: 12px 12px 12px 40px;
   font-size: 0.9rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  background: #fafafa;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  background: #fff;
+  transition: all 0.3s ease;
+  font-family: inherit;
 }
 
-.form-group input:focus {
-  outline: none;
+.input-wrapper input:focus {
   border-color: #e85423;
+  outline: none;
   box-shadow: 0 0 0 3px rgba(232, 84, 35, 0.1);
-  background: white;
 }
 
 .form-options {
-  margin-bottom: 15px;
-  font-size: 0.85rem;
+  margin-bottom: 20px;
 }
 
 .checkbox-wrapper {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  gap: 10px;
   cursor: pointer;
+  font-size: 0.9rem;
   color: #666;
-  line-height: 1.4;
 }
 
 .checkbox-wrapper input[type="checkbox"] {
-  margin-right: 8px;
-  margin-top: 2px;
-  accent-color: #e85423;
+  display: none;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked + .checkmark {
+  background: #e85423;
+  border-color: #e85423;
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked + .checkmark::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .terms-link {
   color: #e85423;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.3s ease;
 }
 
 .terms-link:hover {
-  color: #c6481d;
+  text-decoration: underline;
 }
 
 .register-btn {
   width: 100%;
-  background: #e85423;
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 10px;
+  padding: 15px;
   font-size: 1rem;
   font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #e85423 0%, #fa6e44 100%);
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(232, 84, 35, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 20px;
+  gap: 10px;
 }
 
 .register-btn:hover:not(:disabled) {
-  background: #c6481d;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(232, 84, 35, 0.4);
 }
 
 .register-btn:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
@@ -374,84 +443,77 @@ export default {
   left: 0;
   right: 0;
   height: 1px;
-  background: #eee;
+  background: #e1e5e9;
 }
 
 .divider span {
   background: white;
   padding: 0 15px;
-  color: #999;
-  font-size: 0.85rem;
+  color: #666;
+  font-size: 0.9rem;
 }
 
 .social-register {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
   margin-bottom: 25px;
 }
 
 .social-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background: white;
-  color: #333;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .google-btn:hover {
   border-color: #db4437;
   color: #db4437;
-  background: #f8f8f8;
 }
 
 .facebook-btn:hover {
   border-color: #4267b2;
   color: #4267b2;
-  background: #f8f8f8;
 }
 
 .login-link {
   text-align: center;
-  font-size: 0.9rem;
+}
+
+.login-link p {
   color: #666;
+  font-size: 0.9rem;
+  margin: 0;
 }
 
 .login-link a {
   color: #e85423;
   text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s ease;
+  font-weight: 500;
 }
 
 .login-link a:hover {
-  color: #c6481d;
+  text-decoration: underline;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
+  .register-card {
+    padding: 30px 20px;
+  }
+
   .form-row {
     grid-template-columns: 1fr;
     gap: 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .register-container {
-    padding: 15px;
-    padding-top: 100px; /* Kurangi padding-top untuk mobile */
-  }
-
-  .register-card {
-    padding: 30px 25px;
   }
 
   .logo {
@@ -460,10 +522,6 @@ export default {
 
   .register-header h2 {
     font-size: 1.3rem;
-  }
-
-  .checkbox-wrapper {
-    font-size: 0.8rem;
   }
 }
 </style>

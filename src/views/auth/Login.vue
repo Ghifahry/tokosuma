@@ -7,6 +7,12 @@
         <p>Selamat datang kembali! Silakan masuk ke akun Anda.</p>
       </div>
 
+      <!-- Redirect Message -->
+      <div v-if="redirectMessage" class="redirect-message">
+        <i class="fas fa-info-circle"></i>
+        <p>{{ redirectMessage }}</p>
+      </div>
+
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
           <label for="email">Email</label>
@@ -63,6 +69,8 @@
 </template>
 
 <script>
+import { saveUserToLocalStorage, isUserRegistered, getUserProfile } from "@/data/userProfiles";
+
 export default {
   name: "Login",
   data() {
@@ -74,35 +82,70 @@ export default {
       },
       showPassword: false,
       isLoading: false,
+      redirectMessage: "",
     };
   },
   methods: {
+    checkRedirectMessage() {
+      const message = localStorage.getItem("loginRedirectMessage");
+      if (message) {
+        this.redirectMessage = message;
+        localStorage.removeItem("loginRedirectMessage");
+      }
+    },
     async handleLogin() {
       this.isLoading = true;
 
       try {
+        // Validasi email
+        if (!this.form.email || !this.form.password) {
+          alert("Email dan password harus diisi");
+          this.isLoading = false;
+          return;
+        }
+
         // Simulasi login process
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        // Regular user login
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userEmail", this.form.email);
-        localStorage.setItem("userFullName", "mhmdgabrielle");
-        localStorage.setItem("username", "TOKOSUMAVIEWER");
-        localStorage.setItem("userRole", "user");
+        // Cek apakah user terdaftar (untuk user yang register)
+        if (isUserRegistered(this.form.email)) {
+          // User terdaftar, ambil data dari localStorage
+          const userData = JSON.parse(localStorage.getItem(`user_${this.form.email}`));
 
-        // Trigger custom event untuk update header
-        window.dispatchEvent(
-          new CustomEvent("loginStatusChanged", {
-            detail: { isLoggedIn: true },
-          })
-        );
+          // Dalam aplikasi nyata, password harus di-verify
+          if (userData.password === this.form.password) {
+            saveUserToLocalStorage(this.form.email);
 
-        // Redirect to home page
-        this.$router.push("/");
+            // Trigger custom event untuk update header
+            window.dispatchEvent(
+              new CustomEvent("loginStatusChanged", {
+                detail: { isLoggedIn: true },
+              })
+            );
+
+            alert(`Selamat datang kembali, ${userData.nama}!`);
+            this.$router.push("/");
+          } else {
+            alert("Password salah. Silakan coba lagi.");
+          }
+        } else {
+          // User tidak terdaftar, gunakan data dari userProfiles (untuk testing)
+          const userProfile = getUserProfile(this.form.email);
+          saveUserToLocalStorage(this.form.email);
+
+          // Trigger custom event untuk update header
+          window.dispatchEvent(
+            new CustomEvent("loginStatusChanged", {
+              detail: { isLoggedIn: true },
+            })
+          );
+
+          alert(`Selamat datang, ${userProfile.nama}!`);
+          this.$router.push("/");
+        }
       } catch (error) {
         console.error("Login error:", error);
-        alert("Gagal masuk. Silakan coba lagi.");
+        alert(error.message || "Gagal masuk. Silakan coba lagi.");
       } finally {
         this.isLoading = false;
       }
@@ -111,6 +154,9 @@ export default {
     togglePassword() {
       this.showPassword = !this.showPassword;
     },
+  },
+  mounted() {
+    this.checkRedirectMessage();
   },
 };
 </script>
@@ -158,6 +204,29 @@ export default {
   color: #666;
   font-size: 0.9rem;
   margin: 0;
+}
+
+.redirect-message {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #856404;
+}
+
+.redirect-message i {
+  color: #f39c12;
+  font-size: 16px;
+}
+
+.redirect-message p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .login-form {

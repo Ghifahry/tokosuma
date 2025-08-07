@@ -234,17 +234,7 @@ export default {
 
 @media (max-width: 768px) {
   .footer {
-    padding: 20px;
-  }
-
-  .footer-content {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .footer-links-section {
-    flex-direction: column;
-    gap: 20px;
+    display: none;
   }
 }
 </style>

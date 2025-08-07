@@ -265,10 +265,14 @@ import { useRoute, useRouter } from "vue-router";
 import { wishlist } from "../../data/wishlist";
 import Footer from "../../components/Footer.vue";
 import ProductDetailSkeleton from "../../components/loading-screen/ProductDetailSkeleton.vue";
+import { useCart } from "../../composables/useCart.js";
 
 const route = useRoute();
 const router = useRouter();
 const productName = route.params.name;
+
+// Initialize cart composable
+const { addToCartWithAuth, buyNowWithAuth } = useCart();
 
 import products from "../../data/products";
 
@@ -378,43 +382,38 @@ function showNotification(message, type = "success") {
 }
 
 function addToCart() {
-  const cartItem = {
-    id: Date.now(), // Generate unique ID
+  if (!product.value) return;
+
+  const productData = {
     name: product.value.name,
     variant: selectedVariant.value ? selectedVariant.value.name : null,
-    price: parseFloat(product.value.price.replace(/[^\d]/g, "")),
-    originalPrice: product.value.originalPrice ? parseFloat(product.value.originalPrice.replace(/[^\d]/g, "")) : null,
-    quantity: quantity.value,
+    price: product.value.price,
+    originalPrice: product.value.originalPrice,
     stock: product.value.stock,
     image: selectedImage.value,
     store: product.value.store || "TokoSuma Official Store",
-    selected: false,
   };
 
-  // Get existing cart from localStorage
-  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-  // Check if product already exists in cart
-  const existingItemIndex = cart.findIndex((item) => item.name === cartItem.name && item.variant === cartItem.variant);
-
-  if (existingItemIndex > -1) {
-    // Update existing item quantity
-    cart[existingItemIndex].quantity += cartItem.quantity;
-  } else {
-    // Add new item
-    cart.push(cartItem);
+  const success = addToCartWithAuth(productData, quantity.value);
+  if (success) {
+    showNotification("Produk berhasil ditambahkan ke keranjang!", "success");
   }
-
-  // Save back to localStorage
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  showNotification("Produk berhasil ditambahkan ke keranjang!", "success");
 }
 
 function buyNow() {
-  addToCart();
-  // Navigate to cart page
-  router.push("/cart");
+  if (!product.value) return;
+
+  const productData = {
+    name: product.value.name,
+    variant: selectedVariant.value ? selectedVariant.value.name : null,
+    price: product.value.price,
+    originalPrice: product.value.originalPrice,
+    stock: product.value.stock,
+    image: selectedImage.value,
+    store: product.value.store || "TokoSuma Official Store",
+  };
+
+  buyNowWithAuth(productData, quantity.value);
 }
 
 function toggleWishlist() {

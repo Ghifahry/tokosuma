@@ -12,7 +12,7 @@
       <i class="fas fa-newspaper"></i>
       <span>Blog</span>
     </router-link>
-    <router-link v-if="isLoggedIn" to="/account/akun" class="bottom-link" active-class="active-link">
+    <router-link v-if="isLoggedIn" to="/my-account" class="bottom-link" active-class="active-link">
       <i class="fas fa-user"></i>
       <span>Akun</span>
     </router-link>
@@ -21,23 +21,11 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { ref, onMounted } from "vue";
+import { useAuth } from "@/composables/useAuth";
 
 const route = useRoute();
 const isHomePage = route.path === "/";
-const isLoggedIn = ref(false);
-
-const checkLoginStatus = () => {
-  isLoggedIn.value = localStorage.getItem("isLoggedIn") === "true";
-};
-
-onMounted(() => {
-  checkLoginStatus();
-
-  // Listen for login status changes
-  window.addEventListener("loginStatusChanged", checkLoginStatus);
-  window.addEventListener("storage", checkLoginStatus);
-});
+const { isLoggedIn } = useAuth();
 </script>
 
 <style scoped>

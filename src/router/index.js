@@ -145,6 +145,12 @@ const routes = [
     name: "mobile-categories",
     component: MobileCategoryPage,
   },
+  {
+    path: "/my-account",
+    name: "mobile-akun",
+    component: () => import("@/views/MobileAkun.vue"),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({
@@ -156,10 +162,9 @@ const router = createRouter({
   },
 });
 
-// Mock authentication check function
+// Authentication check function
 function isAuthenticated() {
-  // TODO: Replace with real authentication check
-  return true; // Changed to true to simulate authenticated user and fix loading loop
+  return localStorage.getItem("isLoggedIn") === "true";
 }
 
 // Check if user is admin
@@ -179,8 +184,8 @@ router.beforeEach((to, from, next) => {
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!isAuthenticated()) {
-      // User is not authenticated, redirect to home or login page
-      next({ path: "/" });
+      // User is not authenticated, redirect to login page
+      next({ path: "/login" });
     } else if (to.matched.some((record) => record.meta.requiresAdmin)) {
       if (!isAdmin()) {
         // User is not admin, redirect to home page

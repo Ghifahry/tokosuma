@@ -24,11 +24,16 @@
 </template>
 
 <script setup>
-// User data
+import { useAuth } from "@/composables/useAuth";
+
+// Get user data from auth composable
+const { userEmail, userFullName, profileImageUrl } = useAuth();
+
+// Reactive user data
 const user = {
-  name: "mhmdgabrielle",
-  email: "mhmdgabrielle@gmail.com",
-  profilePicture: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+  name: userFullName,
+  email: userEmail,
+  profilePicture: profileImageUrl,
 };
 </script>
 
